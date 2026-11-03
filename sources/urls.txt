@@ -1,6 +1,6 @@
 # Official English pages to snapshot. One URL per line; text after '#' is a note.
 # `make ingest` fetches any URL that has no snapshot yet. `make refresh` re-fetches all.
-# "inferred" = URL guessed from the site's URL pattern, not yet confirmed to exist.
+# All URLs below were checked on 2026-11-03 (HTTP 200, real content).
 #
 # NOTE (found 2026-11-03): from 1 May 2026 Kela replaced the labour market subsidy and the
 # basic unemployment allowance with the "general social security benefit" (yleistuki).
@@ -17,17 +17,17 @@ https://www.kela.fi/news/changes-to-kela-benefits-in-2026
 https://www.kela.fi/news/changes-to-work-requirement-for-unemployment-benefits-harder-to-qualify-for-earnings-related-daily-allowance-or-basic-unemployment-allowance
 https://www.kela.fi/news/debunking-myths-about-unemployment-benefits
 https://www.kela.fi/basic-unemployment-allowance   # historical (abolished 1 May 2026)
-https://www.kela.fi/labour-market-subsidy          # inferred; historical (abolished 1 May 2026)
-https://www.kela.fi/adjusted-unemployment-benefit  # inferred; side income / part-time work
+https://www.kela.fi/labour-market-subsidy          # historical (abolished 1 May 2026)
+https://www.kela.fi/did-you-find-a-job             # side income / part-time work: adjusted general social security benefit
 
 # --- Työmarkkinatori (Job Market Finland): services and the reform ---
 https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/search-for-work/services-to-support-job-seeking
 https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/search-for-work/registration-as-a-job-seeker
-https://tyomarkkinatori.fi/en/personal-customers/situations/my-unemployment-has-continued-for-a-long-time
+https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/situations/my-unemployment-has-continued-for-a-long-time
 https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/situations/i-need-help-to-support-my-ability-to-work
-https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/search-for-work/pay-subsidy   # inferred (palkkatuki)
-https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/search-for-work/work-trial    # inferred (työkokeilu)
-https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/training-and-education/different-ways-to-study/labour-market-training  # inferred
-https://tyomarkkinatori.fi/en/news/te-palvelut-siirtyvat-kunnille
+https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy              # palkkatuki
+https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out             # työkokeilu
+https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training   # työvoimakoulutus
+https://tyomarkkinatori.fi/en/news/te-palvelut-siirtyvat-kunnille   # historical (2024 news, written before the 1 Jan 2025 transfer)
 https://tyomarkkinatori.fi/en/uudistukset24/etusivu
 https://tyomarkkinatori.fi/en/news/tyonhakijan-palveluprosessiin-ja-tyonvalityspalveluihin-tulee-muutoksia-vuodenvaihteessa

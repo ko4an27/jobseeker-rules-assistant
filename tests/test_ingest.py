@@ -77,3 +77,33 @@ def test_main_returns_error_code_when_fetch_fails(tmp_path, monkeypatch, capsys)
     monkeypatch.setattr(ingest, "http_get", lambda u: (_ for _ in ()).throw(OSError("denied")))
     assert ingest.main(["--urls", str(urls)]) == 1
     assert "blocked.test" in capsys.readouterr().out
+
+
+def test_html_to_text_ignores_small_promo_article_when_no_main():
+    html = (
+        "<html><head><title>Long unemployment - Situations - Job Market Finland</title></head>"
+        "<body><div><h2>Services</h2><p>"
+        + "Real rules text about work try-out. "
+        * 20
+        + "</p></div>"
+        "<article><h3>Promo</h3><p>Create a job applicant profile.</p></article></body></html>"
+    )
+    title, body = ingest.html_to_text(html)
+    assert "Real rules text" in body and "## Services" in body
+    assert title == "Long unemployment"
+
+
+def test_html_to_text_uses_article_when_it_is_the_content():
+    html = (
+        "<html><body><div>Small sidebar</div><article><h1>News</h1><p>"
+        + "Article text. " * 30
+        + "</p></article></body></html>"
+    )
+    title, body = ingest.html_to_text(html)
+    assert title == "News" and "Small sidebar" not in body
+
+
+def test_clean_title_strips_site_suffix():
+    assert ingest._clean_title("Pay subsidy - Services - Job Market Finland") == "Pay subsidy"
+    assert ingest._clean_title("Kela | Home") == "Kela"
+    assert ingest._clean_title("TE24 – reforms") == "TE24 – reforms"
