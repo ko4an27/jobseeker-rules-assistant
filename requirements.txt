@@ -1,0 +1,4 @@
+# Runtime dependencies
+requests>=2.32,<3
+beautifulsoup4>=4.12,<5
+anthropic>=0.40   # only imported when LLM_PROVIDER=anthropic
