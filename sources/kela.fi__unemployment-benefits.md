@@ -1,14 +1,14 @@
 ---
 url: https://www.kela.fi/unemployment-benefits
 title: Unemployment benefits
-fetched_at: 2026-11-03T19:28:31+00:00
+fetched_at: 2026-11-03T20:20:36+00:00
 ---
 # Unemployment benefits
 
 ## On this page
-- Benefits from Kela or an unemployment fund
-- What is the work requirement?
-- Validity of the work requirement
+- [link] Benefits from Kela or an unemployment fund
+- [link] What is the work requirement?
+- [link] Validity of the work requirement
 If you become unemployed, you can get unemployment benefits from Kela or an unemployment fund (työttömyyskassa). You cannot get unemployment benefits from Kela and an unemployment fund at the same time. You must be registered as a jobseeker and be ready to accept a full-time job to qualify for unemployment benefits.
 
 ## Benefits from Kela or an unemployment fund
@@ -18,14 +18,14 @@ If you are a member of an unemployment fund (työttömyyskassa) through a labour
 - Apply for general social security benefit from Kela.
 - You can get general social security benefit if you do not belong to an unemployment fund or if you do not meet the work requirement (työssäoloehto).
 - You can get general social security benefit even if you have been paid earnings-related unemployment allowance (ansiopäiväraha) for the maximum period of time.
-Read more about the general social security benefit.
+[link] Read more about the general social security benefit.
 
 ### Earnings-related unemployment allowance from your unemployment fund
 - Apply for earnings-related unemployment allowance from your unemployment fund.
 - You can get earnings-related unemployment allowance (ansiopäiväraha) if you are a member of an unemployment fund and if you have fulfilled the work requirement during your membership.
 - The amount of allowance you can get is based on your wages or salary.
 - Kela cannot pay you general social security benefit if you are a member of an unemployment fund and you qualify for earnings-related unemployment allowance.
-When can I claim earnings-related allowance? (tyj.fi)
+[link] When can I claim earnings-related allowance? (tyj.fi)
 
 ## What is the work requirement?
 You must be a member of an unemployment fund (työttömyyskassa) to get earnings-related unemployment allowance (ansiopäiväraha). You must also have enough work history from the time before you became unemployed.
@@ -115,9 +115,9 @@ If you are ill, you should apply for sick leave and sickness allowance instead o
 Changes in your income may affect Kela benefits.
 
 ## On the Unemployment pages
-- If you become unemployed
-- If you are laid off temporarily
-- During unemployment
-- Did you find a job?
-- Unemployment benefits
-- Receiving unemployment benefits in Finland or abroad
+- [link] If you become unemployed
+- [link] If you are laid off temporarily
+- [link] During unemployment
+- [link] Did you find a job?
+- [link] Unemployment benefits
+- [link] Receiving unemployment benefits in Finland or abroad

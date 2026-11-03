@@ -1,7 +1,7 @@
 ---
 url: https://www.kela.fi/news/changes-to-work-requirement-for-unemployment-benefits-harder-to-qualify-for-earnings-related-daily-allowance-or-basic-unemployment-allowance
 title: Changes to work requirement for unemployment benefits – harder to qualify for earnings-related daily allowance or basic unemployment allowance
-fetched_at: 2026-11-03T19:28:40+00:00
+fetched_at: 2026-11-03T20:20:45+00:00
 ---
 # Changes to work requirement for unemployment benefits – harder to qualify for earnings-related daily allowance or basic unemployment allowance
 The work requirement for unemployment benefits will be extended from 6 months to 12 months as of September, making it more difficult for unemployed persons to qualify for earnings-related daily allowance or for the basic unemployment allowance paid by Kela. However, part-time workers may benefit, since the changes mean that work history will be accrued for the work requirement on the basis of wage or salary income, rather than working time per week.
@@ -26,10 +26,10 @@ As before, the work requirement does not have to be fulfilled during a single, c
 In practice, the length of the work requirement changes to 12 months for everyone who is employed when the law enters into force on 2 September 2024 and who is subsequently paid a minimum of 465 euros per month.
 “If by September you have accrued part of the work history needed for the old, shorter work requirement, it will not go to waste, as it will be added to the new work requirement,” Ristimäki says.
 Here, it is important to note that in cases where work history for the old and new work requirement are added up, the unemployed person is then required to fulfil the new, longer work requirement of 12 months.
-Learn more about the changes to the employee work requirement
+[link] Learn more about the changes to the employee work requirement
 As of 2 September 2024, there are also changes to the application of the work requirement to wage-subsidised work and participation in employment-promoting services.
 Participation in employment-promoting services will no longer count towards the work requirement. Periods of wage-subsidised work will count towards the work requirement only in certain cases.
-Read the press release on changes in the accrual of the work requirement for wage-subsidised work and participation in employment-promoting services.
+[link] Read the press release on changes in the accrual of the work requirement for wage-subsidised work and participation in employment-promoting services.
 
 ## What is the work requirement?
 The work requirement means that an unemployed person must have worked for a required length of time before becoming unemployed. In addition, the work must meet certain other conditions in order to count towards the work requirement.
@@ -37,7 +37,7 @@ If the work requirement is met, the unemployed person may receive earnings-relat
 In April 2024, a total of 36,044 people received basic unemployment allowance from Kela (EUR 26.59 million) while 162,068 people received labour market subsidy (EUR 138.51 million). Earnings-related daily allowance from unemployment funds was paid to 134,155 people (EUR 200.60 million).
 
 ## More information:
-Kela: How the work requirement will change
-Kela: What is the work requirement?
-Kela: Statistics on unemployment benefits in Finland
-Ministry of Social Affairs and Health: Frequently asked questions about changes to the work requirement (in Finnish)
+[link] Kela: How the work requirement will change
+[link] Kela: What is the work requirement?
+[link] Kela: Statistics on unemployment benefits in Finland
+[link] Ministry of Social Affairs and Health: Frequently asked questions about changes to the work requirement (in Finnish)

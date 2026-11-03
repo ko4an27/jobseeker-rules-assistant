@@ -19,6 +19,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlparse
 
+# Prefix for lines that are only a link ("Read more (kela.fi)"); set by ingest.
+LINK_MARK = "[link]"
+
 DEFAULT_SOURCES_DIR = Path(__file__).resolve().parents[2] / "sources"
 
 

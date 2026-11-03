@@ -107,3 +107,16 @@ def test_clean_title_strips_site_suffix():
     assert ingest._clean_title("Pay subsidy - Services - Job Market Finland") == "Pay subsidy"
     assert ingest._clean_title("Kela | Home") == "Kela"
     assert ingest._clean_title("TE24 – reforms") == "TE24 – reforms"
+
+
+def test_link_only_items_are_marked():
+    html = (
+        "<html><body><main><h1>T</h1><p>" + "Real rule text here. " * 15 + "</p><ul>"
+        '<li><a href="/x">Read more about the waiting period (kela.fi)</a></li>'
+        '<li>You must register <a href="/r">here</a> before you apply for the benefit.</li>'
+        '</ul><p><a href="/y">Read more</a></p></main></body></html>'
+    )
+    _, body = ingest.html_to_text(html)
+    assert "- [link] Read more about the waiting period (kela.fi)" in body
+    assert "- You must register here before" in body
+    assert "[link] Read more" in body.splitlines()[-1]

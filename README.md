@@ -39,3 +39,11 @@ make ask Q="Can I work part-time while unemployed?"
 | `ANTHROPIC_API_KEY` | secret, only via env / `.env` | — |
 
 `make refresh` re-fetches all snapshots (explicit, overwrites).
+
+## Source tags
+
+`sources/tags.toml` holds our reviewed decisions about pages, separate from the fetched text:
+`status = "historical"` (+ `replaced_by`, `note`) for abolished rules, `audience = "employer"` for
+pages written for employers, and `weight` (0 excludes a page). Historical pages rank lower, always
+bring their replacement page along, and can't be cited alone. Sections that are mostly links
+(lines marked `[link]` at ingest) are excluded or down-weighted.

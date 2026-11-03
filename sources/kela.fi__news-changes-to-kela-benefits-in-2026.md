@@ -1,7 +1,7 @@
 ---
 url: https://www.kela.fi/news/changes-to-kela-benefits-in-2026
 title: Changes to Kela benefits in 2026
-fetched_at: 2026-11-03T19:28:39+00:00
+fetched_at: 2026-11-03T20:20:44+00:00
 ---
 # Changes to Kela benefits in 2026
 Changes introduced in 2026 will focus particularly on benefits for persons who are unemployed or receiving social assistance. The changes to social assistance will enter into force in February 2026. In May 2026, a new general social security benefit will replace the labour market subsidy and basic unemployment allowance paid by Kela.
@@ -10,7 +10,7 @@ The pensions, disability allowances, social assistance and conscript’s allowan
 ## Changes to social assistance: new requirements and stricter criteria as of February
 An amendment to the Act on Social Assistance will enter into force on 1 February 2026, imposing stricter requirements and criteria for receiving the benefit. The reform will require customers to apply for benefits that are primary in relation to social assistance and to look for full-time work. Customers who fail to comply risk having their basic amount reduced. In connection with the reform, the earned-income deduction (also known as the exempt amount) of EUR 150 will be abolished from social assistance. The change will also have an impact on other things, for example the way social assistance is paid toward rent.
 Social assistance will be raised by 0.5% in line with the National Pensions Index as of 1 January 2026. This means that the basic amount of social assistance for persons living alone will be increased by EUR 2.77 to EUR 596.32 per month. However, the basic amount for those aged 18 or over will be cut by 2–3% as a consequence of the legislative amendment that enters into force on 1 February 2026. For a person living alone, for instance, this means that the basic amount will be reduced by EUR 17.89 to EUR 578.43 per month. The cuts to the basic amount will be implemented from 1 March 2026 onward.
-Read more about the changes in social assistance.
+[link] Read more about the changes in social assistance.
 
 ## Stricter mandatory waiting periods as of 1 March 2026.
 After a new legislative amendment enters into force in March, employment services will start imposing a 7-day mandatory waiting period (karenssi) on unemployed persons for a first infraction such as not applying for work or not participating in employment services.
@@ -39,14 +39,14 @@ The Act on the General Social Security Benefit will enter into force on 1 May 20
 Child benefit will remain unchanged. The minimum amounts of the pregnancy, paternity and parental allowances and the special care allowance will be the same in 2026 as in 2023–2025: EUR 31.99 per day. The rates of the child care allowance will also remain the same on account of an indexation freeze.
 A change in the cost-of-living index will lead to a decrease of about 0.21% in the amounts of child maintenance allowance and child support. As of 1 January 2026, the full child maintenance allowance will be EUR 197.71 per month per child (previously EUR 198.13 per month).
 The income limits to qualify for an exemption on child support debt will be adjusted. Persons liable for maintenance of a child will then qualify for the exemption if their monthly income does not exceed EUR 1,336.00. The income limit goes up by EUR 334.01 per month for each additional child under the age of 18. Previously, the amounts were EUR 1,338.86 per month and EUR 334.72 per month, respectively.
-Find out more about the changes to child maintenance allowance and child support.
+[link] Find out more about the changes to child maintenance allowance and child support.
 If child maintenance allowance has been applied for or paid for a child on the grounds that the parent liable for maintenance has a reduced ability to provide it, Kela will be obliged to notify the wellbeing services county if the liable parent’s economic situation improves and there could be grounds for reassessing their ability to provide maintenance. The assessment of the economic situation is made on the basis of income and tax data.
 Kela’s obligation to notify the wellbeing services county also applies to situations where the liable parent’s economic situation has deteriorated and the parent has repeatedly been granted exemption from payment of child support debt.
-Read more about Kela’s obligation to report changes
+[link] Read more about Kela’s obligation to report changes
 The Government proposes to increase the maternity grant from the present EUR 170 to EUR 210. The increased maternity grant will be available to customers whose estimated due date or the date when their adopted child is placed in their care is 1 April 2026 or later.
-Read more about the changes to the maternity grant
+[link] Read more about the changes to the maternity grant
 The list of risk factors that are grounds for granting special pregnancy allowance will be supplemented. In addition, it becomes possible to grant partial special pregnancy allowance. The changes will enter into force on 1 January 2026.
-Read more about the changes to special pregnancy allowance.
+[link] Read more about the changes to special pregnancy allowance.
 
 ## Changes to benefits for students
 Study grants will not be index adjusted. This means that their rates will remain the same. There are also no changes planned in 2026 to the student housing supplement or the student loan.
@@ -80,25 +80,25 @@ Care allowance for pensioners
 The initial deductible and the maximum annual limit on out-of-pocket medicine costs will be increased by 0.5% in line with the National Pensions Index as of 1 January 2026. In 2026, the initial deductible on prescription medicines will be EUR 70.33, while the maximum annual limit on out-of-pocket medicine costs will be EUR 636.12.
 The maximum annual limit on out-of-pocket medicine costs is the annual upper limit for the medicine costs that customers pay themselves when buying reimbursable medicines. Once they reach this limit, they are entitled to additional reimbursement. After reaching the maximum limit, customers only pay a copayment of EUR 2.50 per purchase for each reimbursable product. The purpose of the additional reimbursement is to keep the medicine expenses reasonable.
 Low-income customers now have a new option: credit for medicine costs from Kela. This allows customers to pay the annual maximum limit on out-of-pocket medicine costs in instalments.
-Read more about credit for medicine costs.
+[link] Read more about credit for medicine costs.
 
 ## Lower reimbursements from Kela for private healthcare appointments
 As of 1 January 2026, Kela will pay a reimbursement of EUR 8 for an appointment with a doctor in the private sector instead of the present reimbursement of EUR 30. Reimbursement for remote appointments (by video, telephone or chat) will also be EUR 8.
 The reimbursements for appointments with gynaecologists and psychiatrists in the private sector will remain unchanged.
-Read more about the planned changes to Kela reimbursements.
+[link] Read more about the planned changes to Kela reimbursements.
 
 ## Higher prices for doctor’s appointments in the pilot study on freedom of choice in healthcare for people aged 65 or over
 Customers who are 65 or older can still see a private general practitioner at the price of the local user fee charged by public healthcare providers. However, the maximum amount of the client fee in public primary healthcare services will increase from EUR 28.20 to EUR 30.20 as of January 2026. The client fees are issued by Government Decree.
 Each customer is entitled to three appointments a year within the pilot study on freedom of choice in healthcare for persons aged 65 or over.
-Read more about the freedom of choice pilot.
+[link] Read more about the freedom of choice pilot.
 
 ## New rehabilitation services
 Customers can apply for rehabilitation for persons with coeliac disease from the beginning of 2026. This form of rehabilitation is for adults who have been diagnosed with coeliac disease (either gastrointestinal or dermatitis herpetiformis) and who are finding it difficult to maintain a gluten-free diet, manage symptoms, or integrate their diet with the treatment for some other medical condition.
-Read more about rehabilitation for persons with coeliac disease (in Finnish).
+[link] Read more about rehabilitation for persons with coeliac disease (in Finnish).
 In spring 2026, a rehabilitation course will begin for working-age people with dementia. This rehabilitation is for people under 68 years of age who have been diagnosed with a condition such as Alzheimer’s disease, Lewy body dementia or frontotemporal dementia.
-Read more about rehabilitation for people with dementia (in Finnish).
+[link] Read more about rehabilitation for people with dementia (in Finnish).
 During 2026, a new rehabilitation course will begin for children with rare diseases and their families.
-Read more about rehabilitation for children with rare diseases (in Finnish).
+[link] Read more about rehabilitation for children with rare diseases (in Finnish).
 
 ## Specifications made to the criteria for granting special care allowance
 As of 1 January 2026, the criteria for granting special care allowance will be specified so that, going forward, the most crucial criterion is the level of care instead of the place of care. Kela can pay special care allowance to parents who participate in specialist-level treatment or rehabilitation that is given to their child due to the child’s illness, medical condition or disability. Specialist-level treatment can also be provided outside hospitals or hospital outpatient clinics.
@@ -110,9 +110,9 @@ After legislative amendments enter into force, donor allowance will compensate t
 Workers arriving in Finland from another country may be eligible for social security benefits from Kela. They are eligible if they earn at least EUR 800.02 per month. This earnings threshold is unchanged from 2023–2025. The earnings threshold corresponds to the amount of the basic unemployment allowance per month. Benefits are available for months in which the threshold is exceeded.
 
 ## Additional information for customers
-- Changes to social security benefits in 2026
-- Benefit rates and income limits in 2026.
-- Rates of several Kela benefits will be frozen at their 2023 level for the next few years
+- [link] Changes to social security benefits in 2026
+- [link] Benefit rates and income limits in 2026.
+- [link] Rates of several Kela benefits will be frozen at their 2023 level for the next few years
 
 ## See also
 

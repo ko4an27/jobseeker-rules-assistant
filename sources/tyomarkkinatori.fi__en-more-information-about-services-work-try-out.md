@@ -1,7 +1,7 @@
 ---
 url: https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out
 title: Work try-out
-fetched_at: 2026-11-03T19:28:53+00:00
+fetched_at: 2026-11-03T20:20:56+00:00
 ---
 # Work try-out
 You can use a work try-out to find out about career choices and career options in practical tasks. You can also use it to support your return to work.
@@ -24,8 +24,8 @@ A work try-out may be organised by a company, entrepreneur, municipality, joint 
 ## Do the following
 Contact the employment authority in your area and ask if you can participate in a work try-out.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Employment services locally
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Work try-out⁠
+- [link] Work try-out⁠

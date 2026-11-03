@@ -1,17 +1,17 @@
 ---
 url: https://www.kela.fi/during-unemployment
 title: During unemployment
-fetched_at: 2026-11-03T19:28:35+00:00
+fetched_at: 2026-11-03T20:20:38+00:00
 ---
 # During unemployment
 
 ## On this page
-- Report your days of unemployment
-- Comply with the requirements of your employment plan
-- Employment promoting services
-- Falling ill while unemployed and looking for work
-- Short periods of study while receiving general social security benefit
-- Do you need help with multiple Kela benefits or services?
+- [link] Report your days of unemployment
+- [link] Comply with the requirements of your employment plan
+- [link] Employment promoting services
+- [link] Falling ill while unemployed and looking for work
+- [link] Short periods of study while receiving general social security benefit
+- [link] Do you need help with multiple Kela benefits or services?
 During unemployment, stay registered as a jobseeker, comply with the requirements of your employment plan and report your days of unemployment. Studies, work or illness during unemployment may affect your right to receive general social security benefit.
 
 ## Report your days of unemployment
@@ -25,7 +25,7 @@ Also complete an unemployment status report if
 You can get general social security benefit only for the days you have reported.
 Always complete the report for days in the past. You do not have to know about coming changes in your unemployment status beforehand. Visit OmaKela to see when you need to submit an unemployment status report.
 Kela gets information on your wages or salary from the national incomes register . We use the information we get when processing applications. We may ask you for more information if we need it.
-How long does it take for Kela to process the status report?
+[link] How long does it take for Kela to process the status report?
 
 ## Report your days of unemployment
 You can only receive general social security benefit for the days you have reported.
@@ -44,11 +44,11 @@ Kela may pay the general social security benefit earlier than usual due to Easte
 After you have registered as an unemployed jobseeker with the employment services of your municipality of residence (kotikunta), the employment services will make an employment plan with you.
 One of the requirements that employment services will set in your employment plan is the number of job applications you must submit in a month to keep your right to the general social security benefit. You will also agree on how you can improve your employment prospects in your employment plan.
 Report to the employment services every month on what you have done to make sure you comply with the requirements of your employment plan.
-Read more about the employment plan (tyomarkkinatori.fi).
+[link] Read more about the employment plan (tyomarkkinatori.fi).
 
 ## What is a mandatory waiting period?
 You may lose your right to the general social security benefit for a fixed period if you fail to look for work or complete other tasks agreed on with the employment services, or if you resign from your job without a valid reason. This fixed period without unemployment benefits is called a mandatory waiting period (karenssi). Employment services issues a statement to Kela on the mandatory waiting period and its length.
-Read more about the mandatory waiting period (tyomarkkinatori.fi) .
+[link] Read more about the mandatory waiting period (tyomarkkinatori.fi) .
 If you do not look for work or complete other tasks as agreed on with employment services, the KEHA centre will impose a 7-day mandatory waiting period on you the first time this happens. You will not get general social security benefit during this time.
 The second time it happens, the KEHA centre will impose an obligation to work on you. An obligation to work means that you will lose your general social security benefit for an unspecified period of time. You will get your right to general social security benefit back only after you have fulfilled the obligation to work.
 If you participate in employment-promoting services, Kela may pay you the benefit despite the mandatory waiting period.
@@ -68,7 +68,7 @@ If you lose your right to the general social security benefit for an unspecified
 
 ## Employment promoting services
 You can participate in employment-promotion services if you are unemployed. While you participate in employment-promoting services, you are paid the same unemployment benefits that you would have the right to while unemployed. In addition, you may get compensation for expenses.
-Learn more about the employment promoting services.
+[link] Learn more about the employment promoting services.
 
 ## Falling ill while unemployed and looking for work
 If you fall ill, apply for sick leave. You can lose your unemployment benefits for a specified or unspecified time if you are an unemployed jobseeker and you do not accept work that is offered to you.
@@ -92,7 +92,7 @@ If you participate in rehabilitation offered by Kela, you must also report this 
 
 ## Short periods of study while receiving general social security benefit
 If you are 25 or older, you can study for short periods without losing your general social security benefit. Short periods of study can last a maximum of 6 months. The studies must provide you with vocational skills or support self-employment. Employment services will check whether these conditions are met.
-Read more about short periods of study while receiving unemployment benefit (tyomarkkinatori.fi).
+[link] Read more about short periods of study while receiving unemployment benefit (tyomarkkinatori.fi).
 
 ## Do you need help with multiple Kela benefits or services?
 We recommend calling our customer service if you need help with other Kela benefits or services than just the general social security benefit. Our specialists can help you with all your questions in one call. For example, you can call us if, in addition to being unemployed,
@@ -127,9 +127,9 @@ If your sickness allowance has ended and you are waiting for a decision on rehab
 If you fall ill for more than 10 working days while you are unemployed, you can apply for sickness allowance instead of unemployment benefit. It is worth applying for sickness allowance because that way, you will not lose your unemployment benefit if you are offered work that you cannot accept while you are ill.
 
 ## On the Unemployment pages
-- If you become unemployed
-- If you are laid off temporarily
-- During unemployment
-- Did you find a job?
-- Unemployment benefits
-- Receiving unemployment benefits in Finland or abroad
+- [link] If you become unemployed
+- [link] If you are laid off temporarily
+- [link] During unemployment
+- [link] Did you find a job?
+- [link] Unemployment benefits
+- [link] Receiving unemployment benefits in Finland or abroad

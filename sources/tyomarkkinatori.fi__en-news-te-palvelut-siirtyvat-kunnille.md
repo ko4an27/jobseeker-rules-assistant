@@ -1,7 +1,7 @@
 ---
 url: https://tyomarkkinatori.fi/en/news/te-palvelut-siirtyvat-kunnille
 title: TE Services to be transferred to municipalities – what is the reform about?
-fetched_at: 2026-11-03T19:28:55+00:00
+fetched_at: 2026-11-03T20:20:58+00:00
 ---
 # TE Services to be transferred to municipalities – what is the reform about?
 - News
@@ -11,4 +11,4 @@ The reform aims to implement a service structure that will contribute to rapid e
 The TE Services will continue in their current manner until 31 December 2024. The change does not currently require any action from the clients of the TE Services. For more information, visit the South-Eastern Finland TE Office's website and social media channels with the tag @tepalvelutkas. Also follow the information channels of your municipality.
 
 ### More informarion
-TE Services to be transferred from the state to municipalities (te-palvelut.fi)
+[link] TE Services to be transferred from the state to municipalities (te-palvelut.fi)

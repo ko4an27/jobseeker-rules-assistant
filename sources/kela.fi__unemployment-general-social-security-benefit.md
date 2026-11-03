@@ -1,15 +1,15 @@
 ---
 url: https://www.kela.fi/unemployment-general-social-security-benefit
 title: General social security benefit during unemployment
-fetched_at: 2026-11-03T19:28:36+00:00
+fetched_at: 2026-11-03T20:20:40+00:00
 ---
 # General social security benefit during unemployment
 
 ## On this page
-- Can you get the general social security benefit?
-- How much can you get?
-- How to apply for the general social security benefit
-- Report changes
+- [link] Can you get the general social security benefit?
+- [link] How much can you get?
+- [link] How to apply for the general social security benefit
+- [link] Report changes
 The general social security benefit is an unemployment benefit paid by Kela. You can receive the general social security benefit if you are an unemployed jobseeker and are not entitled to earnings-related unemployment allowance, or if the maximum period of earnings-related allowance has ended. The amount of the general social security benefit may be affected, for example, by wage income and capital income.
 
 ## Basic facts about general social security benefit
@@ -51,7 +51,7 @@ The qualifying period (odotusaika) is 21 weeks, which is about 5 months. The qua
 - you have completed a mandatory waiting period (karenssi) during which you were not paid unemployment benefits
 - you have met the obligation to work (työssäolovelvoite).
 If you are under 25 and employment services have imposed an obligation to work (työssäolovelvoite) on you, the qualifying period (odotusaika) does not start until you have met the obligation.
-Read more about the obligation to work for persons under 25.
+[link] Read more about the obligation to work for persons under 25.
 Your qualifying period (odotusaika) will be reduced by any full calendar weeks during which you have
 - done paid work that counts towards the work requirement (työssäoloehto)
 - worked as a self-employed person with the work counting towards the work requirement for self-employed persons
@@ -211,7 +211,7 @@ Report the information to Kela in the OmaKela e-service (available in Finnish an
 Please also let us know if there are changes in your income that we need to take into account in the means test.
 If you tell Kela about changes in your circumstances, you will be paid the benefit at the correct rate and not lose out on any benefit due to you.
 If you do not report changes in your circumstances to Kela, we may pay you too much benefit and you may have to pay it back to Kela later on.
-Check how a change in your circumstances affects other benefits you get from Kela.
+[link] Check how a change in your circumstances affects other benefits you get from Kela.
 
 ## Do you still have questions?
 
@@ -224,6 +224,6 @@ Kela has introduced a new online application form that you can use to apply for 
 If Kela pays you more than one kind of benefit, the types of income you have and any changes in them can affect your benefits in different ways. Read on for more information about what types of income affect general social security benefit and general housing allowance and when you have to tell Kela about changes in your income.
 
 ## On the Unemployment pages
-- General social security benefit as from 1 May 2026
-- Basic unemployment allowance until 30 April 2026
-- Labour market subsidy until 30 April 2026
+- [link] General social security benefit as from 1 May 2026
+- [link] Basic unemployment allowance until 30 April 2026
+- [link] Labour market subsidy until 30 April 2026

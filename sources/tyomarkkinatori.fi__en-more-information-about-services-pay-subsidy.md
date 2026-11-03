@@ -1,7 +1,7 @@
 ---
 url: https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy
 title: Pay subsidy
-fetched_at: 2026-11-03T19:28:52+00:00
+fetched_at: 2026-11-03T20:20:55+00:00
 ---
 # Pay subsidy
 A pay subsidy is an economic benefit for employers to cover the pay of an unemployed jobseeker.
@@ -42,10 +42,10 @@ The mandate theme used for the subsidy is called Applying for pay subsidy.
 In addition to the mandate, organisations need a business ID to use the e-services.
 You can get advice on using the E-service and how to authorise from the Enterprise Finland Advisory Service.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Business E-services
-- Enterprise Finland Advisory Service and help with E-services
-- Employment services locally
+- [link] Business E-services
+- [link] Enterprise Finland Advisory Service and help with E-services
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Pay subsidy⁠
+- [link] Pay subsidy⁠

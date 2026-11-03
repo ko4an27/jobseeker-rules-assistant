@@ -1,7 +1,7 @@
 ---
 url: https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training
 title: Labour market training
-fetched_at: 2026-11-03T19:28:54+00:00
+fetched_at: 2026-11-03T20:20:57+00:00
 ---
 # Labour market training
 Labour market training helps you develop your professional skills and promote your employment.
@@ -29,11 +29,11 @@ If you are unable to apply online, you apply by filling in the form “Applicati
 Before submitting your application, carefully read the admission criteria of the training programme you are interested in.
 If you are an unemployed jobseeker, you can apply for reimbursement of travel and accommodation expenses from the employment authority when you travel for an admission event or aptitude test for labour market training, or visit the educational institution before starting labour market training if your disability or illness requires familiarisation with the accessibility and suitability of the educational institution.
 You can get support for using the E-service from the Job Market Finland's E-services advice.
-- E-services
-- Trainings and services
-- Job Market Finland's E-services advice
-- Application for labour market training form, in Finnish (suomi.fi)⁠
+- [link] E-services
+- [link] Trainings and services
+- [link] Job Market Finland's E-services advice
+- [link] Application for labour market training form, in Finnish (suomi.fi)⁠
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Labour market training⁠
+- [link] Labour market training⁠

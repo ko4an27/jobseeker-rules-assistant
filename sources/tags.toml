@@ -1,0 +1,23 @@
+# Editorial tags for source pages (see src/jobseeker_assistant/source_tags.py).
+# Pages not listed here are: status = "current", audience = "jobseeker", weight = 1.0.
+# Decisions agreed 2026-11-03:
+#  - historical pages stay, are marked, and rank below current pages; an answer that cites one
+#    must also cite the page that replaced it.
+#  - pages written for employers stay, are tagged, and are answered from the jobseeker's view.
+
+["https://www.kela.fi/labour-market-subsidy"]
+status = "historical"
+replaced_by = "https://www.kela.fi/unemployment-general-social-security-benefit"
+note = "Labour market subsidy was abolished and replaced by the general social security benefit on 1 May 2026."
+
+["https://www.kela.fi/basic-unemployment-allowance"]
+status = "historical"
+replaced_by = "https://www.kela.fi/unemployment-general-social-security-benefit"
+note = "Basic unemployment allowance was abolished and replaced by the general social security benefit on 1 May 2026."
+
+["https://tyomarkkinatori.fi/en/news/te-palvelut-siirtyvat-kunnille"]
+status = "historical"
+note = "2024 news item written before TE Services moved to municipal employment areas on 1 January 2025."
+
+["https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy"]
+audience = "employer"

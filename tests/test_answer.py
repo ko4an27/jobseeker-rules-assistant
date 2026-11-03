@@ -67,3 +67,57 @@ def test_build_user_prompt_numbers_sources(fixture_index):
     hits = fixture_index.search(Q, k=2)
     prompt = build_user_prompt(Q, hits)
     assert "[S1]" in prompt and "[S2]" in prompt and prompt.endswith(f"Question: {Q}")
+
+
+OLD_Q = "Can I get the old benefit?"
+
+
+def test_historical_hit_brings_in_its_replacement(tagged_index):
+    llm = FakeLLM("x [S1]")
+    answer_question(OLD_Q, tagged_index, llm)
+    _, user = llm.calls[0]
+    assert "example.test/old-benefit" in user and "example.test/new-benefit" in user
+    assert "[HISTORICAL: Old benefit was replaced by the new benefit on 1 May 2026.]" in user
+
+
+def _label_of(user: str, url: str) -> str:
+    return next(line for line in user.splitlines() if url in line).split("]")[0] + "]"
+
+
+def test_citing_historical_and_replacement_is_accepted(tagged_index):
+    def reply(system, user):
+        old = _label_of(user, "old-benefit")
+        new = _label_of(user, "new-benefit")
+        return f"The old benefit was replaced on 1 May 2026 {old}. The new benefit applies {new}."
+
+    ans = answer_question(OLD_Q, tagged_index, FakeLLM(reply))
+    assert not ans.refused
+    assert {c.historical for c in ans.citations} == {True, False}
+    assert "[historical]" in ans.render()
+
+
+def test_citing_only_historical_page_is_refused(tagged_index):
+    def reply(system, user):
+        return f"You can get the old benefit {_label_of(user, 'old-benefit')}."
+
+    assert answer_question(OLD_Q, tagged_index, FakeLLM(reply)).refused
+
+
+def test_system_prompt_explains_historical_and_employer_labels():
+    from jobseeker_assistant.answer import SYSTEM_PROMPT
+
+    assert "HISTORICAL" in SYSTEM_PROMPT and "cite both" in SYSTEM_PROMPT
+    assert "FOR EMPLOYERS" in SYSTEM_PROMPT and "jobseeker's point" in SYSTEM_PROMPT
+
+
+def test_employer_pages_are_labelled(tagged_index):
+    llm = FakeLLM("The employer applies before the job starts [S1].")
+    ans = answer_question("Who applies for the pay subsidy?", tagged_index, llm)
+    assert not ans.refused
+    assert "[FOR EMPLOYERS]" in llm.calls[0][1]
+
+
+def test_source_label_for_untagged_page(fixture_index):
+    from jobseeker_assistant.answer import source_label
+
+    assert source_label(fixture_index.search("work trial")[0]) == ""

@@ -21,7 +21,7 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 from . import snapshots
-from .snapshots import Snapshot
+from .snapshots import LINK_MARK, Snapshot
 
 DEFAULT_URL_LIST = snapshots.DEFAULT_SOURCES_DIR / "urls.txt"
 USER_AGENT = "jobseeker-rules-assistant/0.1 (snapshot of public pages for a research project)"
@@ -40,6 +40,13 @@ def read_url_list(path: Path) -> list[str]:
         if url:
             urls.append(url)
     return urls
+
+
+def is_link_only(el) -> bool:
+    """True if the element is essentially just a link, e.g. 'Read more (kela.fi)'."""
+    total = len(el.get_text("", strip=True))
+    linked = sum(len(a.get_text("", strip=True)) for a in el.find_all("a"))
+    return total > 0 and linked / total >= 0.8
 
 
 def _content_root(soup: BeautifulSoup):
@@ -90,10 +97,10 @@ def html_to_text(html: str) -> tuple[str, str]:
             continue
         if el.name in _HEADINGS:
             lines.append(f"\n{_HEADINGS[el.name]} {text}")
-        elif el.name == "li":
-            lines.append(f"- {text}")
-        else:
-            lines.append(text)
+            continue
+        if is_link_only(el):
+            text = f"{LINK_MARK} {text}"
+        lines.append(f"- {text}" if el.name == "li" else text)
     body = "\n".join(lines).strip()
     return title, body
 
