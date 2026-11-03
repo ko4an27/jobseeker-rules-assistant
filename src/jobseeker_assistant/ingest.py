@@ -42,15 +42,43 @@ def read_url_list(path: Path) -> list[str]:
     return urls
 
 
+def _content_root(soup: BeautifulSoup):
+    """Pick the element that holds the page's real content.
+
+    <main> if present. Otherwise the largest <article>, but only if it holds most of the
+    page's text: some sites use <article> for small promo cards, not the main content.
+    """
+    main = soup.find("main")
+    if main:
+        return main
+    body = soup.body or soup
+    articles = soup.find_all("article")
+    if articles:
+        biggest = max(articles, key=lambda a: len(a.get_text(strip=True)))
+        if len(biggest.get_text(strip=True)) >= 0.5 * len(body.get_text(strip=True)):
+            return biggest
+    return body
+
+
+def _clean_title(title: str) -> str:
+    """'Page - Section - Site name' -> 'Page'."""
+    for sep in (" | ", " - "):
+        title = title.split(sep, 1)[0]
+    return title.strip()
+
+
 def html_to_text(html: str) -> tuple[str, str]:
     """Extract (title, clean body) from HTML, keeping headings so sections stay citable."""
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(_DROP_TAGS):
         tag.decompose()
-    root = soup.find("main") or soup.find("article") or soup.body or soup
+    root = _content_root(soup)
 
     h1 = root.find("h1")
-    title = (h1 or soup.title or soup.new_string("")).get_text(" ", strip=True)
+    if h1:
+        title = h1.get_text(" ", strip=True)
+    else:
+        title = _clean_title(soup.title.get_text(" ", strip=True) if soup.title else "")
 
     lines: list[str] = []
     for el in root.find_all(_TEXT_TAGS):
