@@ -1,0 +1,105 @@
+# Held-out test set — NEVER used for tuning (cutoffs, glossary, chunking, top-k).
+# Written 2026-11-04, before the Day 3 changes, from snapshots fetched 2026-11-03.
+# Same format as golden.yaml. Report it separately; if a change is tuned to make one of
+# these pass, move that case to golden.yaml and write a new held-out case.
+
+- id: h-gssb-monthly
+  category: current
+  question: Roughly how much is the general social security benefit per month?
+  key_facts: ["800"]
+  expected_sources:
+    - https://www.kela.fi/news/changes-to-kela-benefits-in-2026
+    - https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+
+- id: h-status-report
+  category: current
+  question: When do I send my first unemployment status report to Kela?
+  key_facts: ["2 weeks"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+
+- id: h-under-25-study
+  category: current
+  question: I'm 22 and have no vocational qualification. Do I have to apply for studies to get the benefit?
+  key_facts: ["2 study programmes | two study places"]
+  expected_sources:
+    - https://www.kela.fi/if-you-become-unemployed
+    - https://tyomarkkinatori.fi/en/news/tyonhakijan-palveluprosessiin-ja-tyonvalityspalveluihin-tulee-muutoksia-vuodenvaihteessa
+
+- id: h-ps-reduced-ability
+  category: current
+  question: How much pay subsidy can an employer get for hiring me if I have reduced work ability?
+  key_facts: ["70%"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy
+
+- id: h-ps-over-60
+  category: current
+  question: I'm 61 and long-term unemployed. For how long can a pay subsidy be granted?
+  key_facts: ["24 months"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy
+
+- id: h-apply-for-jobs
+  category: current
+  question: How many jobs do I have to apply for each month as an unemployed jobseeker?
+  key_facts: ["four job opportunities"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/news/tyonhakijan-palveluprosessiin-ja-tyonvalityspalveluihin-tulee-muutoksia-vuodenvaihteessa
+
+- id: h-lmt-travel
+  category: current
+  question: Can I get my travel costs paid when I go to an aptitude test for labour market training?
+  key_facts: ["travel and accommodation"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training
+
+- id: h-partial-work-ability
+  category: current
+  question: Can I get a certificate that shows I have partial work ability?
+  key_facts: ["certificate"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/situations/i-need-help-to-support-my-ability-to-work
+    - https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/situations/my-unemployment-has-continued-for-a-long-time
+
+- id: h-means-test-check
+  category: abolished
+  question: Kela paid me labour market subsidy before May 2026. Will they check my income now?
+  key_facts: ["30 September 2026"]
+  expected_sources:
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+
+- id: h-yleistuki
+  category: tricky
+  question: what is yleistuki
+  key_facts: ["general social security benefit"]
+  expected_sources:
+    - https://www.kela.fi/if-you-become-unemployed
+    - https://www.kela.fi/news/debunking-myths-about-unemployment-benefits
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+
+- id: h-oos-driving-licence
+  category: out_of_scope
+  question: How do I get a Finnish driving licence?
+  must_refuse: true
+
+- id: h-oos-apartment
+  category: out_of_scope
+  question: Can you recommend a cheap apartment in Espoo?
+  must_refuse: true
+
+- id: h-oos-opening-hours
+  category: out_of_scope
+  question: What are the opening hours of IKEA in Vantaa?
+  must_refuse: true
+
+- id: h-oos-court-overtime
+  category: out_of_scope
+  question: Should I take my former employer to court over unpaid overtime?
+  must_refuse: true
+
+- id: h-oos-appeal-chances
+  category: out_of_scope
+  question: What are my chances if I appeal the employment office's decision about my benefit?
+  must_refuse: true

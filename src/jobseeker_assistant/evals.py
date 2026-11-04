@@ -1,7 +1,11 @@
-"""Run the golden set (evals/golden.yaml) and save a dated report in evals/reports/.
+"""Run the eval sets and save a dated report per set in evals/reports/.
 
-    python -m jobseeker_assistant.evals                 # run with LLM from env (make eval: fake)
-    python -m jobseeker_assistant.evals --sweep         # try retrieval cutoffs, print a table
+    python -m jobseeker_assistant.evals                 # golden + held-out, LLM from env
+    python -m jobseeker_assistant.evals --set heldout   # one set only
+    python -m jobseeker_assistant.evals --sweep         # cutoff table, golden set ONLY
+
+The golden set (evals/golden.yaml) may be used for tuning. The held-out set
+(evals/heldout.yaml) never is: it shows whether a change generalises.
 
 Exact checks per case:
 - refusal_ok        refused exactly when the case says must_refuse
@@ -34,6 +38,7 @@ from .source_tags import load_tags
 
 ROOT = Path(__file__).resolve().parents[2]
 GOLDEN = ROOT / "evals" / "golden.yaml"
+HELDOUT = ROOT / "evals" / "heldout.yaml"
 REPORTS = ROOT / "evals" / "reports"
 CATEGORIES = {"current", "abolished", "tricky", "out_of_scope"}
 
@@ -49,6 +54,7 @@ class Case:
 
 
 def load_golden(path: Path = GOLDEN) -> list[Case]:
+    """Load an eval set (golden or held-out; same format)."""
     raw = yaml.safe_load(path.read_text(encoding="utf-8"))
     cases, seen = [], set()
     for item in raw:
@@ -300,18 +306,23 @@ def sweep(
     return rows
 
 
+SETS = {"golden": GOLDEN, "heldout": HELDOUT}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--min-score", type=float, default=None)
     parser.add_argument("--min-coverage", type=float, default=None)
-    parser.add_argument("--sweep", action="store_true")
+    parser.add_argument("--sweep", action="store_true", help="tuning table (golden set only)")
+    parser.add_argument("--set", choices=[*SETS, "both"], default="both")
     parser.add_argument("--no-save", action="store_true")
     parser.add_argument("--label", default="", help="short tag added to the report file name")
     args = parser.parse_args(argv)
 
-    cases = load_golden()
     index = Index.from_snapshots(snapshots.load_all(), load_tags())
     if args.sweep:
+        # Tuning only ever looks at the golden set; the held-out set stays unseen.
+        cases = load_golden(GOLDEN)
         signals = case_signals(cases, index)
         grids = {"score": [x / 2 for x in range(0, 31)], "coverage": [x / 20 for x in range(21)]}
         for signal, grid in grids.items():
@@ -323,29 +334,38 @@ def main(argv: list[str] | None = None) -> int:
                 )
         return 0
 
-    llm = get_llm()
-    results = run(cases, index, llm, args.min_score, args.min_coverage)
     from .answer import DEFAULT_MIN_COVERAGE, DEFAULT_MIN_SCORE
 
+    llm = get_llm()
     provider = os.environ.get("LLM_PROVIDER", "anthropic")
-    meta = {
-        "run_at": datetime.now(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "llm_provider": provider,
-        "llm": provider if provider == "fake" else os.environ.get("LLM_MODEL", "default"),
-        "min_score": args.min_score if args.min_score is not None else DEFAULT_MIN_SCORE,
-        "min_coverage": (
-            args.min_coverage if args.min_coverage is not None else DEFAULT_MIN_COVERAGE
-        ),
-        "commit": _git_commit(),
-        "cases": len(cases),
-        "label": args.label,
-    }
-    summary = summarize(results)
-    for key, value in summary.items():
-        print(f"{key:22} {value}")
-    if not args.no_save:
-        json_path, md_path = save_report(results, meta)
-        print(f"report: {md_path.relative_to(ROOT)}")
+    run_at = datetime.now(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%S%z")
+    names = list(SETS) if args.set == "both" else [args.set]
+    summaries = {}
+    for name in names:
+        cases = load_golden(SETS[name])
+        results = run(cases, index, llm, args.min_score, args.min_coverage)
+        meta = {
+            "run_at": run_at,
+            "set": name,
+            "llm_provider": provider,
+            "llm": provider if provider == "fake" else os.environ.get("LLM_MODEL", "default"),
+            "min_score": args.min_score if args.min_score is not None else DEFAULT_MIN_SCORE,
+            "min_coverage": (
+                args.min_coverage if args.min_coverage is not None else DEFAULT_MIN_COVERAGE
+            ),
+            "commit": _git_commit(),
+            "cases": len(cases),
+            "label": "_".join(x for x in (name, args.label) if x),
+        }
+        summaries[name] = summarize(results)
+        if not args.no_save:
+            _, md_path = save_report(results, meta)
+            print(f"report: {md_path.relative_to(ROOT)}")
+    print(f"\n{'metric':22}" + "".join(f"{n:>12}" for n in names))
+    for key in summaries[names[0]]:
+        if key == "by_category":
+            continue
+        print(f"{key:22}" + "".join(f"{summaries[n][key]:>12}" for n in names))
     return 0
 
 
