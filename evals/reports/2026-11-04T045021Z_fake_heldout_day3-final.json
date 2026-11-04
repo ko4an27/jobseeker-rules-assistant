@@ -1,0 +1,367 @@
+{
+  "meta": {
+    "run_at": "2026-11-04T04:50:21+0000",
+    "set": "heldout",
+    "llm_provider": "fake",
+    "llm": "fake",
+    "min_score": 1.0,
+    "min_coverage": 0.5,
+    "commit": "f7761b7",
+    "glossary_terms": 21,
+    "cases": 15,
+    "label": "heldout_day3-final"
+  },
+  "summary": {
+    "passed": "6/15",
+    "by_category": {
+      "abolished": "0/1",
+      "current": "0/8",
+      "out_of_scope": "5/5",
+      "tricky": "1/1"
+    },
+    "out_of_scope_refused": "5/5",
+    "in_scope_answered": "9/10",
+    "source_cited": "5/10",
+    "source_retrieved": "10/10",
+    "facts_in_answer": "2/10",
+    "facts_in_sources": "10/10"
+  },
+  "results": [
+    {
+      "id": "h-gssb-monthly",
+      "category": "current",
+      "question": "Roughly how much is the general social security benefit per month?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": false,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "800"
+      ],
+      "top_score": 18.448,
+      "top_coverage": 0.682,
+      "cited_urls": [
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit"
+      ],
+      "answer": "The general social security benefit is a means-tested benefit. [S1]",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-status-report",
+      "category": "current",
+      "question": "When do I send my first unemployment status report to Kela?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "2 weeks"
+      ],
+      "top_score": 22.902,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "In your first application for general social security benefit, report the dates you have been unemployed starting from the first day of unemployment. [S1]",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-under-25-study",
+      "category": "current",
+      "question": "I'm 22 and have no vocational qualification. Do I have to apply for studies to get the benefit?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": false,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "2 study programmes | two study places"
+      ],
+      "top_score": 16.368,
+      "top_coverage": 0.501,
+      "cited_urls": [
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "If you have not completed a vocational qualification or a higher education degree, you must complete a qualifying period (odotusaika) before you can get the general social security benefit. [S1]",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-ps-reduced-ability",
+      "category": "current",
+      "question": "How much pay subsidy can an employer get for hiring me if I have reduced work ability?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "70%"
+      ],
+      "top_score": 15.327,
+      "top_coverage": 0.679,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy"
+      ],
+      "answer": "In most cases, the amount of the pay subsidy is 50% of the salary costs incurred by the person hired with the subsidy. [S1]",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-ps-over-60",
+      "category": "current",
+      "question": "I'm 61 and long-term unemployed. For how long can a pay subsidy be granted?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "24 months"
+      ],
+      "top_score": 16.351,
+      "top_coverage": 0.515,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy"
+      ],
+      "answer": "The employment authority assesses whether the subsidy is the most appropriate means of promoting the employment of the unemployed jobseeker and decides separately the duration and amount of each support period. [S1]",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-apply-for-jobs",
+      "category": "current",
+      "question": "How many jobs do I have to apply for each month as an unemployed jobseeker?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": false,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "four job opportunities"
+      ],
+      "top_score": 10.782,
+      "top_coverage": 0.511,
+      "cited_urls": [
+        "https://www.kela.fi/unemployment-benefits"
+      ],
+      "answer": "You worked full time from 1 October 2024 to 30 September 2025. [S1]",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-lmt-travel",
+      "category": "current",
+      "question": "Can I get my travel costs paid when I go to an aptitude test for labour market training?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": false,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 17.574,
+      "top_coverage": 0.713,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/search-for-work/services-to-support-job-seeking"
+      ],
+      "answer": "Personal customers\nYou can apply for compensation for travel and accommodation costs if you are an unemployed jobseeker and\n- you applying for a job\n- you apply for labour market training, coaching or trial\n- you participate in an expert evaluation organised by the employment authority. [S1]",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-partial-work-ability",
+      "category": "current",
+      "question": "Can I get a certificate that shows I have partial work ability?",
+      "must_refuse": false,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": false,
+      "source_cited": false,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "certificate"
+      ],
+      "top_score": 11.259,
+      "top_coverage": 0.495,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-means-test-check",
+      "category": "abolished",
+      "question": "Kela paid me labour market subsidy before May 2026. Will they check my income now?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "30 September 2026"
+      ],
+      "top_score": 19.46,
+      "top_coverage": 0.724,
+      "cited_urls": [
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit"
+      ],
+      "answer": "If Kela pays you labour market subsidy before 1 May 2026, you do not have to complete a new qualifying period (odotusaika) to get general social security benefit as long as you stay registered as an active jobseeker with the employment services. [S1]",
+      "glossary_used": [],
+      "passed": false
+    },
+    {
+      "id": "h-yleistuki",
+      "category": "tricky",
+      "question": "what is yleistuki",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 13.843,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "The general social security benefit (yleistuki) is reduced by\n- your earned income (wages and salary)\n- your parents’ income if you live with them\n- other income that is not wages or salary, such as certain benefits and capital income. [S1]",
+      "glossary_used": [
+        "yleistuki"
+      ],
+      "passed": true
+    },
+    {
+      "id": "h-oos-driving-licence",
+      "category": "out_of_scope",
+      "question": "How do I get a Finnish driving licence?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 4.509,
+      "top_coverage": 0.41,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "passed": true
+    },
+    {
+      "id": "h-oos-apartment",
+      "category": "out_of_scope",
+      "question": "Can you recommend a cheap apartment in Espoo?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 9.036,
+      "top_coverage": 0.243,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "passed": true
+    },
+    {
+      "id": "h-oos-opening-hours",
+      "category": "out_of_scope",
+      "question": "What are the opening hours of IKEA in Vantaa?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 5.826,
+      "top_coverage": 0.423,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "passed": true
+    },
+    {
+      "id": "h-oos-court-overtime",
+      "category": "out_of_scope",
+      "question": "Should I take my former employer to court over unpaid overtime?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "legal_advice:should_i_take_legal_action",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 11.393,
+      "top_coverage": 0.309,
+      "cited_urls": [],
+      "answer": "I can't give personal legal advice or judge how your case will turn out. For your own situation, ask Kela or your employment services, or get advice from a lawyer or a public legal aid office.",
+      "glossary_used": [],
+      "passed": true
+    },
+    {
+      "id": "h-oos-appeal-chances",
+      "category": "out_of_scope",
+      "question": "What are my chances if I appeal the employment office's decision about my benefit?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "legal_advice:predict_outcome",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 8.38,
+      "top_coverage": 0.242,
+      "cited_urls": [],
+      "answer": "I can't give personal legal advice or judge how your case will turn out. For your own situation, ask Kela or your employment services, or get advice from a lawyer or a public legal aid office.",
+      "glossary_used": [],
+      "passed": true
+    }
+  ]
+}
