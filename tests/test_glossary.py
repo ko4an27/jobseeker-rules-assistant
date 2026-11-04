@@ -77,3 +77,22 @@ def test_answer_uses_glossary_and_reports_it(fixture_index):
     ans = answer_question(q, fixture_index, FakeLLM(), glossary=[trial])
     assert not ans.refused and ans.glossary_used == ["työkokeilu"]
     assert "example.test/work-trial" in ans.citations[0].url
+
+
+def test_glossary_never_rewrites_terms_the_pages_already_use():
+    """Replacing page wording with other words can only lower coverage (it happened once:
+    'TE office' -> 'TE Services'). Reviewed match phrases must not be page wording,
+    except these, each checked by hand:"""
+    from jobseeker_assistant.glossary import _pattern
+
+    known = {
+        "moved": "appears once; the pages say 'transferred' for the 2025 reform",
+        "te-palvelut": "appears only inside the link 'te-palvelut.fi'",
+    }
+    text = " ".join(s.body for s in snapshots.load_all())
+    for t in load_glossary():
+        if t.origin != "reviewed":
+            continue
+        for m in t.match:
+            if _pattern(m).search(text):
+                assert m in known, f"'{m}' already appears on the pages; don't rewrite it"

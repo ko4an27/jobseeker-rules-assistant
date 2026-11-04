@@ -105,7 +105,9 @@ def _split_long(text: str, limit: int = MAX_PASSAGE_CHARS) -> list[str]:
     return parts
 
 
-def chunk_snapshot(snap: Snapshot, tags: SourceTags = DEFAULT_TAGS) -> list[Passage]:
+def chunk_snapshot(
+    snap: Snapshot, tags: SourceTags = DEFAULT_TAGS, max_chars: int = MAX_PASSAGE_CHARS
+) -> list[Passage]:
     """Split a snapshot into passages, one per section (long sections split further)."""
     sections: list[tuple[str, list[str]]] = [(snap.title or "Introduction", [])]
     for line in snap.body.splitlines():
@@ -119,7 +121,7 @@ def chunk_snapshot(snap: Snapshot, tags: SourceTags = DEFAULT_TAGS) -> list[Pass
     for section, lines in sections:
         if not lines:
             continue
-        for part in _split_long("\n".join(lines)):
+        for part in _split_long("\n".join(lines), max_chars):
             pid = f"{snap.url}#{len(passages)}"
             passages.append(
                 Passage(pid, snap.url, snap.title, section, part, snap.fetched_at, tags)
@@ -152,10 +154,15 @@ class Index:
 
     @classmethod
     def from_snapshots(
-        cls, snaps: list[Snapshot], tags: dict[str, SourceTags] | None = None
+        cls,
+        snaps: list[Snapshot],
+        tags: dict[str, SourceTags] | None = None,
+        max_chars: int = MAX_PASSAGE_CHARS,
     ) -> Index:
         tags = tags or {}
-        return cls([p for s in snaps for p in chunk_snapshot(s, tags.get(s.url, DEFAULT_TAGS))])
+        return cls(
+            [p for s in snaps for p in chunk_snapshot(s, tags.get(s.url, DEFAULT_TAGS), max_chars)]
+        )
 
     def best_from_url(self, url: str, query: str) -> Hit | None:
         """Best passage from one page, e.g. to bring in the page that replaced a historical one."""

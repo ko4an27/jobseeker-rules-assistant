@@ -39,6 +39,10 @@ DEFAULT_MIN_SCORE = 1.0  # passages below this BM25 score are dropped
 # Refuse without calling the LLM unless some retrieved passage covers at least this share of
 # the question (Index.coverage). Tuned on the golden set 2026-11-04: see PROGRESS.md.
 DEFAULT_MIN_COVERAGE = 0.5
+GATE_K = 4  # the coverage gate looks at the top 4 passages (what it was tuned on)
+# Passages given to the model. Raised from 4 to 8 on 2026-11-04: in every recall miss the key
+# fact was on the right page but ranked 5th-9th (see PROGRESS.md).
+DEFAULT_K = 8
 
 SYSTEM_PROMPT = f"""You answer jobseekers' questions about Finnish unemployment rules and \
 employment services.
@@ -165,10 +169,11 @@ def answer_question(
     question: str,
     index: Index,
     llm: LLM,
-    k: int = 4,
+    k: int = DEFAULT_K,
     min_score: float = DEFAULT_MIN_SCORE,
     min_coverage: float = DEFAULT_MIN_COVERAGE,
     glossary: list[Term] | None = None,
+    gate_k: int = GATE_K,
 ) -> Answer:
     rule = legal_advice.detect(question)
     if rule:
@@ -179,7 +184,8 @@ def answer_question(
     hits = [h for h in index.search(exp.retrieval_query, k=k) if h.score >= min_score]
     if not hits:
         return _refuse(hits, "no_passages", used)
-    if max(index.coverage(exp.coverage_query, h.passage) for h in hits) < min_coverage:
+    gate_hits = hits[:gate_k]
+    if max(index.coverage(exp.coverage_query, h.passage) for h in gate_hits) < min_coverage:
         return _refuse(hits, "low_coverage", used)
     hits = add_replacements(exp.retrieval_query, hits, index)
 

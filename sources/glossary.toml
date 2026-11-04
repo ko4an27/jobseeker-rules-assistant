@@ -106,10 +106,10 @@ origin = "reviewed"
 why = "Finnish for an adjusted benefit (soviteltu yleistuki = adjusted general social security benefit)."
 
 [[term]]
-match = ["te-toimisto", "te office", "te-palvelut"]
-means = ["TE Services", "employment services"]
+match = ["te-toimisto", "te-palvelut"]
+means = ["TE Office", "TE Services"]
 origin = "reviewed"
-why = "Old name of the employment office; replaced by municipal employment areas on 1 January 2025."
+why = "Finnish names of the old employment office (the English pages say 'TE Office'). English 'TE office' is not listed: it is already the page wording."
 
 # --- Reviewed: everyday words and spellings -> page wording ---
 [[term]]
