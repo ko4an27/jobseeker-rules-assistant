@@ -114,6 +114,8 @@ class CaseResult:
     cited_urls: list[str] = field(default_factory=list)
     answer: str = ""
     glossary_used: list[str] = field(default_factory=list)
+    attempts: int = 0  # LLM calls; 2 means the grounding check sent it back once
+    path: list[str] = field(default_factory=list)
 
     @property
     def passed(self) -> bool:
@@ -181,6 +183,8 @@ def run(
         ans = answer_question(case.question, index, llm, **kwargs)
         result = grade(case, ans, score, cov)
         result.glossary_used = ans.glossary_used
+        result.attempts = ans.attempts
+        result.path = ans.path
         results.append(result)
     return results
 
@@ -206,6 +210,9 @@ def summarize(results: list[CaseResult]) -> dict:
         "source_retrieved": _rate([r.source_retrieved for r in in_scope]),
         "facts_in_answer": _rate([r.facts_in_answer for r in in_scope]),
         "facts_in_sources": _rate([r.facts_in_sources for r in in_scope]),
+        "retried": f"{sum(r.attempts > 1 for r in results)}/{len(results)}",
+        "refused_not_grounded": f"{sum(r.refusal_reason == 'not_grounded' for r in results)}"
+        f"/{len(results)}",
     }
 
 

@@ -3,3 +3,4 @@ requests>=2.32,<3
 beautifulsoup4>=4.12,<5
 anthropic>=0.40   # only imported when LLM_PROVIDER=anthropic
 pyyaml>=6,<7         # golden set (evals/golden.yaml)
+langgraph>=1.0,<2   # the answer flow (graph.py)

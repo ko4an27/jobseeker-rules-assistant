@@ -55,4 +55,4 @@ def test_refusal_reasons_are_recorded(fixture_index):
     ans = answer_question("benefit pizza helsinki", fixture_index, FakeLLM())
     assert ans.refusal_reason == "low_coverage"
     ans = answer_question("What is the duration of a work trial?", fixture_index, FakeLLM("x"))
-    assert ans.refusal_reason == "no_or_invented_citation"
+    assert ans.refusal_reason == "not_grounded"  # no citation, retried once, still none

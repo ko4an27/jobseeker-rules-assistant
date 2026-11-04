@@ -1,13 +1,14 @@
-"""Simple RAG: question -> top passages -> LLM answer with citations -> safety checks.
+"""Answer building blocks: prompts, the Answer type, historical-page handling.
 
-Safety rules applied in code, not only in the prompt:
+The flow itself (which step runs when) is the LangGraph graph in graph.py;
+`answer_question` below runs it. Safety rules applied in code, not only in the prompt:
 - Personal legal advice ("will I win my appeal?", "should I sue?") -> refusal before
   retrieval, whatever the sources say (legal_advice.py).
 - No relevant passages            -> refusal, the LLM is not even called.
 - Passages match too little of the question (coverage) -> refusal, LLM not called.
 - Model says NOT_COVERED          -> refusal.
-- Answer has no [S#] citation     -> refusal (an uncited claim can't be checked).
-- Answer cites a source we did not give it -> refusal (invented citation).
+- Grounding self-check (grounding.py): every claim must cite a source it was given and be
+  supported by it. If not -> one retry with stricter instructions -> then refusal.
 - Every answer ends with the "rules change, check with Kela" note.
 
 Historical pages: a retrieved historical page always brings its replacement page into the
@@ -21,8 +22,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-from . import legal_advice
-from .glossary import Term, expand
+from .glossary import Term
 from .llm import LLM
 from .retrieve import Hit, Index
 
@@ -82,6 +82,8 @@ class Answer:
     added_notes: list[str] = field(default_factory=list)
     glossary_used: list[str] = field(default_factory=list)  # glossary terms that fired
     refusal_reason: str = ""  # why it refused, e.g. "legal_advice", "low_coverage"
+    attempts: int = 0  # LLM calls: 0 (refused before the LLM), 1, or 2 (strict retry)
+    path: list[str] = field(default_factory=list)  # graph nodes visited
 
     def render(self) -> str:
         out = [self.text]
@@ -153,18 +155,6 @@ def historical_notes(cited: list[int], hits: list[Hit]) -> tuple[list[str], list
     return notes, extra
 
 
-def _refuse(
-    hits: list[Hit], reason: str, glossary_used: list[str] | None = None, text: str = REFUSAL
-) -> Answer:
-    return Answer(
-        text=text,
-        refused=True,
-        hits=hits,
-        glossary_used=glossary_used or [],
-        refusal_reason=reason,
-    )
-
-
 def answer_question(
     question: str,
     index: Index,
@@ -175,42 +165,9 @@ def answer_question(
     glossary: list[Term] | None = None,
     gate_k: int = GATE_K,
 ) -> Answer:
-    rule = legal_advice.detect(question)
-    if rule:
-        return _refuse([], f"legal_advice:{rule}", text=legal_advice.LEGAL_ADVICE_REFUSAL)
+    """Answer one question. Runs the LangGraph flow in graph.py."""
+    from .graph import Settings, run_graph  # graph.py imports this module
 
-    exp = expand(question, glossary or [])
-    used = [t.match[0] for t in exp.used]
-    hits = [h for h in index.search(exp.retrieval_query, k=k) if h.score >= min_score]
-    if not hits:
-        return _refuse(hits, "no_passages", used)
-    gate_hits = hits[:gate_k]
-    if max(index.coverage(exp.coverage_query, h.passage) for h in gate_hits) < min_coverage:
-        return _refuse(hits, "low_coverage", used)
-    hits = add_replacements(exp.retrieval_query, hits, index)
-
-    raw = llm.complete(SYSTEM_PROMPT, build_user_prompt(question, hits)).strip()
-    if not raw or NOT_COVERED in raw:
-        return _refuse(hits, "not_covered", used)
-
-    cited = sorted({int(n) for n in _CITATION.findall(raw)})
-    if not cited or any(n < 1 or n > len(hits) for n in cited):
-        return _refuse(hits, "no_or_invented_citation", used)
-
-    result = historical_notes(cited, hits)
-    if result is None:
-        return _refuse(hits, "replacement_unavailable", used)
-    notes, extra = result
-    if notes:
-        raw = raw + "\n\n" + "\n".join(notes)
-        cited = sorted(set(cited) | set(extra))
-
-    citations = []
-    for n in cited:
-        p = hits[n - 1].passage
-        citations.append(
-            Citation(
-                f"S{n}", p.url, p.section, p.fetched_at, p.tags.historical, hits[n - 1].also_on
-            )
-        )
-    return Answer(text=raw, citations=citations, hits=hits, added_notes=notes, glossary_used=used)
+    settings = Settings(k=k, min_score=min_score, min_coverage=min_coverage, gate_k=gate_k)
+    answer, _ = run_graph(question, index, llm, glossary, settings)
+    return answer
