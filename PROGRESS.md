@@ -5,7 +5,7 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
 ## Plan
 - [x] Day 1 — setup (Python, pytest, CI), source snapshots of ~20 official pages, first RAG answer with citations
 - [x] Day 2 — golden test set (30–40 questions incl. out-of-scope), simple exact-check evals
-- [ ] Day 3 — LangGraph flow: retrieve → answer → self-check grounding → refuse if not covered
+- [x] Day 3 — LangGraph flow: retrieve → answer → self-check grounding → refuse if not covered
 - [ ] Day 4 — LLM-as-judge with a rubric, regression report between runs
 - [ ] Day 5 — Langfuse tracing, FastAPI endpoint, Docker
 - [ ] Day 6 — README ("How we know it's correct"), demo transcript, polish
@@ -94,13 +94,31 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
 
   - 128 tests pass.
 
+- 2026-11-04 (LangGraph flow):
+  - `graph.py`: legal_check → retrieve → coverage_gate → generate → check_grounding →
+    (finalize | generate_strict → check_grounding | refuse). `answer_question` runs the graph,
+    so the CLI and evals use it unchanged. Every answer records the nodes it went through.
+  - `grounding.py`: self-check in code (no extra LLM call). Each sentence that states a fact must
+    cite a source it was given; its numbers must be in that source; ≥ 60% of its key words too
+    (light stemming). The answer must contain at least one cited claim.
+  - One failure → one strict retry (stricter system prompt + the failing sentences and why);
+    second failure → refuse ("not_grounded"). NOT_COVERED refuses at once, no retry.
+    Missing/invented citations now get the retry too instead of an instant refusal.
+  - The check caught a test of mine: a canned answer claimed "replaced on 1 May 2026" citing a
+    page that never says so. Fixed the test, not the checker. It also showed a hole: an answer
+    of just "x" (no claim, no citation) passed; now an answer needs ≥ 1 cited claim.
+  - Graph tests for every path (answer, retry→answer, retry→refuse, legal, nothing found,
+    low coverage, NOT_COVERED, replacement unavailable). README has a Mermaid diagram.
+  - Eval (fake LLM) unchanged from Day 3: golden 11/35, held-out 6/15; retried 0, because the fake
+    quotes its source verbatim. New report lines: `retried`, `refused_not_grounded`.
+  - 146 tests pass.
+
 ## Next
-- Day 3: LangGraph flow (retrieve → answer → self-check grounding → refuse if not covered).
-- First eval run with a real model, so "cited" and "facts in answer" mean something: the fake LLM
-  only cites [S1], which is why held-out "cited" stays at 5/10 although every fact is retrieved.
-- Remaining golden misses: `lmt-apply` and `abolished-te-office` (fact ranked below 8);
-  `abolished-peruspaivaraha` and `tricky-side-gig` still refused by the coverage gate.
-  Held-out: `h-partial-work-ability` refused (coverage 0.495, just under 0.50).
+- Day 4 (plan): LLM-as-judge with a written rubric, regression report between runs.
+- First run with a real model: watch `retried` and `refused_not_grounded`. If the 60% key-word
+  threshold rejects good paraphrases, calibrate it on the golden set (never on held-out).
+- Remaining retrieval misses from Day 3 (see report): `lmt-apply`, `abolished-te-office`,
+  `abolished-peruspaivaraha`, `tricky-side-gig`; held-out `h-partial-work-ability`.
 
 ## Open questions
 - **Held-out is no longer fully blind:** I wrote the held-out questions and then the glossary and
@@ -108,6 +126,9 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
   written by someone else (e.g. 10 real jobseeker questions you collect).
 - 8 passages instead of 4 means more text the model could misuse. Watch groundedness in the Day 4
   judge; drop back to 6 if it suffers (6 gave 23/27 facts on golden).
-- **Added notes and groundedness:** notes come from `tags.toml`, not from page text. The Day 4 judge
-  should check them like any other claim.
+- **Added notes and groundedness:** the historical "replaced by" notes are added after the
+  self-check and come from `tags.toml`, not page text. The judge should check them too.
+- **The self-check is lexical:** it catches invented numbers, citations and topics, but not a
+  sentence that reuses the source's words to say something different (e.g. a dropped "not").
+  That is the judge's job; until then a real-model answer is only as safe as this check.
 - Snapshots should probably store a "valid from" / page-updated date too, not just fetch date.

@@ -10,17 +10,35 @@ If the sources don't cover a question, it says so and points to Kela or the empl
 The point of the project is the **evaluation**: showing the answers are correct, grounded in
 the sources and safe. See `CLAUDE.md` for the rules and `PROGRESS.md` for status.
 
-## How it works (today)
+## How it works
 
-```
-sources/urls.txt ──make ingest──▶ sources/*.md   (clean text + URL + fetch date)
-                                        │
-question ──▶ BM25 search ──▶ top passages ──▶ LLM (sources only) ──▶ safety checks ──▶ answer + citations
+Source pages are saved once (`make ingest`) as clean text with URL and fetch date. Every
+question then runs through a LangGraph flow (`src/jobseeker_assistant/graph.py`):
+
+```mermaid
+flowchart TD
+    Q([question]) --> L{legal_check<br/>personal legal advice?}
+    L -- yes --> R([refuse])
+    L -- no --> S[retrieve<br/>glossary + BM25, top 8]
+    S -- nothing found --> R
+    S --> C{coverage_gate<br/>passages match the question?}
+    C -- no --> R
+    C -- yes --> G[generate<br/>LLM, sources only]
+    G -- NOT_COVERED --> R
+    G --> V{check_grounding<br/>every claim cited and supported?}
+    V -- "no, 1st time" --> GS[generate_strict<br/>retry with stricter rules]
+    GS --> V
+    V -- "no, after retry" --> R
+    V -- yes --> F[finalize<br/>citations + historical notes]
+    F --> A([answer + sources + disclaimer])
 ```
 
-Safety checks in code: no relevant passage, or the passages match too little of the question
-(coverage < 0.5) → refuse without calling the LLM; the model says
-`NOT_COVERED`, gives no citation, or cites a source it wasn't given → refuse.
+- **No LLM call before the gates:** legal advice, nothing found and low coverage are refused first.
+- **Grounding self-check** (`grounding.py`, in code): every sentence that states a fact must
+  cite a source it was given; every number in it must appear in that source; most of its key
+  words must too. One failure → one retry with stricter instructions and the failing
+  sentences; a second failure → refuse.
+- **Every refusal** says where to ask instead (Kela, employment services), and records why.
 
 ## Quick start
 

@@ -88,7 +88,10 @@ def test_citing_historical_and_replacement_is_accepted(tagged_index):
     def reply(system, user):
         old = _label_of(user, "old-benefit")
         new = _label_of(user, "new-benefit")
-        return f"The old benefit was replaced on 1 May 2026 {old}. The new benefit applies {new}."
+        return (
+            f"You can get the old benefit if you are an unemployed jobseeker {old}. "
+            f"The new benefit is paid to unemployed jobseekers {new}."
+        )
 
     ans = answer_question(OLD_Q, tagged_index, FakeLLM(reply))
     assert not ans.refused
