@@ -1,0 +1,137 @@
+# Glossary for query expansion: words people use -> the English terms on the official pages.
+# Reviewed 2026-11-04. Used only to find passages; the answer still uses only page text.
+#
+#   match  = words/phrases in the question (lower case, whole words)
+#   means  = English terms used on the pages, added to the search query
+#   origin = "source"   -> the page itself pairs the terms, e.g. "general social security
+#                          benefit (yleistuki)"; `source` names that page (checked by a test)
+#            "reviewed" -> our own mapping, not stated on the English pages; `why` explains it
+
+# --- From the source pages: Kela writes "English term (Finnish term)" ---
+[[term]]
+match = ["yleistuki"]
+means = ["general social security benefit"]
+origin = "source"
+source = "https://www.kela.fi/if-you-become-unemployed"
+
+[[term]]
+match = ["työmarkkinatuki", "tyomarkkinatuki"]
+means = ["labour market subsidy"]
+origin = "source"
+source = "https://www.kela.fi/labour-market-subsidy"
+
+[[term]]
+match = ["peruspäiväraha", "peruspaivaraha"]
+means = ["basic unemployment allowance"]
+origin = "source"
+source = "https://www.kela.fi/basic-unemployment-allowance"
+
+[[term]]
+match = ["ansiopäiväraha", "ansiosidonnainen"]
+means = ["earnings-related unemployment allowance"]
+origin = "source"
+source = "https://www.kela.fi/if-you-become-unemployed"
+
+[[term]]
+match = ["omavastuuaika"]
+means = ["waiting period"]
+origin = "source"
+source = "https://www.kela.fi/during-unemployment"
+
+[[term]]
+match = ["odotusaika"]
+means = ["qualifying period"]
+origin = "source"
+source = "https://www.kela.fi/if-you-become-unemployed"
+
+[[term]]
+match = ["työssäoloehto"]
+means = ["work requirement"]
+origin = "source"
+source = "https://www.kela.fi/if-you-become-unemployed"
+
+[[term]]
+match = ["työssäolovelvoite"]
+means = ["obligation to work"]
+origin = "source"
+source = "https://www.kela.fi/if-you-become-unemployed"
+
+[[term]]
+match = ["työttömyysajan ilmoitus"]
+means = ["unemployment status report"]
+origin = "source"
+source = "https://www.kela.fi/unemployment-general-social-security-benefit"
+
+[[term]]
+match = ["työttömyyskassa", "kassa"]
+means = ["unemployment fund"]
+origin = "source"
+source = "https://www.kela.fi/if-you-become-unemployed"
+
+[[term]]
+match = ["työvoimapoliittinen lausunto"]
+means = ["labour policy statement"]
+origin = "source"
+source = "https://www.kela.fi/unemployment-general-social-security-benefit"
+
+[[term]]
+match = ["toimeentulotuki"]
+means = ["social assistance"]
+origin = "source"
+source = "https://www.kela.fi/if-you-become-unemployed"
+
+# --- Reviewed: official Finnish service names not used on the English pages ---
+[[term]]
+match = ["palkkatuki"]
+means = ["pay subsidy"]
+origin = "reviewed"
+why = "Official Finnish name of the pay subsidy (Työmarkkinatori's Finnish service page)."
+
+[[term]]
+match = ["työkokeilu", "tyokokeilu"]
+means = ["work try-out"]
+origin = "reviewed"
+why = "Official Finnish name of the work try-out."
+
+[[term]]
+match = ["työvoimakoulutus"]
+means = ["labour market training"]
+origin = "reviewed"
+why = "Official Finnish name of labour market training."
+
+[[term]]
+match = ["soviteltu", "sovittelu"]
+means = ["adjusted"]
+origin = "reviewed"
+why = "Finnish for an adjusted benefit (soviteltu yleistuki = adjusted general social security benefit)."
+
+[[term]]
+match = ["te-toimisto", "te-palvelut"]
+means = ["TE Office", "TE Services"]
+origin = "reviewed"
+why = "Finnish names of the old employment office (the English pages say 'TE Office'). English 'TE office' is not listed: it is already the page wording."
+
+# --- Reviewed: everyday words and spellings -> page wording ---
+[[term]]
+match = ["side gig", "side job", "gig", "odd job", "odd jobs", "extra work"]
+means = ["part-time work", "earned income", "wages"]
+origin = "reviewed"
+why = "Everyday words for working a little while unemployed; Kela calls this part-time work."
+
+[[term]]
+match = ["tryout", "try out", "work trial", "trial job"]
+means = ["work try-out"]
+origin = "reviewed"
+why = "Common spellings and names for the work try-out."
+
+[[term]]
+match = ["dole", "kela money", "unemployment money"]
+means = ["unemployment benefit", "general social security benefit"]
+origin = "reviewed"
+why = "Everyday words for the unemployment benefit Kela pays."
+
+[[term]]
+match = ["move", "moved"]
+means = ["transferred"]
+origin = "reviewed"
+why = "Pages say services were 'transferred' to municipalities."

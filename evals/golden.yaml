@@ -265,13 +265,16 @@
   category: out_of_scope
   question: My employer fired me without a reason. Should I sue them?
   must_refuse: true
+  refusal_reason: legal_advice
 
 - id: oos-eviction
   category: out_of_scope
   question: Is my landlord's eviction notice legal?
   must_refuse: true
+  refusal_reason: legal_advice
 
 - id: oos-appeal-my-case
   category: out_of_scope
   question: Kela rejected my application. Will I win if I appeal?
   must_refuse: true
+  refusal_reason: legal_advice

@@ -65,24 +65,49 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
     cited 18/27. Key facts in retrieved text 16/27, in answer 2/27 (the fake repeats one sentence).
   - 89 tests pass.
 
+- 2026-11-04 (Day 3 prep — held-out set, glossary, legal rule, recall):
+  - Held-out set `evals/heldout.yaml`: 15 new cases (10 in scope, 5 out of scope), committed before
+    any Day 3 change (commit 4ec1905). `make eval` reports golden and held-out separately;
+    `make sweep` (tuning) only reads golden.
+  - Glossary `sources/glossary.toml`: 21 entries. 12 come from the pages ("general social security
+    benefit (yleistuki)", checked by a test); 9 are reviewed mappings with a reason (palkkatuki,
+    työkokeilu, työvoimakoulutus are not on any English page; "side gig", "tryout", …). Retrieval gets
+    the page wording added; the coverage check sees it instead of the term.
+  - Legal-advice rule (`legal_advice.py`): "should I sue", "will I win", "my chances", "is my … legal"
+    are refused before retrieval. Every refusal now records its reason; the 5 legal cases (3 golden,
+    2 held-out) must be refused by this rule.
+  - Recall diagnosis: in all 9 misses the key fact was on an expected page but ranked 5th–9th (one
+    17th); once (side-part-time) the right section ranked 1st but the fact was in its second part.
+    Never the wrong page. Fix: give the model 8 passages instead of 4; the coverage gate still looks
+    at the top 4 (what it was tuned on). Bigger chunks helped too but would shift every coverage value.
+  - One glossary entry made a case worse ("TE office" → "TE Services"; "TE Office" is page wording);
+    fixed, with a test that reviewed entries don't rewrite page wording.
+
+    | Metric | golden: baseline → glossary → final | held-out: baseline → glossary → final |
+    |---|---|---|
+    | Out-of-scope refused | 8/8 → 8/8 → 8/8 | 5/5 → 5/5 → 5/5 |
+    | … by the legal rule (legal cases) | 0/3 → 0/3 → **3/3** | 0/2 → 0/2 → **2/2** |
+    | In-scope answered | 22 → 24 → **25**/27 | 9 → 9 → 9/10 |
+    | Expected source retrieved | 24 → 27 → 27/27 | 9 → 9 → **10/10** |
+    | Key fact in retrieved text | 16 → 20 → **25**/27 | 8 → 8 → **10/10** |
+    | Expected source cited (fake LLM) | 18 → 21 → 22/27 | 4 → 5 → 5/10 |
+
+  - 128 tests pass.
+
 ## Next
 - Day 3: LangGraph flow (retrieve → answer → self-check grounding → refuse if not covered).
-- Retrieval recall: key facts are in the retrieved text for only 16/27 in-scope cases, so even a
-  perfect model could answer at most 16. Look at passage size and k before blaming the model.
-- Vocabulary gaps cause the 5 false refusals: "side gig", "palkkatuki", "tryout" (typo), "move",
-  "happened". Proposal: a small reviewed glossary of official Finnish terms (palkkatuki → pay subsidy,
-  työkokeilu → work try-out, yleistuki, työmarkkinatuki, peruspäiväraha, …) for query expansion.
-- First eval run with a real model (needs `ANTHROPIC_API_KEY`), so "facts in answer" means something.
+- First eval run with a real model, so "cited" and "facts in answer" mean something: the fake LLM
+  only cites [S1], which is why held-out "cited" stays at 5/10 although every fact is retrieved.
+- Remaining golden misses: `lmt-apply` and `abolished-te-office` (fact ranked below 8);
+  `abolished-peruspaivaraha` and `tricky-side-gig` still refused by the coverage gate.
+  Held-out: `h-partial-work-ability` refused (coverage 0.495, just under 0.50).
 
 ## Open questions
-- **Rules changed 1 May 2026:** the golden set's `abolished` cases test that the assistant points to
-  the general social security benefit. Keep extending them when Kela publishes changes.
-- **Cutoff tuned on the same 35 cases it is scored on**, so the 8/8 is optimistic. Add a held-out set
-  of questions (not used for tuning) before trusting the number. The margin is small: the hardest
-  out-of-scope case (residence permit) has coverage 0.45, the weakest kept real case 0.51.
-- **Added notes and groundedness:** `abolished-te-office` passes only because the code's added note
-  (our text in `tags.toml`) says "employment areas". Notes must be backed by the cited page; the
-  Day 4 judge should check notes like any other claim.
-- "Kela rejected my application. Will I win if I appeal?" is refused only by the coverage gate.
-  Personal legal advice needs its own rule (CLAUDE.md rule 4), not luck in retrieval.
+- **Held-out is no longer fully blind:** I wrote the held-out questions and then the glossary and
+  the legal rule, so knowing the questions may have shaped them. A truly blind set needs questions
+  written by someone else (e.g. 10 real jobseeker questions you collect).
+- 8 passages instead of 4 means more text the model could misuse. Watch groundedness in the Day 4
+  judge; drop back to 6 if it suffers (6 gave 23/27 facts on golden).
+- **Added notes and groundedness:** notes come from `tags.toml`, not from page text. The Day 4 judge
+  should check them like any other claim.
 - Snapshots should probably store a "valid from" / page-updated date too, not just fetch date.

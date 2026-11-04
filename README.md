@@ -43,11 +43,20 @@ make ask Q="Can I work part-time while unemployed?"
 
 ## Evaluation
 
-`evals/golden.yaml` holds 35 questions with expected key facts and source URLs, or "must refuse".
-`make eval` runs them and saves a dated report in `evals/reports/` (fake LLM until a key is set).
+`evals/golden.yaml` holds 35 questions with expected key facts and source URLs, or "must refuse";
+it may be used for tuning. `evals/heldout.yaml` holds 15 more that are never used for tuning.
+`make eval` runs both and saves a dated report per set in `evals/reports/` (fake LLM for now).
 `make sweep` shows how the refusal cutoff trades off refusing off-topic questions against
 answering real ones. Checks: refusal correct, expected source cited, key facts in the answer —
 plus two diagnostics (expected source retrieved, key facts in the retrieved text).
+
+## Glossary and legal-advice rule
+
+`sources/glossary.toml` maps Finnish terms and everyday words to the English page wording
+(palkkatuki → pay subsidy, side gig → part-time work). It only changes what is searched; each
+entry says whether the page itself pairs the terms (`origin = "source"`) or it is our reviewed
+mapping (`origin = "reviewed"` + `why`). Questions asking for personal legal advice ("should I
+sue", "will I win my appeal") are refused before retrieval (`legal_advice.py`).
 
 ## Source tags
 

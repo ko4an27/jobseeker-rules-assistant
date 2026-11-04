@@ -1,10 +1,15 @@
-"""Run the golden set (evals/golden.yaml) and save a dated report in evals/reports/.
+"""Run the eval sets and save a dated report per set in evals/reports/.
 
-    python -m jobseeker_assistant.evals                 # run with LLM from env (make eval: fake)
-    python -m jobseeker_assistant.evals --sweep         # try retrieval cutoffs, print a table
+    python -m jobseeker_assistant.evals                 # golden + held-out, LLM from env
+    python -m jobseeker_assistant.evals --set heldout   # one set only
+    python -m jobseeker_assistant.evals --sweep         # cutoff table, golden set ONLY
+
+The golden set (evals/golden.yaml) may be used for tuning. The held-out set
+(evals/heldout.yaml) never is: it shows whether a change generalises.
 
 Exact checks per case:
-- refusal_ok        refused exactly when the case says must_refuse
+- refusal_ok        refused exactly when the case says must_refuse (and, if the case names
+                    a refusal_reason, refused for that reason)
 - source_cited      the answer cites at least one expected source URL
 - facts_in_answer   every key fact appears in the answer text
 Diagnostics (why a case failed):
@@ -28,12 +33,14 @@ import yaml
 
 from . import snapshots
 from .answer import Answer, answer_question
+from .glossary import Term, expand, load_glossary
 from .llm import LLM, get_llm
 from .retrieve import Hit, Index
 from .source_tags import load_tags
 
 ROOT = Path(__file__).resolve().parents[2]
 GOLDEN = ROOT / "evals" / "golden.yaml"
+HELDOUT = ROOT / "evals" / "heldout.yaml"
 REPORTS = ROOT / "evals" / "reports"
 CATEGORIES = {"current", "abolished", "tricky", "out_of_scope"}
 
@@ -46,9 +53,11 @@ class Case:
     must_refuse: bool = False
     key_facts: tuple[str, ...] = ()
     expected_sources: tuple[str, ...] = ()
+    refusal_reason: str = ""  # optional: the refusal must come from this rule (prefix match)
 
 
 def load_golden(path: Path = GOLDEN) -> list[Case]:
+    """Load an eval set (golden or held-out; same format)."""
     raw = yaml.safe_load(path.read_text(encoding="utf-8"))
     cases, seen = [], set()
     for item in raw:
@@ -59,12 +68,15 @@ def load_golden(path: Path = GOLDEN) -> list[Case]:
             must_refuse=bool(item.get("must_refuse", False)),
             key_facts=tuple(item.get("key_facts", ())),
             expected_sources=tuple(item.get("expected_sources", ())),
+            refusal_reason=item.get("refusal_reason", ""),
         )
         if case.id in seen:
             raise ValueError(f"duplicate case id {case.id}")
         seen.add(case.id)
         if case.category not in CATEGORIES:
             raise ValueError(f"{case.id}: unknown category {case.category}")
+        if case.refusal_reason and not case.must_refuse:
+            raise ValueError(f"{case.id}: refusal_reason only makes sense with must_refuse")
         if case.must_refuse and (case.key_facts or case.expected_sources):
             raise ValueError(f"{case.id}: must_refuse cases have no facts or sources")
         if not case.must_refuse and not (case.key_facts and case.expected_sources):
@@ -90,6 +102,7 @@ class CaseResult:
     question: str
     must_refuse: bool
     refused: bool
+    refusal_reason: str
     refusal_ok: bool
     source_cited: bool | None
     source_retrieved: bool | None
@@ -100,6 +113,7 @@ class CaseResult:
     top_coverage: float = 0.0
     cited_urls: list[str] = field(default_factory=list)
     answer: str = ""
+    glossary_used: list[str] = field(default_factory=list)
 
     @property
     def passed(self) -> bool:
@@ -110,6 +124,8 @@ class CaseResult:
 
 def grade(case: Case, ans: Answer, top_score: float, top_coverage: float = 0.0) -> CaseResult:
     refusal_ok = ans.refused == case.must_refuse
+    if case.refusal_reason and not ans.refusal_reason.startswith(case.refusal_reason):
+        refusal_ok = False  # refused, but not for the reason this case is about
     if case.must_refuse:
         cited = retrieved = in_answer = in_sources = None
         missing: list[str] = []
@@ -129,6 +145,7 @@ def grade(case: Case, ans: Answer, top_score: float, top_coverage: float = 0.0) 
         question=case.question,
         must_refuse=case.must_refuse,
         refused=ans.refused,
+        refusal_reason=ans.refusal_reason,
         refusal_ok=refusal_ok,
         source_cited=cited,
         source_retrieved=retrieved,
@@ -148,19 +165,23 @@ def run(
     llm: LLM,
     min_score: float | None = None,
     min_coverage: float | None = None,
+    glossary: list[Term] | None = None,
 ):
-    kwargs = {}
+    kwargs: dict = {"glossary": glossary}
     if min_score is not None:
         kwargs["min_score"] = min_score
     if min_coverage is not None:
         kwargs["min_coverage"] = min_coverage
     results = []
     for case in cases:
-        top = index.search(case.question, k=4)
+        exp = expand(case.question, glossary or [])
+        top = index.search(exp.retrieval_query, k=4)
         score = top[0].score if top else 0.0
-        cov = max((index.coverage(case.question, h.passage) for h in top), default=0.0)
+        cov = max((index.coverage(exp.coverage_query, h.passage) for h in top), default=0.0)
         ans = answer_question(case.question, index, llm, **kwargs)
-        results.append(grade(case, ans, score, cov))
+        result = grade(case, ans, score, cov)
+        result.glossary_used = ans.glossary_used
+        results.append(result)
     return results
 
 
@@ -264,13 +285,16 @@ def save_report(
     return json_path, md_path
 
 
-def case_signals(cases: list[Case], index: Index, k: int = 4) -> dict[str, tuple[float, float]]:
+def case_signals(
+    cases: list[Case], index: Index, k: int = 4, glossary: list[Term] | None = None
+) -> dict[str, tuple[float, float]]:
     """Per case: (top BM25 score, best coverage among the top-k passages)."""
     out = {}
     for c in cases:
-        hits = index.search(c.question, k=k)
+        exp = expand(c.question, glossary or [])
+        hits = index.search(exp.retrieval_query, k=k)
         score = hits[0].score if hits else 0.0
-        cov = max((index.coverage(c.question, h.passage) for h in hits), default=0.0)
+        cov = max((index.coverage(exp.coverage_query, h.passage) for h in hits), default=0.0)
         out[c.id] = (score, cov)
     return out
 
@@ -300,19 +324,26 @@ def sweep(
     return rows
 
 
+SETS = {"golden": GOLDEN, "heldout": HELDOUT}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--min-score", type=float, default=None)
     parser.add_argument("--min-coverage", type=float, default=None)
-    parser.add_argument("--sweep", action="store_true")
+    parser.add_argument("--sweep", action="store_true", help="tuning table (golden set only)")
+    parser.add_argument("--set", choices=[*SETS, "both"], default="both")
     parser.add_argument("--no-save", action="store_true")
+    parser.add_argument("--no-glossary", action="store_true", help="turn query expansion off")
     parser.add_argument("--label", default="", help="short tag added to the report file name")
     args = parser.parse_args(argv)
 
-    cases = load_golden()
     index = Index.from_snapshots(snapshots.load_all(), load_tags())
+    glossary = [] if args.no_glossary else load_glossary()
     if args.sweep:
-        signals = case_signals(cases, index)
+        # Tuning only ever looks at the golden set; the held-out set stays unseen.
+        cases = load_golden(GOLDEN)
+        signals = case_signals(cases, index, glossary=glossary)
         grids = {"score": [x / 2 for x in range(0, 31)], "coverage": [x / 20 for x in range(21)]}
         for signal, grid in grids.items():
             print(f"\n{signal:>8}  out-of-scope refused  in-scope kept")
@@ -323,29 +354,39 @@ def main(argv: list[str] | None = None) -> int:
                 )
         return 0
 
-    llm = get_llm()
-    results = run(cases, index, llm, args.min_score, args.min_coverage)
     from .answer import DEFAULT_MIN_COVERAGE, DEFAULT_MIN_SCORE
 
+    llm = get_llm()
     provider = os.environ.get("LLM_PROVIDER", "anthropic")
-    meta = {
-        "run_at": datetime.now(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "llm_provider": provider,
-        "llm": provider if provider == "fake" else os.environ.get("LLM_MODEL", "default"),
-        "min_score": args.min_score if args.min_score is not None else DEFAULT_MIN_SCORE,
-        "min_coverage": (
-            args.min_coverage if args.min_coverage is not None else DEFAULT_MIN_COVERAGE
-        ),
-        "commit": _git_commit(),
-        "cases": len(cases),
-        "label": args.label,
-    }
-    summary = summarize(results)
-    for key, value in summary.items():
-        print(f"{key:22} {value}")
-    if not args.no_save:
-        json_path, md_path = save_report(results, meta)
-        print(f"report: {md_path.relative_to(ROOT)}")
+    run_at = datetime.now(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%S%z")
+    names = list(SETS) if args.set == "both" else [args.set]
+    summaries = {}
+    for name in names:
+        cases = load_golden(SETS[name])
+        results = run(cases, index, llm, args.min_score, args.min_coverage, glossary)
+        meta = {
+            "run_at": run_at,
+            "set": name,
+            "llm_provider": provider,
+            "llm": provider if provider == "fake" else os.environ.get("LLM_MODEL", "default"),
+            "min_score": args.min_score if args.min_score is not None else DEFAULT_MIN_SCORE,
+            "min_coverage": (
+                args.min_coverage if args.min_coverage is not None else DEFAULT_MIN_COVERAGE
+            ),
+            "commit": _git_commit(),
+            "glossary_terms": len(glossary),
+            "cases": len(cases),
+            "label": "_".join(x for x in (name, args.label) if x),
+        }
+        summaries[name] = summarize(results)
+        if not args.no_save:
+            _, md_path = save_report(results, meta)
+            print(f"report: {md_path.relative_to(ROOT)}")
+    print(f"\n{'metric':22}" + "".join(f"{n:>12}" for n in names))
+    for key in summaries[names[0]]:
+        if key == "by_category":
+            continue
+        print(f"{key:22}" + "".join(f"{summaries[n][key]:>12}" for n in names))
     return 0
 
 
