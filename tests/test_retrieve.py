@@ -159,3 +159,26 @@ def test_coverage_is_low_for_off_topic_words(fixture_index):
 
 def test_coverage_of_empty_question(fixture_index):
     assert fixture_index.coverage("the a of", fixture_index.passages[0]) == 0.0
+
+
+def test_coverage_ignores_conversational_words(fixture_index):
+    # "got", "small", "all" say how someone asks, not what about; they must not count
+    # against the question (they used to weigh as much as an off-topic word).
+    plain = "part-time work benefit"
+    chatty = "i got a small part-time work, do i lose all my benefit??"
+    hit = fixture_index.search(plain)[0]
+    assert fixture_index.coverage(chatty, hit.passage) == fixture_index.coverage(plain, hit.passage)
+
+
+def test_coverage_still_penalises_off_topic_words(fixture_index):
+    plain = "part-time work benefit"
+    hit = fixture_index.search(plain)[0]
+    with_off_topic = fixture_index.coverage(plain + " pizza helsinki", hit.passage)
+    assert with_off_topic < fixture_index.coverage(plain, hit.passage)
+
+
+def test_coverage_ignore_list_has_no_topic_words():
+    from jobseeker_assistant.retrieve import COVERAGE_IGNORE
+
+    for topic in ("benefit", "work", "pay", "income", "training", "subsidy", "kela", "money"):
+        assert topic not in COVERAGE_IGNORE
