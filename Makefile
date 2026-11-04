@@ -1,6 +1,8 @@
 PY ?= python3
+IMAGE ?= jobseeker-rules-assistant
 
-.PHONY: install test lint format ingest refresh ask eval sweep
+.PHONY: install test lint format ingest refresh ask eval sweep api demo \
+	docker-build docker-run docker-test
 
 install:            ## install runtime + dev dependencies
 	$(PY) -m pip install -r requirements-dev.txt
@@ -22,7 +24,7 @@ ingest:             ## fetch snapshots that don't exist yet (never overwrites)
 refresh:            ## explicitly re-fetch ALL snapshots (overwrites)
 	PYTHONPATH=src $(PY) -m jobseeker_assistant.ingest --refresh
 
-eval:               ## run the golden set, save a dated report (fake LLM until a key is set up)
+eval:               ## run golden + held-out sets, save dated reports (fake LLM until a key is set up)
 	LLM_PROVIDER=$${LLM_PROVIDER:-fake} PYTHONPATH=src $(PY) -m jobseeker_assistant.evals
 
 sweep:              ## try retrieval cutoffs on the golden set
@@ -30,3 +32,21 @@ sweep:              ## try retrieval cutoffs on the golden set
 
 ask:                ## make ask Q="Can I work part-time while unemployed?"
 	PYTHONPATH=src $(PY) -m jobseeker_assistant.cli "$(Q)"
+
+api:                ## start the HTTP API on http://127.0.0.1:8000 (docs at /docs)
+	PYTHONPATH=src $(PY) -m uvicorn jobseeker_assistant.api:app --host 127.0.0.1 --port 8000
+
+demo:               ## 5 sample questions through the graph with the fake LLM
+	LLM_PROVIDER=fake PYTHONPATH=src $(PY) -m jobseeker_assistant.demo
+
+docker-build:       ## build the API image
+	docker build --target runtime -t $(IMAGE) .
+
+docker-run: docker-build  ## serve the API from Docker on http://127.0.0.1:8000
+	docker run --rm -p 127.0.0.1:8000:8000 \
+		$$( [ -f .env ] && echo --env-file .env ) \
+		-e LLM_PROVIDER=$${LLM_PROVIDER:-fake} $(IMAGE)
+
+docker-test:        ## run lint + tests inside the image (same as CI)
+	docker build --target test -t $(IMAGE):test .
+	docker run --rm $(IMAGE):test

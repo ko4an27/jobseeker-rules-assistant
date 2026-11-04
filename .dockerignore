@@ -1,0 +1,11 @@
+# Keep secrets and local clutter out of the image build context.
+.env
+.env.*
+.git
+.venv
+venv
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.ruff_cache
+evals/reports
