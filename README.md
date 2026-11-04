@@ -40,24 +40,64 @@ flowchart TD
   sentences; a second failure → refuse.
 - **Every refusal** says where to ask instead (Kela, employment services), and records why.
 
-## Quick start
+## How to run
+
+Everything below works **without an API key** (fake LLM). Snapshots of the source pages are
+already in `sources/`, so nothing needs to be fetched.
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
 make install
-make test                      # unit tests, never call a real LLM
-make ingest                    # fetch missing snapshots (never overwrites)
-cp .env.example .env           # add ANTHROPIC_API_KEY, or set LLM_PROVIDER=fake
-make ask Q="Can I work part-time while unemployed?"
+make test                      # unit + API + graph tests, never call a real LLM
+make demo                      # 5 sample questions with the fake LLM: answers + graph paths
+make eval                      # golden + held-out sets, dated reports in evals/reports/
 ```
+
+**API** (FastAPI, docs at http://127.0.0.1:8000/docs):
+
+```bash
+LLM_PROVIDER=fake make api
+```
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/ask -H 'content-type: application/json' \
+  -d '{"question": "How long can a work try-out last?"}'
+```
+
+`POST /ask` takes `{"question": "..."}` (1–500 characters) and returns the answer, citations
+(URL, section, fetch date), the path through the graph, the refusal reason if any, the number of
+LLM attempts and the disclaimer. `GET /health` reports snapshots loaded, LLM and tracing status.
+The question text is never logged or stored; logs get only metadata (length, path, reason, latency).
+
+**Docker:**
+
+```bash
+make docker-run                # build + serve on http://127.0.0.1:8000 (fake LLM unless .env says otherwise)
+```
+
+```bash
+make docker-test               # lint + tests inside the image (what CI does)
+```
+
+If Docker Hub rate-limits the base image, pass a mirror:
+`docker build --build-arg PYTHON_IMAGE=mirror.gcr.io/library/python:3.12-slim .`
+
+**Real model and tracing:** copy `.env.example` to `.env` (git-ignored) and fill in keys.
 
 | Variable | Meaning | Default |
 |---|---|---|
 | `LLM_PROVIDER` | `anthropic` or `fake` (offline, no key) | `anthropic` |
 | `LLM_MODEL` | model id | `claude-haiku-5-5` |
 | `ANTHROPIC_API_KEY` | secret, only via env / `.env` | — |
+| `LANGFUSE_ENABLED` | `true` turns Langfuse tracing on | off |
+| `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` | Langfuse keys and server | — |
+| `LANGFUSE_LOG_TEXT` | `true` also sends question + answer text (default: metadata only) | off |
 
-`make refresh` re-fetches all snapshots (explicit, overwrites).
+With tracing off, the Langfuse package is not even imported, so nothing is sent anywhere.
+
+Other commands: `make ask Q="..."` (one question on the command line), `make ingest` (fetch
+missing snapshots, never overwrites), `make refresh` (explicitly re-fetch all), `make sweep`
+(refusal cutoff table, golden set only).
 
 ## Evaluation
 

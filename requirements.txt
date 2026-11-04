@@ -4,3 +4,6 @@ beautifulsoup4>=4.12,<5
 anthropic>=0.40   # only imported when LLM_PROVIDER=anthropic
 pyyaml>=6,<7         # golden set (evals/golden.yaml)
 langgraph>=1.0,<2   # the answer flow (graph.py)
+fastapi>=0.110,<1   # HTTP API (api.py)
+uvicorn>=0.29,<1    # serves the API
+langfuse>=3,<4      # optional tracing; only imported when LANGFUSE_ENABLED=true

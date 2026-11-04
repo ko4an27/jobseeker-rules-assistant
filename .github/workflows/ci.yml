@@ -20,3 +20,23 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: make lint
       - run: make test
+
+  docker:
+    # Build the image and run lint + tests inside it, then smoke-test the API container.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build test image
+        run: docker build --target test -t jra:test .
+      - name: Lint + tests inside the image (fake LLM)
+        run: docker run --rm jra:test
+      - name: Build runtime image
+        run: docker build --target runtime -t jra .
+      - name: Smoke-test the API container
+        run: |
+          docker run -d --name jra -p 8000:8000 -e LLM_PROVIDER=fake jra
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8000/health && break; sleep 1; done
+          curl -sf http://127.0.0.1:8000/health | grep -q '"status":"ok"'
+          curl -sf -X POST http://127.0.0.1:8000/ask -H 'content-type: application/json' \
+            -d '{"question":"How long can a work try-out last?"}' | grep -q '"refused":false'
+          docker rm -f jra

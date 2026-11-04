@@ -7,7 +7,7 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
 - [x] Day 2 — golden test set (30–40 questions incl. out-of-scope), simple exact-check evals
 - [x] Day 3 — LangGraph flow: retrieve → answer → self-check grounding → refuse if not covered
 - [ ] Day 4 — LLM-as-judge with a rubric, regression report between runs
-- [ ] Day 5 — Langfuse tracing, FastAPI endpoint, Docker
+- [x] Day 5 — Langfuse tracing, FastAPI endpoint, Docker (5a, fake LLM)
 - [ ] Day 6 — README ("How we know it's correct"), demo transcript, polish
 - [ ] Message Petr Vanek with the link + apply to If
 
@@ -113,6 +113,20 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
     quotes its source verbatim. New report lines: `retried`, `refused_not_grounded`.
   - 146 tests pass.
 
+- 2026-11-04 (Day 5a — API, tracing, Docker, demo):
+  - `api.py` (FastAPI): `POST /ask` → answer, citations, graph path, refusal reason, attempts,
+    disclaimer, request id; `GET /health`. Validation: 1–500 characters, blank rejected (422).
+    Not configured (e.g. no API key) → 503 with the reason. Logs carry metadata only; a test
+    checks a name, an ID and an income in the question never reach the logs.
+  - `tracing.py`: Langfuse off unless `LANGFUSE_ENABLED=true`; when off the package is not even
+    imported (tested). When on: keys from env only; metadata only unless `LANGFUSE_LOG_TEXT=true`.
+  - Dockerfile: `runtime` stage (non-root, healthcheck, uvicorn) and `test` stage. CI job builds
+    both, runs lint + tests inside the image and smoke-tests `/health` and `/ask`. Locally verified:
+    174 tests pass in the image, the API container answers. Found and fixed: the slim image has no
+    `make`, so the test stage runs the commands directly.
+  - `make demo`: 5 questions (incl. off-topic and legal) with the fake LLM, printing answers + paths.
+  - 174 tests pass.
+
 ## Next
 - Day 4 (plan): LLM-as-judge with a written rubric, regression report between runs.
 - First run with a real model: watch `retried` and `refused_not_grounded`. If the 60% key-word
@@ -121,6 +135,13 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
   `abolished-peruspaivaraha`, `tricky-side-gig`; held-out `h-partial-work-ability`.
 
 ## Open questions
+- **Demo shows a gap:** "Can I still apply for labour market subsidy?" is answered from a current
+  Kela FAQ sentence that never says the subsidy was replaced. The "replaced by" note is only added
+  when a *historical* page is cited. A real model should say it (the prompt asks), but nothing in
+  code guarantees it: consider adding the note whenever an abolished benefit is named in the
+  question.
+- `make docker-run` binds to 127.0.0.1 only. Deploying it anywhere public needs auth and rate
+  limits first; there is none yet.
 - **Held-out is no longer fully blind:** I wrote the held-out questions and then the glossary and
   the legal rule, so knowing the questions may have shaped them. A truly blind set needs questions
   written by someone else (e.g. 10 real jobseeker questions you collect).
