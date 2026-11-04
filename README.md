@@ -18,7 +18,8 @@ sources/urls.txt ──make ingest──▶ sources/*.md   (clean text + URL + f
 question ──▶ BM25 search ──▶ top passages ──▶ LLM (sources only) ──▶ safety checks ──▶ answer + citations
 ```
 
-Safety checks in code: no relevant passage → refuse without calling the LLM; the model says
+Safety checks in code: no relevant passage, or the passages match too little of the question
+(coverage < 0.5) → refuse without calling the LLM; the model says
 `NOT_COVERED`, gives no citation, or cites a source it wasn't given → refuse.
 
 ## Quick start
@@ -40,10 +41,19 @@ make ask Q="Can I work part-time while unemployed?"
 
 `make refresh` re-fetches all snapshots (explicit, overwrites).
 
+## Evaluation
+
+`evals/golden.yaml` holds 35 questions with expected key facts and source URLs, or "must refuse".
+`make eval` runs them and saves a dated report in `evals/reports/` (fake LLM until a key is set).
+`make sweep` shows how the refusal cutoff trades off refusing off-topic questions against
+answering real ones. Checks: refusal correct, expected source cited, key facts in the answer —
+plus two diagnostics (expected source retrieved, key facts in the retrieved text).
+
 ## Source tags
 
 `sources/tags.toml` holds our reviewed decisions about pages, separate from the fetched text:
 `status = "historical"` (+ `replaced_by`, `note`) for abolished rules, `audience = "employer"` for
 pages written for employers, and `weight` (0 excludes a page). Historical pages rank lower, always
-bring their replacement page along, and can't be cited alone. Sections that are mostly links
+bring their replacement page along; when one is cited, the code adds the "replaced by" note and
+cites the replacement. Identical passages on several pages are ranked once. Sections that are mostly links
 (lines marked `[link]` at ingest) are excluded or down-weighted.

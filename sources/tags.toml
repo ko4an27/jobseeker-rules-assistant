@@ -19,5 +19,9 @@ note = "Basic unemployment allowance was abolished and replaced by the general s
 status = "historical"
 note = "2024 news item written before TE Services moved to municipal employment areas on 1 January 2025."
 
+["https://tyomarkkinatori.fi/en/uudistukset24/etusivu"]
+status = "historical"
+note = "Reform page written before TE Services moved to municipal employment areas on 1 January 2025."
+
 ["https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy"]
 audience = "employer"
