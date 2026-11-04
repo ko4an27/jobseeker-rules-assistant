@@ -19,6 +19,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
+from .glossary import Term, expand
 from .llm import LLM
 from .retrieve import Hit, Index
 
@@ -72,6 +73,7 @@ class Answer:
     refused: bool = False
     hits: list[Hit] = field(default_factory=list)
     added_notes: list[str] = field(default_factory=list)
+    glossary_used: list[str] = field(default_factory=list)  # glossary terms that fired
 
     def render(self) -> str:
         out = [self.text]
@@ -143,8 +145,8 @@ def historical_notes(cited: list[int], hits: list[Hit]) -> tuple[list[str], list
     return notes, extra
 
 
-def _refuse(hits: list[Hit]) -> Answer:
-    return Answer(text=REFUSAL, refused=True, hits=hits)
+def _refuse(hits: list[Hit], glossary_used: list[str] | None = None) -> Answer:
+    return Answer(text=REFUSAL, refused=True, hits=hits, glossary_used=glossary_used or [])
 
 
 def answer_question(
@@ -154,23 +156,26 @@ def answer_question(
     k: int = 4,
     min_score: float = DEFAULT_MIN_SCORE,
     min_coverage: float = DEFAULT_MIN_COVERAGE,
+    glossary: list[Term] | None = None,
 ) -> Answer:
-    hits = [h for h in index.search(question, k=k) if h.score >= min_score]
-    if not hits or max(index.coverage(question, h.passage) for h in hits) < min_coverage:
-        return _refuse(hits)
-    hits = add_replacements(question, hits, index)
+    exp = expand(question, glossary or [])
+    used = [t.match[0] for t in exp.used]
+    hits = [h for h in index.search(exp.retrieval_query, k=k) if h.score >= min_score]
+    if not hits or max(index.coverage(exp.coverage_query, h.passage) for h in hits) < min_coverage:
+        return _refuse(hits, used)
+    hits = add_replacements(exp.retrieval_query, hits, index)
 
     raw = llm.complete(SYSTEM_PROMPT, build_user_prompt(question, hits)).strip()
     if not raw or NOT_COVERED in raw:
-        return _refuse(hits)
+        return _refuse(hits, used)
 
     cited = sorted({int(n) for n in _CITATION.findall(raw)})
     if not cited or any(n < 1 or n > len(hits) for n in cited):
-        return _refuse(hits)
+        return _refuse(hits, used)
 
     result = historical_notes(cited, hits)
     if result is None:
-        return _refuse(hits)
+        return _refuse(hits, used)
     notes, extra = result
     if notes:
         raw = raw + "\n\n" + "\n".join(notes)
@@ -184,4 +189,4 @@ def answer_question(
                 f"S{n}", p.url, p.section, p.fetched_at, p.tags.historical, hits[n - 1].also_on
             )
         )
-    return Answer(text=raw, citations=citations, hits=hits, added_notes=notes)
+    return Answer(text=raw, citations=citations, hits=hits, added_notes=notes, glossary_used=used)

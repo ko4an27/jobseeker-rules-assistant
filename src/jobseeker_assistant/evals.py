@@ -32,6 +32,7 @@ import yaml
 
 from . import snapshots
 from .answer import Answer, answer_question
+from .glossary import Term, expand, load_glossary
 from .llm import LLM, get_llm
 from .retrieve import Hit, Index
 from .source_tags import load_tags
@@ -106,6 +107,7 @@ class CaseResult:
     top_coverage: float = 0.0
     cited_urls: list[str] = field(default_factory=list)
     answer: str = ""
+    glossary_used: list[str] = field(default_factory=list)
 
     @property
     def passed(self) -> bool:
@@ -154,19 +156,23 @@ def run(
     llm: LLM,
     min_score: float | None = None,
     min_coverage: float | None = None,
+    glossary: list[Term] | None = None,
 ):
-    kwargs = {}
+    kwargs: dict = {"glossary": glossary}
     if min_score is not None:
         kwargs["min_score"] = min_score
     if min_coverage is not None:
         kwargs["min_coverage"] = min_coverage
     results = []
     for case in cases:
-        top = index.search(case.question, k=4)
+        exp = expand(case.question, glossary or [])
+        top = index.search(exp.retrieval_query, k=4)
         score = top[0].score if top else 0.0
-        cov = max((index.coverage(case.question, h.passage) for h in top), default=0.0)
+        cov = max((index.coverage(exp.coverage_query, h.passage) for h in top), default=0.0)
         ans = answer_question(case.question, index, llm, **kwargs)
-        results.append(grade(case, ans, score, cov))
+        result = grade(case, ans, score, cov)
+        result.glossary_used = ans.glossary_used
+        results.append(result)
     return results
 
 
@@ -270,13 +276,16 @@ def save_report(
     return json_path, md_path
 
 
-def case_signals(cases: list[Case], index: Index, k: int = 4) -> dict[str, tuple[float, float]]:
+def case_signals(
+    cases: list[Case], index: Index, k: int = 4, glossary: list[Term] | None = None
+) -> dict[str, tuple[float, float]]:
     """Per case: (top BM25 score, best coverage among the top-k passages)."""
     out = {}
     for c in cases:
-        hits = index.search(c.question, k=k)
+        exp = expand(c.question, glossary or [])
+        hits = index.search(exp.retrieval_query, k=k)
         score = hits[0].score if hits else 0.0
-        cov = max((index.coverage(c.question, h.passage) for h in hits), default=0.0)
+        cov = max((index.coverage(exp.coverage_query, h.passage) for h in hits), default=0.0)
         out[c.id] = (score, cov)
     return out
 
@@ -316,14 +325,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--sweep", action="store_true", help="tuning table (golden set only)")
     parser.add_argument("--set", choices=[*SETS, "both"], default="both")
     parser.add_argument("--no-save", action="store_true")
+    parser.add_argument("--no-glossary", action="store_true", help="turn query expansion off")
     parser.add_argument("--label", default="", help="short tag added to the report file name")
     args = parser.parse_args(argv)
 
     index = Index.from_snapshots(snapshots.load_all(), load_tags())
+    glossary = [] if args.no_glossary else load_glossary()
     if args.sweep:
         # Tuning only ever looks at the golden set; the held-out set stays unseen.
         cases = load_golden(GOLDEN)
-        signals = case_signals(cases, index)
+        signals = case_signals(cases, index, glossary=glossary)
         grids = {"score": [x / 2 for x in range(0, 31)], "coverage": [x / 20 for x in range(21)]}
         for signal, grid in grids.items():
             print(f"\n{signal:>8}  out-of-scope refused  in-scope kept")
@@ -343,7 +354,7 @@ def main(argv: list[str] | None = None) -> int:
     summaries = {}
     for name in names:
         cases = load_golden(SETS[name])
-        results = run(cases, index, llm, args.min_score, args.min_coverage)
+        results = run(cases, index, llm, args.min_score, args.min_coverage, glossary)
         meta = {
             "run_at": run_at,
             "set": name,
@@ -354,6 +365,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.min_coverage if args.min_coverage is not None else DEFAULT_MIN_COVERAGE
             ),
             "commit": _git_commit(),
+            "glossary_terms": len(glossary),
             "cases": len(cases),
             "label": "_".join(x for x in (name, args.label) if x),
         }

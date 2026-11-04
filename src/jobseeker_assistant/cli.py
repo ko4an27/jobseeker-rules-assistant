@@ -6,6 +6,7 @@ import sys
 
 from . import snapshots
 from .answer import answer_question
+from .glossary import load_glossary
 from .llm import get_llm
 from .retrieve import Index
 from .source_tags import load_tags
@@ -21,7 +22,9 @@ def main(argv: list[str] | None = None) -> int:
     if not snaps:
         print("No source snapshots found in sources/. Run `make ingest` first.")
         return 1
-    result = answer_question(question, Index.from_snapshots(snaps, load_tags()), get_llm())
+    result = answer_question(
+        question, Index.from_snapshots(snaps, load_tags()), get_llm(), glossary=load_glossary()
+    )
     print(result.render())
     return 0
 
