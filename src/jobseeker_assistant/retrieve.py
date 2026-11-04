@@ -15,7 +15,7 @@ from __future__ import annotations
 import math
 import re
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from .snapshots import LINK_MARK, Snapshot
 from .source_tags import DEFAULT_TAGS, SourceTags
@@ -63,6 +63,28 @@ def passage_weight(p: Passage) -> float:
 class Hit:
     passage: Passage
     score: float
+    also_on: tuple[str, ...] = ()  # other pages that carry the exact same text
+
+
+def dedupe_key(text: str) -> str:
+    return " ".join(text.lower().split())
+
+
+def merge_tags(copies: list[Passage]) -> SourceTags:
+    """Tags for a passage whose text appears on several pages.
+
+    - "for employers" if any copy is on an employer page (the warning must not get lost);
+    - historical only if every copy is on a historical page (if a current page still
+      publishes the text, it is current); replaced_by/note come from a historical copy.
+    """
+    tags = [p.tags for p in copies]
+    if all(t.historical for t in tags):
+        base = tags[0]
+    else:
+        base = next(t for t in tags if not t.historical)
+    if any(t.audience == "employer" for t in tags):
+        base = replace(base, audience="employer")
+    return base
 
 
 def tokenize(text: str) -> list[str]:
@@ -121,6 +143,12 @@ class Index:
             df.update(d.keys())
         n = len(passages)
         self._idf = {t: math.log(1 + (n - f + 0.5) / (f + 0.5)) for t, f in df.items()}
+        self._max_idf = max(self._idf.values(), default=1.0)
+        self._doc_of = {p.id: d for p, d in zip(passages, self._docs, strict=True)}
+        # Identical text on several pages (e.g. shared service cards) is one passage for ranking.
+        self._groups: dict[str, list[int]] = {}
+        for i, p in enumerate(passages):
+            self._groups.setdefault(dedupe_key(p.text), []).append(i)
 
     @classmethod
     def from_snapshots(
@@ -131,15 +159,36 @@ class Index:
 
     def best_from_url(self, url: str, query: str) -> Hit | None:
         """Best passage from one page, e.g. to bring in the page that replaced a historical one."""
-        hits = [h for h in self.search(query, k=len(self.passages)) if h.passage.url == url]
+        hits = [
+            h
+            for h in self.search(query, k=len(self.passages), dedupe=False)
+            if h.passage.url == url
+        ]
         if hits:
             return hits[0]
         first = next((p for p in self.passages if p.url == url), None)
         return Hit(first, 0.0) if first else None
 
-    def search(self, query: str, k: int = 4) -> list[Hit]:
+    def coverage(self, query: str, passage: Passage) -> float:
+        """Share of the question a passage matches, 0..1, with rare words counting more.
+
+        Words the sources never use at all (e.g. "pizza") count as the rarest words, so an
+        off-topic question gets low coverage even if one common word matches strongly.
+        This is a better "is this question covered?" signal than the raw BM25 score, which
+        grows with question length.
+        """
         terms = set(tokenize(query))
-        hits = []
+        if not terms:
+            return 0.0
+        doc = self._doc_of.get(passage.id)
+        if doc is None:
+            doc = Counter(tokenize(passage.section + " " + passage.text))
+        weight = {t: self._idf.get(t, self._max_idf) for t in terms}
+        return sum(w for t, w in weight.items() if doc.get(t)) / sum(weight.values())
+
+    def search(self, query: str, k: int = 4, dedupe: bool = True) -> list[Hit]:
+        terms = set(tokenize(query))
+        hits: list[Hit] = []
         rows = zip(self.passages, self._docs, self._lengths, self._weights, strict=True)
         for passage, doc, length, weight in rows:
             if weight == 0:
@@ -152,5 +201,25 @@ class Index:
                     score += self._idf[t] * tf * (self.k1 + 1) / norm
             if score > 0:
                 hits.append(Hit(passage, score * weight))
+        if dedupe:
+            hits = self._dedupe(hits)
         hits.sort(key=lambda h: h.score, reverse=True)
         return hits[:k]
+
+    def _dedupe(self, hits: list[Hit]) -> list[Hit]:
+        """Keep the best-scoring copy of each identical text, with tags merged from all copies."""
+        best: dict[str, Hit] = {}
+        for h in hits:
+            key = dedupe_key(h.passage.text)
+            if key not in best or h.score > best[key].score:
+                best[key] = h
+        out = []
+        for key, h in best.items():
+            copies = [self.passages[i] for i in self._groups[key]]
+            if len(copies) == 1:
+                out.append(h)
+                continue
+            others = tuple(sorted({c.url for c in copies} - {h.passage.url}))
+            passage = replace(h.passage, tags=merge_tags(copies))
+            out.append(Hit(passage, h.score, also_on=others))
+        return out

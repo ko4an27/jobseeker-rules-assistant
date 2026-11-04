@@ -5,7 +5,7 @@ from jobseeker_assistant import cli, snapshots
 def test_cli_answers_with_fake_llm(monkeypatch, capsys):
     monkeypatch.setenv("LLM_PROVIDER", "fake")
     monkeypatch.setattr(snapshots, "DEFAULT_SOURCES_DIR", FIXTURES / "sources")
-    assert cli.main(["How long can a work trial last?"]) == 0
+    assert cli.main(["What is the duration of a work trial?"]) == 0
     out = capsys.readouterr().out
     assert "example.test/work-trial" in out and "Note:" in out
 

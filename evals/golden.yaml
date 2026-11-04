@@ -1,0 +1,277 @@
+# Golden test set — what a correct answer must contain.
+#
+# Each case:
+#   id, category (current | abolished | tricky | out_of_scope), question
+#   must_refuse: true          -> the only correct answer is "I can't confirm this…"
+#   expected_sources: [urls]   -> the answer must cite at least ONE of these
+#   key_facts: [phrases]       -> ALL must appear in the answer (case-insensitive);
+#                                 "a | b" means either phrase counts
+#
+# Every key fact must appear in at least one of its expected source snapshots
+# (checked by tests/test_golden.py), so the set stays grounded in the sources.
+# Facts written 2026-11-04 from snapshots fetched 2026-11-03.
+
+# --- Current rules: general social security benefit (Kela, from 1 May 2026) ---
+- id: gssb-amount
+  category: current
+  question: How much is the general social security benefit per day?
+  key_facts: ["37.21"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/changes-to-kela-benefits-in-2026
+    - https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026
+
+- id: gssb-who
+  category: current
+  question: Who can get the general social security benefit when they are unemployed?
+  key_facts: ["earnings-related"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+
+- id: gssb-means-test
+  category: current
+  question: Is the general social security benefit means-tested?
+  key_facts: ["means-tested"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+
+- id: gssb-waiting-period
+  category: current
+  question: Is there a waiting period before I can get the general social security benefit?
+  key_facts: ["7 working days"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+    - https://www.kela.fi/if-you-become-unemployed
+    - https://www.kela.fi/during-unemployment
+
+- id: gssb-qualifying-period
+  category: current
+  question: I have no vocational qualification. Do I have to wait longer before I get the general social security benefit?
+  key_facts: ["21 weeks"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+    - https://www.kela.fi/if-you-become-unemployed
+
+- id: gssb-start-date
+  category: current
+  question: When did Kela start paying the general social security benefit?
+  key_facts: ["1 May 2026"]
+  expected_sources:
+    - https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+    - https://www.kela.fi/news/changes-to-kela-benefits-in-2026
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+
+# --- Current rules: side income / part-time work ---
+- id: side-part-time
+  category: current
+  question: How does part-time work affect my general social security benefit?
+  key_facts: ["50 cents"]
+  expected_sources:
+    - https://www.kela.fi/did-you-find-a-job
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+
+- id: side-short-full-time-job
+  category: current
+  question: I found a full-time job that lasts one week. Can I still get the general social security benefit?
+  key_facts: ["2 weeks"]
+  expected_sources:
+    - https://www.kela.fi/did-you-find-a-job
+
+- id: side-other-income
+  category: current
+  question: Can income other than wages reduce my general social security benefit?
+  key_facts: ["other income"]
+  expected_sources:
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+
+# --- Current rules: work try-out (työkokeilu) ---
+- id: wto-duration
+  category: current
+  question: How long can a work try-out last?
+  key_facts: ["six months | 6 months"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out
+
+- id: wto-benefit
+  category: current
+  question: Do I get unemployment benefit during a work try-out?
+  key_facts: ["same unemployment security"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out
+
+# --- Current rules: pay subsidy (palkkatuki) — page written for employers ---
+- id: ps-amount
+  category: current
+  question: How much of my salary can the pay subsidy cover?
+  key_facts: ["50%"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy
+
+- id: ps-timing
+  category: current
+  question: Can an employer get pay subsidy for me after I have already started the job?
+  key_facts: ["decision"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy
+
+# --- Current rules: labour market training ---
+- id: lmt-cost
+  category: current
+  question: Do I have to pay for labour market training?
+  key_facts: ["free of charge"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training
+
+- id: lmt-apply
+  category: current
+  question: How do I apply for labour market training?
+  key_facts: ["e-service"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training
+
+# --- Current rules: the 2025 reform and 2026 service changes ---
+- id: reform-municipalities
+  category: current
+  question: When did employment services move from the state to municipalities?
+  key_facts: ["1 January 2025"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/uudistukset24/etusivu
+    - https://tyomarkkinatori.fi/en/news/te-palvelut-siirtyvat-kunnille
+
+- id: reform-initial-interview
+  category: current
+  question: How soon after I start looking for work is my initial interview with the employment authority?
+  key_facts: ["ten working days"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/news/tyonhakijan-palveluprosessiin-ja-tyonvalityspalveluihin-tulee-muutoksia-vuodenvaihteessa
+
+# --- Abolished benefits: must say they were replaced (1 May 2026) ---
+- id: abolished-lms
+  category: abolished
+  question: Can I still apply for labour market subsidy?
+  key_facts: ["general social security benefit", "1 May 2026"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+    - https://www.kela.fi/news/changes-to-kela-benefits-in-2026
+
+- id: abolished-bua
+  category: abolished
+  question: How much is the basic unemployment allowance now?
+  key_facts: ["general social security benefit"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+    - https://www.kela.fi/news/changes-to-kela-benefits-in-2026
+
+- id: abolished-peruspaivaraha
+  category: abolished
+  question: What happened to peruspäiväraha?
+  key_facts: ["general social security benefit"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+
+- id: abolished-tyomarkkinatuki
+  category: abolished
+  question: Is työmarkkinatuki still paid?
+  key_facts: ["general social security benefit"]
+  expected_sources:
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+    - https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+
+- id: abolished-te-office
+  category: abolished
+  question: Can I still visit my local TE Office?
+  key_facts: ["closed down | employment areas"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/uudistukset24/etusivu
+
+# --- Tricky wording: slang, Finnish terms, typos, negation ---
+- id: tricky-side-gig
+  category: tricky
+  question: i got a small side gig, do i lose all my kela money??
+  key_facts: ["50 cents"]
+  expected_sources:
+    - https://www.kela.fi/did-you-find-a-job
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+
+- id: tricky-one-euro
+  category: tricky
+  question: Is it true that I can't get any benefit at all if I earn even one euro?
+  key_facts: ["50 cents"]
+  expected_sources:
+    - https://www.kela.fi/did-you-find-a-job
+    - https://www.kela.fi/unemployment-general-social-security-benefit
+
+- id: tricky-palkkatuki
+  category: tricky
+  question: palkkatuki - how much does it cover?
+  key_facts: ["50%"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy
+
+- id: tricky-tyokokeilu
+  category: tricky
+  question: How long can työkokeilu last?
+  key_facts: ["six months | 6 months"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out
+
+- id: tricky-typo
+  category: tricky
+  question: how long is a work tryout
+  key_facts: ["six months | 6 months"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out
+
+# --- Out of scope: must refuse ---
+- id: oos-pizza
+  category: out_of_scope
+  question: What is the best pizza in Helsinki?
+  must_refuse: true
+
+- id: oos-weather
+  category: out_of_scope
+  question: What will the weather be like in Tampere tomorrow?
+  must_refuse: true
+
+- id: oos-tax-return
+  category: out_of_scope
+  question: How do I file my tax return in Finland?
+  must_refuse: true
+
+- id: oos-tourist-visa
+  category: out_of_scope
+  question: Do I need a visa to visit Finland as a tourist?
+  must_refuse: true
+
+- id: oos-residence-permit
+  category: out_of_scope
+  question: How do I renew my residence permit at Migri?
+  must_refuse: true
+
+- id: oos-sue-employer
+  category: out_of_scope
+  question: My employer fired me without a reason. Should I sue them?
+  must_refuse: true
+
+- id: oos-eviction
+  category: out_of_scope
+  question: Is my landlord's eviction notice legal?
+  must_refuse: true
+
+- id: oos-appeal-my-case
+  category: out_of_scope
+  question: Kela rejected my application. Will I win if I appeal?
+  must_refuse: true

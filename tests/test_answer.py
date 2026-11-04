@@ -6,7 +6,7 @@ from jobseeker_assistant.answer import (
 )
 from jobseeker_assistant.llm import FakeLLM
 
-Q = "How long can a work trial last?"
+Q = "What is the duration of a work trial?"
 
 
 def test_answer_with_valid_citation(fixture_index):
@@ -96,11 +96,56 @@ def test_citing_historical_and_replacement_is_accepted(tagged_index):
     assert "[historical]" in ans.render()
 
 
-def test_citing_only_historical_page_is_refused(tagged_index):
+def test_citing_only_historical_page_adds_note_and_replacement(tagged_index):
     def reply(system, user):
         return f"You can get the old benefit {_label_of(user, 'old-benefit')}."
 
-    assert answer_question(OLD_Q, tagged_index, FakeLLM(reply)).refused
+    ans = answer_question(OLD_Q, tagged_index, FakeLLM(reply))
+    assert not ans.refused
+    [note] = ans.added_notes
+    labels = {c.url: c.label for c in ans.citations}
+    old, new = (
+        labels["https://example.test/old-benefit"],
+        labels["https://example.test/new-benefit"],
+    )
+    assert (
+        note == f"Note: Old benefit was replaced by the new benefit on 1 May 2026. [{old}][{new}]"
+    )
+    assert {c.url for c in ans.citations} == {
+        "https://example.test/old-benefit",
+        "https://example.test/new-benefit",
+    }
+    assert ans.text.endswith(ans.added_notes[0])
+
+
+def test_note_added_once_even_if_model_cites_both(tagged_index):
+    def reply(system, user):
+        old, new = _label_of(user, "old-benefit"), _label_of(user, "new-benefit")
+        return f"Old {old}{old}. New {new}."
+
+    ans = answer_question(OLD_Q, tagged_index, FakeLLM(reply))
+    assert len(ans.added_notes) == 1
+
+
+def test_refuses_if_replacement_page_is_unavailable(tagged_index):
+    # Index without the replacement page: the note can't be backed by a source.
+    from jobseeker_assistant.retrieve import Index
+
+    idx = Index([p for p in tagged_index.passages if "new-benefit" not in p.url])
+
+    def reply(system, user):
+        return f"You can get the old benefit {_label_of(user, 'old-benefit')}."
+
+    assert answer_question(OLD_Q, idx, FakeLLM(reply)).refused
+
+
+def test_historical_page_without_replacement_gets_plain_note():
+    from jobseeker_assistant.answer import historical_notes
+    from jobseeker_assistant.retrieve import Hit, Passage
+    from jobseeker_assistant.source_tags import SourceTags
+
+    p = Passage("id", "u", "t", "s", "x", "d", SourceTags(status="historical", note="Old news."))
+    assert historical_notes([1], [Hit(p, 1.0)]) == (["Note: Old news. [S1]"], [])
 
 
 def test_system_prompt_explains_historical_and_employer_labels():
@@ -121,3 +166,14 @@ def test_source_label_for_untagged_page(fixture_index):
     from jobseeker_assistant.answer import source_label
 
     assert source_label(fixture_index.search("work trial")[0]) == ""
+
+
+def test_low_coverage_question_is_refused_without_calling_llm(fixture_index):
+    llm = FakeLLM("should not be used [S1]")
+    ans = answer_question("benefit pizza helsinki", fixture_index, llm)
+    assert ans.refused and llm.calls == []
+
+
+def test_min_coverage_can_be_lowered(fixture_index):
+    ans = answer_question("benefit pizza helsinki", fixture_index, FakeLLM(), min_coverage=0.0)
+    assert not ans.refused

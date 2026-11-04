@@ -2,14 +2,16 @@
 
 Safety rules applied in code, not only in the prompt:
 - No relevant passages            -> refusal, the LLM is not even called.
+- Passages match too little of the question (coverage) -> refusal, LLM not called.
 - Model says NOT_COVERED          -> refusal.
 - Answer has no [S#] citation     -> refusal (an uncited claim can't be checked).
 - Answer cites a source we did not give it -> refusal (invented citation).
-- Answer cites a HISTORICAL page but not the page that replaced it -> refusal.
 - Every answer ends with the "rules change, check with Kela" note.
 
-Historical pages that are retrieved always bring their replacement page into the sources,
-so the model can say what replaced the old benefit and cite both.
+Historical pages: a retrieved historical page always brings its replacement page into the
+sources. If the answer cites a historical page, the code itself appends the page's
+"replaced by ... on 1 May 2026" note, citing both the old page and its replacement, so this
+never depends on the model remembering. Refusal only if the replacement page isn't available.
 """
 
 from __future__ import annotations
@@ -29,6 +31,10 @@ DISCLAIMER = (
     "employment office before you act."
 )
 NOT_COVERED = "NOT_COVERED"
+DEFAULT_MIN_SCORE = 1.0  # passages below this BM25 score are dropped
+# Refuse without calling the LLM unless some retrieved passage covers at least this share of
+# the question (Index.coverage). Tuned on the golden set 2026-11-04: see PROGRESS.md.
+DEFAULT_MIN_COVERAGE = 0.5
 
 SYSTEM_PROMPT = f"""You answer jobseekers' questions about Finnish unemployment rules and \
 employment services.
@@ -56,6 +62,7 @@ class Citation:
     section: str
     fetched_at: str
     historical: bool = False
+    also_on: tuple[str, ...] = ()  # other pages with the same text (deduplicated)
 
 
 @dataclass
@@ -64,6 +71,7 @@ class Answer:
     citations: list[Citation] = field(default_factory=list)
     refused: bool = False
     hits: list[Hit] = field(default_factory=list)
+    added_notes: list[str] = field(default_factory=list)
 
     def render(self) -> str:
         out = [self.text]
@@ -109,12 +117,30 @@ def add_replacements(question: str, hits: list[Hit], index: Index) -> list[Hit]:
     return hits
 
 
-def missing_replacement(cited: list[Hit]) -> bool:
-    """True if a cited historical page's replacement is not cited as well."""
-    cited_urls = {h.passage.url for h in cited}
-    return any(
-        h.passage.tags.replaced_by and h.passage.tags.replaced_by not in cited_urls for h in cited
-    )
+def historical_notes(cited: list[int], hits: list[Hit]) -> tuple[list[str], list[int]] | None:
+    """Notes to append for cited historical pages, and the source numbers they add.
+
+    Returns None if a cited historical page's replacement isn't among the sources.
+    """
+    notes, extra = [], []
+    seen_pages = set()
+    for n in cited:
+        tags = hits[n - 1].passage.tags
+        url = hits[n - 1].passage.url
+        if not tags.historical or url in seen_pages:
+            continue
+        seen_pages.add(url)
+        labels = [n]
+        if tags.replaced_by:
+            m = next((i for i, h in enumerate(hits, 1) if h.passage.url == tags.replaced_by), None)
+            if m is None:
+                return None
+            labels.append(m)
+            if m not in cited:
+                extra.append(m)
+        note = tags.note or "This source describes rules that no longer apply."
+        notes.append(f"Note: {note} " + "".join(f"[S{i}]" for i in labels))
+    return notes, extra
 
 
 def _refuse(hits: list[Hit]) -> Answer:
@@ -122,10 +148,15 @@ def _refuse(hits: list[Hit]) -> Answer:
 
 
 def answer_question(
-    question: str, index: Index, llm: LLM, k: int = 4, min_score: float = 1.0
+    question: str,
+    index: Index,
+    llm: LLM,
+    k: int = 4,
+    min_score: float = DEFAULT_MIN_SCORE,
+    min_coverage: float = DEFAULT_MIN_COVERAGE,
 ) -> Answer:
     hits = [h for h in index.search(question, k=k) if h.score >= min_score]
-    if not hits:
+    if not hits or max(index.coverage(question, h.passage) for h in hits) < min_coverage:
         return _refuse(hits)
     hits = add_replacements(question, hits, index)
 
@@ -137,11 +168,20 @@ def answer_question(
     if not cited or any(n < 1 or n > len(hits) for n in cited):
         return _refuse(hits)
 
-    if missing_replacement([hits[n - 1] for n in cited]):
+    result = historical_notes(cited, hits)
+    if result is None:
         return _refuse(hits)
+    notes, extra = result
+    if notes:
+        raw = raw + "\n\n" + "\n".join(notes)
+        cited = sorted(set(cited) | set(extra))
 
     citations = []
     for n in cited:
         p = hits[n - 1].passage
-        citations.append(Citation(f"S{n}", p.url, p.section, p.fetched_at, p.tags.historical))
-    return Answer(text=raw, citations=citations, hits=hits)
+        citations.append(
+            Citation(
+                f"S{n}", p.url, p.section, p.fetched_at, p.tags.historical, hits[n - 1].also_on
+            )
+        )
+    return Answer(text=raw, citations=citations, hits=hits, added_notes=notes)
