@@ -1,6 +1,8 @@
 """Simple RAG: question -> top passages -> LLM answer with citations -> safety checks.
 
 Safety rules applied in code, not only in the prompt:
+- Personal legal advice ("will I win my appeal?", "should I sue?") -> refusal before
+  retrieval, whatever the sources say (legal_advice.py).
 - No relevant passages            -> refusal, the LLM is not even called.
 - Passages match too little of the question (coverage) -> refusal, LLM not called.
 - Model says NOT_COVERED          -> refusal.
@@ -19,6 +21,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
+from . import legal_advice
 from .glossary import Term, expand
 from .llm import LLM
 from .retrieve import Hit, Index
@@ -74,6 +77,7 @@ class Answer:
     hits: list[Hit] = field(default_factory=list)
     added_notes: list[str] = field(default_factory=list)
     glossary_used: list[str] = field(default_factory=list)  # glossary terms that fired
+    refusal_reason: str = ""  # why it refused, e.g. "legal_advice", "low_coverage"
 
     def render(self) -> str:
         out = [self.text]
@@ -145,8 +149,16 @@ def historical_notes(cited: list[int], hits: list[Hit]) -> tuple[list[str], list
     return notes, extra
 
 
-def _refuse(hits: list[Hit], glossary_used: list[str] | None = None) -> Answer:
-    return Answer(text=REFUSAL, refused=True, hits=hits, glossary_used=glossary_used or [])
+def _refuse(
+    hits: list[Hit], reason: str, glossary_used: list[str] | None = None, text: str = REFUSAL
+) -> Answer:
+    return Answer(
+        text=text,
+        refused=True,
+        hits=hits,
+        glossary_used=glossary_used or [],
+        refusal_reason=reason,
+    )
 
 
 def answer_question(
@@ -158,24 +170,30 @@ def answer_question(
     min_coverage: float = DEFAULT_MIN_COVERAGE,
     glossary: list[Term] | None = None,
 ) -> Answer:
+    rule = legal_advice.detect(question)
+    if rule:
+        return _refuse([], f"legal_advice:{rule}", text=legal_advice.LEGAL_ADVICE_REFUSAL)
+
     exp = expand(question, glossary or [])
     used = [t.match[0] for t in exp.used]
     hits = [h for h in index.search(exp.retrieval_query, k=k) if h.score >= min_score]
-    if not hits or max(index.coverage(exp.coverage_query, h.passage) for h in hits) < min_coverage:
-        return _refuse(hits, used)
+    if not hits:
+        return _refuse(hits, "no_passages", used)
+    if max(index.coverage(exp.coverage_query, h.passage) for h in hits) < min_coverage:
+        return _refuse(hits, "low_coverage", used)
     hits = add_replacements(exp.retrieval_query, hits, index)
 
     raw = llm.complete(SYSTEM_PROMPT, build_user_prompt(question, hits)).strip()
     if not raw or NOT_COVERED in raw:
-        return _refuse(hits, used)
+        return _refuse(hits, "not_covered", used)
 
     cited = sorted({int(n) for n in _CITATION.findall(raw)})
     if not cited or any(n < 1 or n > len(hits) for n in cited):
-        return _refuse(hits, used)
+        return _refuse(hits, "no_or_invented_citation", used)
 
     result = historical_notes(cited, hits)
     if result is None:
-        return _refuse(hits, used)
+        return _refuse(hits, "replacement_unavailable", used)
     notes, extra = result
     if notes:
         raw = raw + "\n\n" + "\n".join(notes)

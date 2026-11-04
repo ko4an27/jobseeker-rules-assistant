@@ -124,3 +124,19 @@ def test_save_report_never_overwrites(tmp_path, fixture_index):
     second, _ = save_report(results, meta, tmp_path)
     assert first.name == "2026-11-04T100000Z_fake_before.json"
     assert second.name == "2026-11-04T100000Z_fake_before-2.json"
+
+
+def test_refusal_for_the_wrong_reason_fails():
+    legal = Case("l1", "out_of_scope", "Should I sue?", True, refusal_reason="legal_advice")
+    assert grade(legal, Answer("no", refused=True, refusal_reason="legal_advice:lawsuit"), 0).passed
+    assert not grade(legal, Answer("no", refused=True, refusal_reason="low_coverage"), 0).passed
+
+
+def test_refusal_reason_needs_must_refuse(tmp_path):
+    f = tmp_path / "g.yaml"
+    f.write_text(
+        "- {id: a, category: current, question: q, refusal_reason: legal_advice,"
+        " key_facts: [x], expected_sources: [u]}\n"
+    )
+    with pytest.raises(ValueError, match="refusal_reason"):
+        load_golden(f)

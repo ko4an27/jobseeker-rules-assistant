@@ -8,7 +8,8 @@ The golden set (evals/golden.yaml) may be used for tuning. The held-out set
 (evals/heldout.yaml) never is: it shows whether a change generalises.
 
 Exact checks per case:
-- refusal_ok        refused exactly when the case says must_refuse
+- refusal_ok        refused exactly when the case says must_refuse (and, if the case names
+                    a refusal_reason, refused for that reason)
 - source_cited      the answer cites at least one expected source URL
 - facts_in_answer   every key fact appears in the answer text
 Diagnostics (why a case failed):
@@ -52,6 +53,7 @@ class Case:
     must_refuse: bool = False
     key_facts: tuple[str, ...] = ()
     expected_sources: tuple[str, ...] = ()
+    refusal_reason: str = ""  # optional: the refusal must come from this rule (prefix match)
 
 
 def load_golden(path: Path = GOLDEN) -> list[Case]:
@@ -66,12 +68,15 @@ def load_golden(path: Path = GOLDEN) -> list[Case]:
             must_refuse=bool(item.get("must_refuse", False)),
             key_facts=tuple(item.get("key_facts", ())),
             expected_sources=tuple(item.get("expected_sources", ())),
+            refusal_reason=item.get("refusal_reason", ""),
         )
         if case.id in seen:
             raise ValueError(f"duplicate case id {case.id}")
         seen.add(case.id)
         if case.category not in CATEGORIES:
             raise ValueError(f"{case.id}: unknown category {case.category}")
+        if case.refusal_reason and not case.must_refuse:
+            raise ValueError(f"{case.id}: refusal_reason only makes sense with must_refuse")
         if case.must_refuse and (case.key_facts or case.expected_sources):
             raise ValueError(f"{case.id}: must_refuse cases have no facts or sources")
         if not case.must_refuse and not (case.key_facts and case.expected_sources):
@@ -97,6 +102,7 @@ class CaseResult:
     question: str
     must_refuse: bool
     refused: bool
+    refusal_reason: str
     refusal_ok: bool
     source_cited: bool | None
     source_retrieved: bool | None
@@ -118,6 +124,8 @@ class CaseResult:
 
 def grade(case: Case, ans: Answer, top_score: float, top_coverage: float = 0.0) -> CaseResult:
     refusal_ok = ans.refused == case.must_refuse
+    if case.refusal_reason and not ans.refusal_reason.startswith(case.refusal_reason):
+        refusal_ok = False  # refused, but not for the reason this case is about
     if case.must_refuse:
         cited = retrieved = in_answer = in_sources = None
         missing: list[str] = []
@@ -137,6 +145,7 @@ def grade(case: Case, ans: Answer, top_score: float, top_coverage: float = 0.0) 
         question=case.question,
         must_refuse=case.must_refuse,
         refused=ans.refused,
+        refusal_reason=ans.refusal_reason,
         refusal_ok=refusal_ok,
         source_cited=cited,
         source_retrieved=retrieved,

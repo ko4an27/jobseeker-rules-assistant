@@ -98,8 +98,10 @@
   category: out_of_scope
   question: Should I take my former employer to court over unpaid overtime?
   must_refuse: true
+  refusal_reason: legal_advice
 
 - id: h-oos-appeal-chances
   category: out_of_scope
   question: What are my chances if I appeal the employment office's decision about my benefit?
   must_refuse: true
+  refusal_reason: legal_advice
