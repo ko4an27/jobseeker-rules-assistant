@@ -1,15 +1,15 @@
 ---
 url: https://www.kela.fi/if-you-become-unemployed
 title: If you become unemployed
-fetched_at: 2026-11-03T19:28:33+00:00
+fetched_at: 2026-11-03T20:20:37+00:00
 ---
 # If you become unemployed
 
 ## On this page
-- Register as an unemployed jobseeker
-- Where and how to apply for unemployment benefits
-- What do Kela and municipal employment services do?
-- Unemployment in different life situations
+- [link] Register as an unemployed jobseeker
+- [link] Where and how to apply for unemployment benefits
+- [link] What do Kela and municipal employment services do?
+- [link] Unemployment in different life situations
 
 ## Register as an unemployed jobseeker
 Register immediately as an unemployed jobseeker with the employment services of your municipality of residence if
@@ -59,7 +59,7 @@ If Kela does not grant you the general social security benefit, check if you can
 
 ## Applying for social assistance? Apply for other benefits first
 The basic amount (perusosa) of your social assistance can be reduced by 50% from 1 February 2026 onwards if you do not look for full-time jobs and apply for all other benefits you have the right to. Remember to stay registered as an active jobseeker and do all tasks employment services ask you to do on time. The change is expected to take effect on 1 February 2026.
-Learn more about the social assistance.
+[link] Learn more about the social assistance.
 
 ## What do Kela and municipal employment services do?
 After you have registered as an unemployed jobseeker, the employment services of your municipality of residence will examine your situation. After that, Kela will get a labour policy statement from the employment services or the KEHA Centre (keha-keskus.fi, In Finnish) .
@@ -97,7 +97,7 @@ You must apply for admission to at least two forms of education that
 The education programmes you apply to do not have to be included in the joint application period. If you are invited to take an entrance exam, you must participate.
 You must also complete a qualifying period (odotusaika) of 21 weeks or about 5 months before you can get unemployment benefits during your unemployment. Only days when you are registered as a jobseeker with the employment services count towards the qualifying period. You can get the general social security benefit after you have completed the qualifying period.
 If you live with your parents, their income may affect your general social security benefit.
-More information on how parental income affects the general social security benefit.
+[link] More information on how parental income affects the general social security benefit.
 
 #### What happens if you do not apply for admission to a place in education?
 The KEHA Centre will impose an obligation to work (työssäolovelvoite) on you if
@@ -115,10 +115,10 @@ Even if you do not get unemployment benefits during your unemployment, you can g
 
 #### Have you worked?
 You can get earnings-related unemployment allowance (ansiopäiväraha) if you have graduated from upper secondary school, you belong to an unemployment fund (työttömyyskassa) and you meet the work requirement . Register as an unemployed jobseeker with the employment services of your municipality of residence (kotikunta) immediately after you graduate. Earnings-related unemployment allowance is paid after you have completed a waiting period (omavastuuaika). The waiting period is 7 working days from the day when you registered as an unemployed jobseeker.
-Read about the benefits young persons can get from Kela.
+[link] Read about the benefits young persons can get from Kela.
 If you have graduated from an institute of vocational education or an institution of higher education, you can get unemployment benefits after you have completed a waiting period (omavastuuaika) of 7 working days. Register as a jobseeker with the employment services of your municipality of residence (kotikunta) immediately after you have graduated if you do not have a job or if you work part time.
-Read more about the work requirement and the unemployment benefits.
-Read about the benefits young persons can get from Kela.
+[link] Read more about the work requirement and the unemployment benefits.
+[link] Read about the benefits young persons can get from Kela.
 If you are under 25 years of age and you do not have vocational qualifications or a higher education degree, you must apply for admission to at least 2 study programmes that begin in the autumn term.
 The study programmes can be:
 - studies that will lead to a degree and give you vocational qualifications
@@ -129,7 +129,7 @@ In certain situations, you can agree on the following with the employment servic
 - applying to studies other than those mentioned above or that do not start in the autumn term
 - doing something else that has been agreed on rather than applying to a study programme.
 Contact employment services (tyomarkkinatori.fi) to agree on the details for applying for admission to education.
-Read about the studies that you can apply for to meet the application requirement (tyomarkkinatori.fi).
+[link] Read about the studies that you can apply for to meet the application requirement (tyomarkkinatori.fi).
 The KEHA Centre will impose an obligation to work (työssäolovelvoite) on you if
 - you do not apply for admission to education
 - you turn down a place of study
@@ -143,18 +143,18 @@ An obligation to work means that you cannot get unemployment benefits during you
 - You turn 25 years old.
 Even if you do not get unemployment benefits during your unemployment, you can get unemployment benefits for periods when you participate in employment-promoting services. You can fulfil your obligation to work by participating in the services. In that case, we will check if you meet the other criteria for unemployment benefits. If you do not have an occupation, you may have to complete a qualifying period (odotusaika) of 21 weeks before you can get unemployment benefits.
 If you live with your parents, their income may affect your general social security benefit.
-More information on how parental income affects the general social security benefit.
+[link] More information on how parental income affects the general social security benefit.
 
 ### Example of completing an obligation of employment
 Minna is 20 years old. She graduated from upper secondary school in the spring. She did not apply for admission to at least two education programmes that start in the autumn, so the KEHA Centre imposed an obligation to work on her on 1 September.
 Minna agreed on a job try-out with the employment services. Kela paid her general social security benefit during the job try-out even though she would not have qualified for the benefit while unemployed. The job try-out lasted 10 weeks, so Minna has now completed 10 weeks that count towards the obligation to work that is 21 weeks. Next, Minna participates in a rehabilitative work activity that lasts 11 weeks. Kela pays her general social security benefit also during that time.
 After that, Minna has fulfilled her 21-week obligation to work. Minna does not have an occupation, so Kela still has to check whether she has to complete a qualifying period of 21 weeks before she can get the general social security benefit.
-Read about the benefits young persons can get from Kela.
+[link] Read about the benefits young persons can get from Kela.
 Compulsory education continues until you reach the age of 18 years.
 You can get general social security benefit if you are 17 and you already have a vocational qualification. You cannot get earnings-related unemployment allowance (ansiopäiväraha) because work you do before you turn 18 does not count towards the work requirement.
 If you are 17 and you have graduated from upper secondary school, you can get general social security benefit only if you participate in employment-promoting services.
 Persons under 17 cannot get the general social security benefit or earnings-related unemployment allowance in any circumstances.
-Read about the benefits young persons can get from Kela.
+[link] Read about the benefits young persons can get from Kela.
 You may qualify for the general social security benefit if you stop your self-employment . Employment services will examine your situation and issue a statement on it to Kela.
 If you are 55 or older and you have been laid off, you may have the right to transition security (muutosturva).
 
@@ -176,9 +176,9 @@ If you are ill, you should apply for sick leave and sickness allowance instead o
 Changes in your income may affect Kela benefits.
 
 ## On the Unemployment pages
-- If you become unemployed
-- If you are laid off temporarily
-- During unemployment
-- Did you find a job?
-- Unemployment benefits
-- Receiving unemployment benefits in Finland or abroad
+- [link] If you become unemployed
+- [link] If you are laid off temporarily
+- [link] During unemployment
+- [link] Did you find a job?
+- [link] Unemployment benefits
+- [link] Receiving unemployment benefits in Finland or abroad

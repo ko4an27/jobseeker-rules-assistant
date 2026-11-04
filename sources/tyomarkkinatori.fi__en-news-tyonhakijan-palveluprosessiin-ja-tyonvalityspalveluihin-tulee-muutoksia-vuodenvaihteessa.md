@@ -1,7 +1,7 @@
 ---
 url: https://tyomarkkinatori.fi/en/news/tyonhakijan-palveluprosessiin-ja-tyonvalityspalveluihin-tulee-muutoksia-vuodenvaihteessa
 title: There will be changes to the jobseeker's service process and employment services at the turn of the year
-fetched_at: 2026-11-03T19:28:57+00:00
+fetched_at: 2026-11-03T20:21:01+00:00
 ---
 # There will be changes to the jobseeker's service process and employment services at the turn of the year
 - News

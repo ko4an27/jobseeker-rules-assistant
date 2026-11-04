@@ -1,0 +1,7 @@
+["https://example.test/old-benefit"]
+status = "historical"
+replaced_by = "https://example.test/new-benefit"
+note = "Old benefit was replaced by the new benefit on 1 May 2026."
+
+["https://example.test/pay-subsidy"]
+audience = "employer"

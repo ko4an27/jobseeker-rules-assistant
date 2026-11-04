@@ -1,16 +1,16 @@
 ---
 url: https://www.kela.fi/did-you-find-a-job
 title: Did you find a part-time or full-time job?
-fetched_at: 2026-11-03T19:28:45+00:00
+fetched_at: 2026-11-03T20:20:50+00:00
 ---
 # Did you find a part-time or full-time job?
 
 ## On this page
-- Can I get adjusted general social security benefit?
-- How to apply for adjusted general social security benefit
-- How does the wage affect the general social security benefit?
-- Will you start self-employment?
-- Did you find a job further away from where you live?
+- [link] Can I get adjusted general social security benefit?
+- [link] How to apply for adjusted general social security benefit
+- [link] How does the wage affect the general social security benefit?
+- [link] Will you start self-employment?
+- [link] Did you find a job further away from where you live?
 You can get the general social security benefit even if you work part time or find a full-time job that lasts for up to 2 weeks.
 Your general social security benefit will be adjusted to take the income you earn from work into account. This means that your general social security benefit is reduced in line with your wages or salary: the more you earn from work or self-employment, the smaller your general social security benefit will be. Half of your gross wages or salary will be deducted from the general social security benefit.
 
@@ -30,7 +30,7 @@ You cannot get adjusted general social security benefit if
 
 ## How to apply for adjusted general social security benefit
 Apply for adjusted general social security benefit by reporting the days and hours you have worked on an unemployment status report in the OmaKela e-service. Always complete the report for a period that has ended and report the days that you have already worked.
-Instructions for completing the unemployment status report
+[link] Instructions for completing the unemployment status report
 
 ## Apply for adjusted unemployment benefit
 Report the days and hours you have worked on the unemployment status report.
@@ -62,7 +62,7 @@ If your self-employment is considered to be full-time, you can no longer be paid
 
 ## Did you find a job further away from where you live?
 If you find a job further away from where you live, you can get commuting and relocation allowance.
-Read more about the commuting and relocation allowance.
+[link] Read more about the commuting and relocation allowance.
 
 ## Do you still have questions?
 Call Kela’s customer service.
@@ -73,9 +73,9 @@ Call Kela’s customer service.
 You can get general social security benefit at the same time as you work part-time, work full-time for a short period or are temporarily self-employed. If you are paid wages or a salary during the time you are unemployed, the general social security benefit will be adjusted to take your earned income into account. There is an online calculator you can use to estimate how much your earned income will reduce your general social security benefit.
 
 ## On the Unemployment pages
-- If you become unemployed
-- If you are laid off temporarily
-- During unemployment
-- Did you find a job?
-- Unemployment benefits
-- Receiving unemployment benefits in Finland or abroad
+- [link] If you become unemployed
+- [link] If you are laid off temporarily
+- [link] During unemployment
+- [link] Did you find a job?
+- [link] Unemployment benefits
+- [link] Receiving unemployment benefits in Finland or abroad

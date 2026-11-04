@@ -1,7 +1,7 @@
 ---
 url: https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/search-for-work/services-to-support-job-seeking
 title: Services to support job seeking
-fetched_at: 2026-11-03T19:28:46+00:00
+fetched_at: 2026-11-03T20:20:51+00:00
 ---
 # Services to support job seeking
 Job seeking requires personal intiative, but you don't have to do everything on your own. Various services help you in your job search in different life situations.
@@ -21,11 +21,11 @@ In order to receive vocational guidance and career planning, you do not need to 
 ## Do the following
 Contact the employment authority in your area and ask if you can get vocational guidance and career planning.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Employment services locally
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Vocational guidance and career planning⁠
+- [link] Vocational guidance and career planning⁠
 
 ### Career coaching
 Career coaching guides and supports you in studying different career options.
@@ -44,11 +44,11 @@ You can participate in career coaching if
 ## Do the following
 Contact the employment authority in your area and ask if you can get career coaching.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Employment services locally
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Career coaching⁠
+- [link] Career coaching⁠
 
 ### Job search coaching
 In job search coaching, you can learn job-seeking skills.
@@ -68,11 +68,11 @@ The employment authority decides who is selected for job search coaching.
 ## Do the following
 Contact the employment authority in your area and ask if you can get job search coaching.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Employment services locally
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Job-search training⁠
+- [link] Job-search training⁠
 
 ### Work coaching
 Work coaching will guide and support you personally in searching for a job and finding employment.
@@ -91,11 +91,11 @@ You can participate in work coaching if
 ## Do the following
 Contact the employment authority in your area and ask if you can get work coaching.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Employment services locally
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Job coaching⁠
+- [link] Job coaching⁠
 
 ### Work try-out
 You can use a work try-out to find out about career choices and career options in practical tasks. You can also use it to support your return to work.
@@ -118,11 +118,11 @@ A work try-out may be organised by a company, entrepreneur, municipality, joint 
 ## Do the following
 Contact the employment authority in your area and ask if you can participate in a work try-out.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Employment services locally
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Work try-out⁠
+- [link] Work try-out⁠
 
 ### Labour market training
 Labour market training helps you develop your professional skills and promote your employment.
@@ -150,14 +150,14 @@ If you are unable to apply online, you apply by filling in the form “Applicati
 Before submitting your application, carefully read the admission criteria of the training programme you are interested in.
 If you are an unemployed jobseeker, you can apply for reimbursement of travel and accommodation expenses from the employment authority when you travel for an admission event or aptitude test for labour market training, or visit the educational institution before starting labour market training if your disability or illness requires familiarisation with the accessibility and suitability of the educational institution.
 You can get support for using the E-service from the Job Market Finland's E-services advice.
-- E-services
-- Trainings and services
-- Job Market Finland's E-services advice
-- Application for labour market training form, in Finnish (suomi.fi)⁠
+- [link] E-services
+- [link] Trainings and services
+- [link] Job Market Finland's E-services advice
+- [link] Application for labour market training form, in Finnish (suomi.fi)⁠
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Labour market training⁠
+- [link] Labour market training⁠
 
 ### Jointly acquired training
 Jointly acquired training is labour market training organised jointly by the employment authority and a company.
@@ -180,22 +180,22 @@ If you intend to become an entrepreneur, you can organise jointly acquired train
 Contact the employment authority of your area and submit a proposal for jointly acquired training.
 The handler of your proposal will contact you to assess training needs and draw up a preliminary training plan.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Employment services locally
-- Business E-services
-- Enterprise Finland Advisory Service and help with E-services
-- Employer’s proposal on joint procurement training (suomi.fi)⁠
+- [link] Employment services locally
+- [link] Business E-services
+- [link] Enterprise Finland Advisory Service and help with E-services
+- [link] Employer’s proposal on joint procurement training (suomi.fi)⁠
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Joint procurement training⁠
+- [link] Joint procurement training⁠
 
 ### One-Stop Guidance Centers
 If you are aged under 30, a visit to a One-Stop Guidance Center can help you get started. The One-Stop Guidance Center provides information and guidance according to your needs, for example on matters related to studying, finding employment, and the smoothness of everyday life.
-- The One-Stop Guidance Centers (ohjaamot.fi)⁠⁠
+- [link] The One-Stop Guidance Centers (ohjaamot.fi)⁠⁠
 
 ### Abilitator®
 The Abilitator is a free self-assessment method of work ability and functioning for all people of working age. With the Abilitator quiz you can find out about your situation, strengths, and development needs.
-Abilitator®
+[link] Abilitator®
 
 ## Financial assistance for job search and employment
 If you are an unemployed job seeker, the employer can be granted a pay subsidy for your hiring costs. If you are over 55 years old and unemployed as a job seeker, the employer can be granted employment subsidy for job seekers aged 55 or over. When you apply for a job or accept a job as an unemployed person in a location that is far from where you live, you can receive compensation or assistance for travel and accommodation costs or commuting and moving costs.
@@ -239,13 +239,13 @@ The mandate theme used for the subsidy is called Applying for pay subsidy.
 In addition to the mandate, organisations need a business ID to use the e-services.
 You can get advice on using the E-service and how to authorise from the Enterprise Finland Advisory Service.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Business E-services
-- Enterprise Finland Advisory Service and help with E-services
-- Employment services locally
+- [link] Business E-services
+- [link] Enterprise Finland Advisory Service and help with E-services
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Pay subsidy⁠
+- [link] Pay subsidy⁠
 
 ### Employment subsidy for those aged 55 or over
 The employment subsidy is a financial subsidy for employers for the salary costs of an unemployed jobseeker aged 55 or over.
@@ -278,13 +278,13 @@ Complete the application in the service and attach the required documents. The s
 In the e-service, the application can be submitted by an authorised person. Persons without separate authorisation can act on behalf of an organisation if they have an existing mandate for transactions or a right based on register data. The e-service checks the person’s right to use e-services when logging in.
 The mandate theme used for the subsidy is called Applying for pay subsidy.
 You can get advice on using the E-service and how to authorise from the Enterprise Finland Advisory Service.
-- Business E-services
-- Enterprise Finland Advisory Service and help with E-services
-- Employment services locally
+- [link] Business E-services
+- [link] Enterprise Finland Advisory Service and help with E-services
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Employment subsidy for people aged 55 or over⁠
+- [link] Employment subsidy for people aged 55 or over⁠
 
 ### Reimbursement of travel and accommodation costs
 You can get compensation for travel and accommodation costs when you are applying for a job or participating in a service that promotes employment.
@@ -318,12 +318,12 @@ If you cannot use the e-service, apply for compensation using the printable form
 If you have been granted compensation for travel or accommodation expenses in full or in part in advance, submit the supporting documents for the costs incurred to the authority that made the decision within one month of the end of the trip.
 If you have applied for compensation in the e-service, you can supplement the information needed for payment in the e-service if necessary.
 The Job Market Finland's regional pages contain contact information provided by employment authorities.
-- Regional administration's e-service for employment and economic development services (suomi.fi)⁠
-- Application for Reimbursement of travel and accommodation costs, in Finnish (suomi.fi)⁠
-- Employment services locally
+- [link] Regional administration's e-service for employment and economic development services (suomi.fi)⁠
+- [link] Application for Reimbursement of travel and accommodation costs, in Finnish (suomi.fi)⁠
+- [link] Employment services locally
 
 ## Browse regional services
 You can find more detailed information and instructions in the service description published by the employment authority in your area.
-- Reimbursement of travel and accommodation costs⁠
+- [link] Reimbursement of travel and accommodation costs⁠
 This website is part of the European Commission's Your Europe portal. Did you find what you were looking for? Give feedback! (europa.eu)
 Updated: 1.6.2026

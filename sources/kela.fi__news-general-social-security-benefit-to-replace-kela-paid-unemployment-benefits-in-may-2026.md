@@ -1,7 +1,7 @@
 ---
 url: https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026
 title: General social security benefit to replace Kela-paid unemployment benefits in May 2026
-fetched_at: 2026-11-03T19:28:38+00:00
+fetched_at: 2026-11-03T20:20:42+00:00
 ---
 # General social security benefit to replace Kela-paid unemployment benefits in May 2026
 Parliament has approved the government proposal on the general social security benefit. The new general social security benefit will come into force on 1 May 2026. It will replace labour market subsidy and basic unemployment allowance. These are existing unemployment benefits that are currently paid by Kela.
@@ -44,10 +44,10 @@ The general social security benefit is part of a larger social security reform p
 The Act on the General Social Security Benefit will enter into force on 1 May 2026. Kela publishes updates on the general social security benefit on its Unemployment page and provides instructions on how to apply for it in OmaKela .
 
 ## More information
-- Kela – Frequently asked questions about the general social security benefit
-- Kela – OmaKela e-service (available in Finnish and Swedish)
-- Kela’s Info Tray – Statistical Yearbook on Unemployment Protection in Finland 2024
-- Ministry of Social Affairs and Health: Government proposal to Parliament on the Act on General Social Security Benefit HE 112/2025 vp (stm.fi, in Finnish only)
+- [link] Kela – Frequently asked questions about the general social security benefit
+- [link] Kela – OmaKela e-service (available in Finnish and Swedish)
+- [link] Kela’s Info Tray – Statistical Yearbook on Unemployment Protection in Finland 2024
+- [link] Ministry of Social Affairs and Health: Government proposal to Parliament on the Act on General Social Security Benefit HE 112/2025 vp (stm.fi, in Finnish only)
 
 ## See also
 

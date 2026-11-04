@@ -39,3 +39,40 @@ def test_search_returns_nothing_for_unrelated_question(fixture_index):
 
 def test_empty_index_is_safe():
     assert Index([]).search("anything") == []
+
+
+def test_link_share_counts_link_lines():
+    from jobseeker_assistant.retrieve import Passage
+
+    p = Passage("id", "u", "t", "s", "Text\n- [link] A\n- [link] B\n- real item", "d")
+    assert p.link_share == 0.5
+
+
+def test_link_list_sections_are_not_retrieved(tagged_index):
+    hits = tagged_index.search("unemployed jobseeker contact details forms", k=10)
+    assert hits and all(h.passage.section != "Read more" for h in hits)
+
+
+def test_historical_pages_rank_below_current(tagged_index):
+    hits = tagged_index.search("unemployed jobseeker earnings-related allowance", k=2)
+    assert hits[0].passage.url == "https://example.test/new-benefit"
+
+
+def test_passage_weight_rules():
+    from jobseeker_assistant.retrieve import HISTORICAL_WEIGHT, Passage, passage_weight
+    from jobseeker_assistant.source_tags import SourceTags
+
+    plain = Passage("id", "u", "t", "s", "rule text", "d")
+    assert passage_weight(plain) == 1.0
+    old = Passage("id", "u", "t", "s", "rule text", "d", SourceTags(status="historical"))
+    assert passage_weight(old) == HISTORICAL_WEIGHT
+    off = Passage("id", "u", "t", "s", "rule text", "d", SourceTags(weight=0))
+    assert passage_weight(off) == 0
+    links = Passage("id", "u", "t", "s", "- [link] a\n- [link] b\n- [link] c\nx", "d")
+    assert passage_weight(links) == 0
+
+
+def test_best_from_url(tagged_index):
+    hit = tagged_index.best_from_url("https://example.test/new-benefit", "who can get it")
+    assert hit.passage.url == "https://example.test/new-benefit"
+    assert tagged_index.best_from_url("https://example.test/none", "q") is None

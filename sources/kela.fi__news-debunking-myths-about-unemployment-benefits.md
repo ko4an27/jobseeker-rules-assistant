@@ -1,7 +1,7 @@
 ---
 url: https://www.kela.fi/news/debunking-myths-about-unemployment-benefits
 title: Debunking myths about unemployment benefits
-fetched_at: 2026-11-03T19:28:42+00:00
+fetched_at: 2026-11-03T20:20:46+00:00
 ---
 # Debunking myths about unemployment benefits
 There are many commonly held beliefs about unemployment benefits, not all of which are true. In this article, we fact-check some misconceptions about unemployment benefits.
@@ -53,7 +53,7 @@ Kela gets information on withholding taxes directly from the Tax Administration 
 
 ## General social security benefit has replaced labour market subsidy and basic unemployment allowance
 As of May 2026, general social security benefit (yleistuki) has replaced the labour market subsidy (työmarkkinatuki) and basic unemployment allowance (peruspäiväraha) formerly paid by Kela. Labour market subsidy and basic unemployment allowance have been abolished. This article addresses some of the most frequently asked questions on the general social security benefit.
-Read more about the general social security benefit
+[link] Read more about the general social security benefit
 
 ## See also
 

@@ -1,19 +1,19 @@
 ---
 url: https://www.kela.fi/basic-unemployment-allowance
 title: Basic unemployment allowance
-fetched_at: 2026-11-03T19:28:43+00:00
+fetched_at: 2026-11-03T20:20:47+00:00
 ---
 # Basic unemployment allowance
 
 ## On this page
-- Can I get basic unemployment allowance?
-- How much is the basic unemployment allowance?
-- Report changes
+- [link] Can I get basic unemployment allowance?
+- [link] How much is the basic unemployment allowance?
+- [link] Report changes
 Basic unemployment allowance (peruspäiväraha) is an unemployment benefit paid by Kela. If you are a member of an unemployment fund (työttömyyskassa), you can get earnings-related unemployment allowance (ansiopäiväraha).
 
 ## The general social security benefit has replaced labour market subsidy and basic unemployment allowance
 As of May 2026, the general social security benefit (yleistuki) has replaced both labour market subsidy (työmarkkinatuki) and basic unemployment allowance (peruspäiväraha). Labour market subsidy and basic unemployment allowance have been abolished.
-Read more of the general social security benefit.
+[link] Read more of the general social security benefit.
 
 ## Can I get unemployment allowance?
 If you become unemployed, you can get basic unemployment allowance if
@@ -22,8 +22,8 @@ If you become unemployed, you can get basic unemployment allowance if
 - you have registered with the employment services of your municipality of residence (kotikunta) at Job Market Finland (tyomarkkinatori.fi)
 - you have registered with the employment services of your municipality of residence as a jobseeker ( tyomarkkinatori.fi )
 - you can accept offers of full-time work
-- you meet the work requirement for wage-earners or self-employed persons .
-Read more about the entitlement criteria for basic unemployment allowance for persons aged under 25 years.
+- [link] you meet the work requirement for wage-earners or self-employed persons .
+[link] Read more about the entitlement criteria for basic unemployment allowance for persons aged under 25 years.
 
 ## How much is the basic unemployment allowance?
 Basic unemployment allowance is paid for 5 working days per week (including mid-week holidays). You must pay tax on the basic unemployment allowance.
@@ -77,7 +77,7 @@ If you receive basic unemployment allowance, you have to inform Kela if
 - a child is born to your family or there are other changes in your family circumstances
 In this way, the benefit is paid to the correct amount and you also do not lose any benefit due to you. Read how to report changes in OmaKela.
 If you do not report changes, you may be paid benefits you are not entitled to. In that case, the benefit will be recovered from you later. Read more about the recovery of overpaid benefits.
-Do not forget to check how any changes in your circumstances will affect other benefits that you receive from Kela.
+[link] Do not forget to check how any changes in your circumstances will affect other benefits that you receive from Kela.
 
 ## Do you still have questions?
 Call Kela’s customer service.

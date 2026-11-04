@@ -1,7 +1,7 @@
 ---
 url: https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
 title: Frequently asked questions about the general social security benefit
-fetched_at: 2026-11-03T19:28:37+00:00
+fetched_at: 2026-11-03T20:20:41+00:00
 ---
 # Frequently asked questions about the general social security benefit
 Kela began paying the general social security benefit to unemployed people on 1 May 2026. At the same time, the labour market subsidy and the basic unemployment allowance were abolished. The frequently asked questions and their answers have been compiled in this article.
@@ -70,13 +70,13 @@ If Kela has paid you too much in benefits due to your own fraudulent conduct, Ke
 Situations involving fraudulent conduct may also count as benefit fraud. If Kela suspects that you have committed benefit fraud by not telling Kela about your capital income, Kela will ask you for a statement on the suspected benefit fraud. After that, Kela may decide to report your case to the police if Kela still suspects that your case may involve benefit fraud.
 
 ### More information
-- How income that is not wages or salary affects your general social security benefit
+- [link] How income that is not wages or salary affects your general social security benefit
 
 ## Partial early old-age pension
 
 ## Draft government proposal: general social security benefit to no longer be impacted by a partial early old-age pension granted before 16 January 2026
 The Ministry of Social Affairs and Health is currently requesting comments on a draft government proposal for new legislation. If the proposal passes into law, a partial early old-age pension granted before 16 January 2026 will no longer have an effect on general social security benefit. The government proposal is slated to be submitted to Parliament in spring 2026. If approved by Parliament, the new legislation can be applied retroactively as from 1 May 2026.
-Learn more
+[link] Learn more
 
 ### I have heard that my partial early old-age pension will be taken into account in the means test for the general social security benefit. Is that true?
 The general social security benefit is a means-tested benefit. Under the Act on General Social Security Benefit, partial early old-age pension is one of the types of income taken into account in the means test and may reduce the amount of payable general social security benefit.
@@ -107,7 +107,7 @@ If you do exceed the limit of EUR 311 per month, 50% of the amount that exceeds 
 For example, if you are paid EUR 511 per month in informal caregiver’s fees and you do not have any other income that impacts the means test, you exceed the income limit by EUR 200. In that case, your general social security benefit will be reduced by EUR 100.
 
 ### More information
-- How income that is not wages or salary affects your general social security benefit
+- [link] How income that is not wages or salary affects your general social security benefit
 
 ## How earned income affects the general social security benefit
 
@@ -131,7 +131,7 @@ Kela primarily uses tax information to see how much and what types of income (su
 Kela gets information on earned income (salary and wages) from the Incomes Register.
 
 ### More information
-- Adjusted general social security benefit
+- [link] Adjusted general social security benefit
 
 ## Young unemployed persons
 
@@ -186,8 +186,8 @@ Similarly, if your general social security benefit has been reduced as a result 
 Nothing will change for you. You can get both general social security benefit and compensation for expenses while you are participating in rehabilitative work activity.
 
 ### More information
-- Unemployment benefits during participation in employment-promoting services
-- Compensation for expenses
+- [link] Unemployment benefits during participation in employment-promoting services
+- [link] Compensation for expenses
 
 ## Mandatory waiting periods
 
@@ -197,7 +197,7 @@ However, you may be subjected to a mandatory waiting period (karenssi) for unemp
 Mandatory waiting periods are periods of time during which you will not be paid any unemployment benefits. If you are subjected to an obligation to work, it means that you lose your unemployment benefits for the time being until you have worked or participated in employment-promoting services for at least 6 weeks.
 
 ### More information
-- Mandatory waiting period (Job Market Finland)
+- [link] Mandatory waiting period (Job Market Finland)
 
 ## See also
 

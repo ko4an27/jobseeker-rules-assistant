@@ -1,20 +1,20 @@
 ---
 url: https://www.kela.fi/labour-market-subsidy
 title: Labour market subsidy
-fetched_at: 2026-11-03T19:28:44+00:00
+fetched_at: 2026-11-03T20:20:48+00:00
 ---
 # Labour market subsidy
 
 ## On this page
-- Can I get labour market subsidy?
-- Qualifying period if you do not have a vocational qualification or higher education degree
-- How much is the labour market subsidy?
-- Report changes
+- [link] Can I get labour market subsidy?
+- [link] Qualifying period if you do not have a vocational qualification or higher education degree
+- [link] How much is the labour market subsidy?
+- [link] Report changes
 Labour market subsidy (työmarkkinatuki) is an unemployment benefit paid by Kela. It gives you financial security while you look for work.
 
 ## The general social security benefit has replaced labour market subsidy and basic unemployment allowance
 As of May 2026, the general social security benefit (yleistuki) has replaced both labour market subsidy (työmarkkinatuki) and basic unemployment allowance (peruspäiväraha). Labour market subsidy and basic unemployment allowance have been abolished. This article addresses some of the most frequently asked questions on the general social security benefit.
-Read more of the general social security benefit.
+[link] Read more of the general social security benefit.
 
 ## Can I get labour market subsidy?
 You can get labour market subsidy if you are unemployed and
@@ -22,7 +22,7 @@ You can get labour market subsidy if you are unemployed and
 - you enter the labour market for the first time or you have not worked long enough, i.e. you do not meet the work requirement
 - you can no longer receive basic or earnings-related unemployment allowance since your entitlement to these benefits has ended.
 If you meet the work requirement, the unemployment benefit you receive is basic unemployment allowance or earnings-related unemployment allowance.
-Read more about the work requirement and the other unemployment benefits.
+[link] Read more about the work requirement and the other unemployment benefits.
 You can receive labour market subsidy for as long as you are unemployed since its duration has not been restricted. However, when you apply for labour market subsidy we will investigate if you need it. This is called means-testing.
 
 ## Qualifying period if you do not have a vocational qualification or higher education degree
@@ -34,7 +34,7 @@ The qualifying period is 21 weeks, i.e. about 5 months. The qualifying period st
 - the obligation of employment is met.
 No qualifying period is required if labour market subsidy is paid immediately after basic or earnings-related unemployment allowance has been paid for the maximum period of time.
 If you are under 25 years of age and the employment services have set an obligation of employment for you, the qualifying period does not start until you have met the obligation.
-Read more about the obligation of employment for persons aged under 25 years.
+[link] Read more about the obligation of employment for persons aged under 25 years.
 The qualifying period is reduced by the following full calendar weeks:
 - You have been in employment that meets the work requirement.
 - You have worked as a self-employed person and the work can be included in the work requirement for self-employed persons.
@@ -86,7 +86,7 @@ EUR 3 245 per month
 5 children or more
 EUR 3 351 per month
 You must report your parents’ income in your application for labour market subsidy if you live with them. If you do not provide this information, you will automatically be granted 35% of the labour market subsidy due to you.
-Read how your parents’ divorce may affect your labour market subsidy.
+[link] Read how your parents’ divorce may affect your labour market subsidy.
 If you can prove that your parents cannot support you financially, you can receive the labour market subsidy without reduction. Such a situation can occur for instance if your parents have large debt-related expenses.
 If you participate in employment promoting services , you will receive the full labour market subsidy for this period even if you live with your parents.
 
@@ -116,7 +116,7 @@ Other income than wages and salaries does not reduce your labour market subsidy 
 
 #### Income limits for capital income and other income than wages and salaries
 Capital income and other income that is taken into account in the means-testing have an income limit. You can have income up to the income limit without any effect on your benefit. The income limit for the means-testing is not the same as the exempt amount as regards wages and salaries. If you earn a wage or salary, you can receive adjusted unemployment benefit. The adjustment takes into account wages and salaries, while the means-testing takes into account all other income.
-More on the impact of wages and salaries on the labour market subsidy.
+[link] More on the impact of wages and salaries on the labour market subsidy.
 If you live alone, the labour market subsidy is reduced by capital income and other income than wages and salaries that exceeds the income limit of EUR 311 per month. The full labour market subsidy is reduced by 75% of the income that exceeds the income limit.
 If you are married, cohabiting or in a registered partnership or the parent of underage children, the income limit is EUR 1,044 per month. The income limit is increased by EUR 130 for each dependent child. The full labour market subsidy is reduced by 50% of the income that exceeds the income limit.
 Your spouse’s or partner’s income does not affect the amount of labour market subsidy due to you.
@@ -128,7 +128,7 @@ If you receive labour market subsidy, report the following on the unemployment s
 Also report any changes in the incomes that are taken into account for the means-testing.
 When you report the changes, the benefit is paid to the correct amount and you also do not lose any benefit due to you. Read how to report changes in OmaKela.
 If you do not notify changes of the above type, you may be paid the benefit without grounds and forced to pay it back later on. Read more about the recovery of overpaid benefits.
-Do not forget to check how any changes in your circumstances will affect other benefits paid to you by Kela.
+[link] Do not forget to check how any changes in your circumstances will affect other benefits paid to you by Kela.
 
 ## Do you still have questions?
 Call Kela’s customer service.
