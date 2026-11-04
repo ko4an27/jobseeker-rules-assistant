@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 from jobseeker_assistant import api
 from jobseeker_assistant.api import MAX_QUESTION_CHARS, Resources, create_app
 from jobseeker_assistant.llm import FakeLLM
+from jobseeker_assistant.security import RateLimiter
 from jobseeker_assistant.tracing import NoopTracer
 
 
@@ -27,12 +28,19 @@ def tracer():
 @pytest.fixture
 def client(fixture_index, tracer):
     res = Resources(fixture_index, FakeLLM(), [], tracer, snapshot_count=2)
-    return TestClient(create_app(res))
+    return TestClient(create_app(res, RateLimiter(limit=100), api_key=""))
 
 
 def test_health(client):
     body = client.get("/health").json()
-    assert body == {"status": "ok", "snapshots": 2, "llm": "FakeLLM", "tracing": True}
+    assert body == {
+        "status": "ok",
+        "snapshots": 2,
+        "llm": "FakeLLM",
+        "tracing": True,
+        "api_key_required": False,
+        "rate_limit_per_minute": 100,
+    }
 
 
 def test_ask_answers_with_citations_and_path(client):
