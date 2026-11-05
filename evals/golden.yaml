@@ -197,6 +197,29 @@
   expected_sources:
     - https://tyomarkkinatori.fi/en/uudistukset24/etusivu
 
+# Added 2026-11-04 (Day 5b): the question names an abolished benefit, so the answer must
+# say it was abolished on 1 May 2026 and cite the page that states it, whatever else it says.
+- id: abolished-lms-current-pages
+  category: abolished
+  question: I get työmarkkinatuki. Do I need to do anything now?
+  key_facts: ["abolished", "1 May 2026"]
+  expected_sources:
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+
+- id: abolished-bua-per-day
+  category: abolished
+  question: How much is the basic unemployment allowance per day?
+  key_facts: ["abolished", "1 May 2026"]
+  expected_sources:
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
+
+- id: abolished-te-office-nearest
+  category: abolished
+  question: Where is my nearest TE office?
+  key_facts: ["1 January 2025", "employment areas"]
+  expected_sources:
+    - https://tyomarkkinatori.fi/en/uudistukset24/etusivu
+
 # --- Tricky wording: slang, Finnish terms, typos, negation ---
 - id: tricky-side-gig
   category: tricky

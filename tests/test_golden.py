@@ -12,7 +12,7 @@ SETS = {"golden": GOLDEN, "heldout": HELDOUT}
 
 def test_golden_set_shape():
     cases = load_golden(GOLDEN)
-    assert len(cases) == 35
+    assert len(cases) == 38  # 35 + 3 abolished-benefit cases added on Day 5b
     assert Counter(c.category for c in cases)["out_of_scope"] == 8
 
 

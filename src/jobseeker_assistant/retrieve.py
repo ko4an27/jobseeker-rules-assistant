@@ -29,6 +29,22 @@ _STOPWORDS = set(
     "what when where which who will with you your me am this that there".split()
 )
 
+# Conversational words that say HOW someone asks, not WHAT about. Ignored by the coverage
+# check only (search ranking is unchanged). Without this, words like "got", "small" or
+# "happened" are rare in the formal pages, so they weighed as much as an off-topic word like
+# "pizza" and real questions were refused. Chosen on the golden set (2026-11-04).
+COVERAGE_IGNORE = set(
+    # leftovers of contractions: can't -> can t, I'm -> i m, you'll -> you ll
+    "t s m ll ve d re "
+    # filler and discourse words
+    "all any even just really still now also ever yet true actually anyway please ok okay "
+    "hi hello thanks thank something anything thing things kind sort bit "
+    # generic verbs of asking and having
+    "got get gets getting lose loses losing happen happened happens know tell want "
+    # vague size words
+    "small little big lot lots much many some".split()
+)
+
 
 @dataclass(frozen=True)
 class Passage:
@@ -184,7 +200,7 @@ class Index:
         This is a better "is this question covered?" signal than the raw BM25 score, which
         grows with question length.
         """
-        terms = set(tokenize(query))
+        terms = set(tokenize(query)) - COVERAGE_IGNORE
         if not terms:
             return 0.0
         doc = self._doc_of.get(passage.id)

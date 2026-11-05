@@ -129,13 +129,16 @@ def add_replacements(question: str, hits: list[Hit], index: Index) -> list[Hit]:
     return hits
 
 
-def historical_notes(cited: list[int], hits: list[Hit]) -> tuple[list[str], list[int]] | None:
+def historical_notes(
+    cited: list[int], hits: list[Hit], skip_urls: set[str] | frozenset = frozenset()
+) -> tuple[list[str], list[int]] | None:
     """Notes to append for cited historical pages, and the source numbers they add.
 
+    Pages in `skip_urls` already got a note (abolished.py) and are skipped.
     Returns None if a cited historical page's replacement isn't among the sources.
     """
     notes, extra = [], []
-    seen_pages = set()
+    seen_pages = set(skip_urls)
     for n in cited:
         tags = hits[n - 1].passage.tags
         url = hits[n - 1].passage.url

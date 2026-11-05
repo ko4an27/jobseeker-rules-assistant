@@ -127,28 +127,45 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
   - `make demo`: 5 questions (incl. off-topic and legal) with the fake LLM, printing answers + paths.
   - 174 tests pass.
 
+- 2026-11-04 (Day 5b — abolished-benefit notes, coverage fix, API protection, README results):
+  - `sources/abolished.toml` + `abolished.py`: if the question names the labour market subsidy,
+    basic unemployment allowance (also työmarkkinatuki / peruspäiväraha) or the TE Office, the
+    answer always ends with the "abolished … 1 May 2026" (TE: "… 1 January 2025") note. It cites
+    the passage of a page that states the change (Kela FAQ intro; TE24 page), pulled into the
+    sources if needed, and is added only if the grounding check finds it supported. If the
+    normal flow would refuse (except legal advice), `note_only` answers with the note instead.
+    3 new golden cases (38 total); golden abolished cases 8/8.
+  - Coverage: conversational words ("got", "small", "happened", "true", contraction leftovers)
+    are ignored by the coverage check — they were rare in the formal pages and weighed like an
+    off-topic word. Tuned on golden: real answered 25/27 → 27/27, off-topic still 8/8.
+    Held-out unchanged (5/5, 9/10); `h-partial-work-ability` 0.495 → 0.47 (its "get" no longer counts).
+  - `/ask`: rate limit (10/min per client, `RATE_LIMIT_PER_MINUTE`, 429 + Retry-After) and an
+    optional API key (`API_KEY`, header `X-API-Key`, constant-time compare, 401). `/health` open.
+  - README: "Results" table per day (golden vs held-out) and "What I learned".
+  - Eval (fake LLM): golden 17/38 passed, 30/30 real answered, 8/8 off-topic refused;
+    held-out 6/15, 9/10, 5/5. 204 tests pass.
+
 ## Next
 - Day 4 (plan): LLM-as-judge with a written rubric, regression report between runs.
 - First run with a real model: watch `retried` and `refused_not_grounded`. If the 60% key-word
   threshold rejects good paraphrases, calibrate it on the golden set (never on held-out).
-- Remaining retrieval misses from Day 3 (see report): `lmt-apply`, `abolished-te-office`,
-  `abolished-peruspaivaraha`, `tricky-side-gig`; held-out `h-partial-work-ability`.
+- Remaining misses: golden `lmt-apply` (fact ranked below 8); held-out `h-partial-work-ability`
+  (coverage 0.47). Find a current page about municipal employment areas for the TE Office note.
 
 ## Open questions
-- **Demo shows a gap:** "Can I still apply for labour market subsidy?" is answered from a current
-  Kela FAQ sentence that never says the subsidy was replaced. The "replaced by" note is only added
-  when a *historical* page is cited. A real model should say it (the prompt asks), but nothing in
-  code guarantees it: consider adding the note whenever an abolished benefit is named in the
-  question.
-- `make docker-run` binds to 127.0.0.1 only. Deploying it anywhere public needs auth and rate
-  limits first; there is none yet.
+- **TE Office note cites a historical page:** no current page in our sources describes the end of
+  the TE Offices; the note cites the TE24 reform page (the only one that states it).
+- **Notes count as facts:** abolished-benefit cases pass partly through our reviewed note text.
+  It is checked against the cited page before it is added, but the wording is ours.
+- Rate limit is per process and keyed by client address: behind a reverse proxy every request
+  looks like the proxy, and several replicas would each count separately. Fine for one server.
 - **Held-out is no longer fully blind:** I wrote the held-out questions and then the glossary and
   the legal rule, so knowing the questions may have shaped them. A truly blind set needs questions
   written by someone else (e.g. 10 real jobseeker questions you collect).
 - 8 passages instead of 4 means more text the model could misuse. Watch groundedness in the Day 4
   judge; drop back to 6 if it suffers (6 gave 23/27 facts on golden).
-- **Added notes and groundedness:** the historical "replaced by" notes are added after the
-  self-check and come from `tags.toml`, not page text. The judge should check them too.
+- **Historical-page notes** (from `tags.toml`, when an old page is cited) are still not checked
+  against a page; the abolished-benefit notes now are. The judge should check both.
 - **The self-check is lexical:** it catches invented numbers, citations and topics, but not a
   sentence that reuses the source's words to say something different (e.g. a dropped "not").
   That is the judge's job; until then a real-model answer is only as safe as this check.

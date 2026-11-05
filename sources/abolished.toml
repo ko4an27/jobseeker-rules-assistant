@@ -1,0 +1,31 @@
+# Benefits and offices that no longer exist. If the QUESTION mentions one, the answer always
+# ends with its note, citing the page in `cite` (a page that itself states the change; the
+# note is checked against that page by the grounding check). Reviewed 2026-11-04.
+#
+#   mentioned_as  words in the question that trigger the note (lower case, whole words)
+#   note          the note text; must be supported by the `cite` page
+#   cite          page that states the change (current where one exists)
+#   old_page      the page about the old benefit, cited too if the answer already uses it
+
+[[abolished]]
+name = "labour market subsidy"
+mentioned_as = ["labour market subsidy", "työmarkkinatuki", "tyomarkkinatuki"]
+note = "The labour market subsidy was abolished when Kela began paying the general social security benefit on 1 May 2026."
+cite = "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit"
+old_page = "https://www.kela.fi/labour-market-subsidy"
+
+[[abolished]]
+name = "basic unemployment allowance"
+mentioned_as = ["basic unemployment allowance", "peruspäiväraha", "peruspaivaraha"]
+note = "The basic unemployment allowance was abolished when Kela began paying the general social security benefit on 1 May 2026."
+cite = "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit"
+old_page = "https://www.kela.fi/basic-unemployment-allowance"
+
+# No current page in our sources describes the end of the TE Offices; the TE24 reform page
+# (tagged historical) is the only one that states it. Add a current page when one is found.
+[[abolished]]
+name = "TE Office"
+mentioned_as = ["te office", "te offices", "te-toimisto", "te-palvelut", "te services"]
+note = "TE Offices closed down and their services were transferred to employment areas formed by municipalities on 1 January 2025."
+cite = "https://tyomarkkinatori.fi/en/uudistukset24/etusivu"
+old_page = "https://tyomarkkinatori.fi/en/news/te-palvelut-siirtyvat-kunnille"

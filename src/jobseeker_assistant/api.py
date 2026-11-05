@@ -4,6 +4,9 @@
 
 Privacy (CLAUDE.md rule 5): the question text is never logged or stored. Logs and traces
 get only metadata: question length, path through the graph, refusal reason, latency.
+
+Abuse protection (security.py): /ask is rate limited per client (RATE_LIMIT_PER_MINUTE,
+default 10) and, if API_KEY is set, needs the header `X-API-Key`. /health stays open.
 """
 
 from __future__ import annotations
@@ -13,7 +16,7 @@ import time
 import uuid
 from dataclasses import dataclass
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 
 from . import snapshots
@@ -22,6 +25,7 @@ from .glossary import Term, load_glossary
 from .graph import run_graph
 from .llm import LLM, get_llm
 from .retrieve import Index
+from .security import RateLimiter, api_key_from_env, key_ok, rate_limit_from_env
 from .source_tags import load_tags
 from .tracing import Tracer, get_tracer
 
@@ -82,7 +86,14 @@ def load_resources() -> Resources:
     )
 
 
-def create_app(resources: Resources | None = None) -> FastAPI:
+def create_app(
+    resources: Resources | None = None,
+    rate_limiter: RateLimiter | None = None,
+    api_key: str | None = None,
+) -> FastAPI:
+    """`rate_limiter` / `api_key` default to RATE_LIMIT_PER_MINUTE / API_KEY from env."""
+    limiter = rate_limiter or RateLimiter(rate_limit_from_env())
+    expected_key = api_key_from_env() if api_key is None else api_key
     app = FastAPI(
         title="Jobseeker Rules Assistant",
         description="Answers from official Finnish sources only, with citations. "
@@ -107,10 +118,26 @@ def create_app(resources: Resources | None = None) -> FastAPI:
             "snapshots": r.snapshot_count,
             "llm": type(r.llm).__name__,
             "tracing": r.tracer.enabled,
+            "api_key_required": bool(expected_key),
+            "rate_limit_per_minute": limiter.limit,
         }
 
     @app.post("/ask", response_model=AskResponse)
-    def ask(req: AskRequest) -> AskResponse:
+    def ask(
+        req: AskRequest,
+        request: Request,
+        x_api_key: str | None = Header(default=None),
+    ) -> AskResponse:
+        if not key_ok(expected_key, x_api_key):
+            raise HTTPException(status_code=401, detail="missing or wrong X-API-Key header")
+        client = request.client.host if request.client else "unknown"
+        wait = limiter.check(client)
+        if wait:
+            raise HTTPException(
+                status_code=429,
+                detail="too many requests, try again shortly",
+                headers={"Retry-After": str(max(1, round(wait)))},
+            )
         r = res()
         request_id = uuid.uuid4().hex[:12]
         started = time.perf_counter()
