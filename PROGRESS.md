@@ -6,7 +6,7 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
 - [x] Day 1 — setup (Python, pytest, CI), source snapshots of ~20 official pages, first RAG answer with citations
 - [x] Day 2 — golden test set (30–40 questions incl. out-of-scope), simple exact-check evals
 - [x] Day 3 — LangGraph flow: retrieve → answer → self-check grounding → refuse if not covered
-- [ ] Day 4 — LLM-as-judge with a rubric, regression report between runs
+- [~] Day 4 — LLM-as-judge with a rubric (built, needs a real run), regression report between runs
 - [x] Day 5 — Langfuse tracing, FastAPI endpoint, Docker (5a, fake LLM)
 - [ ] Day 6 — README ("How we know it's correct"), demo transcript, polish
 - [ ] Message Petr Vanek with the link + apply to If
@@ -145,14 +145,45 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
   - Eval (fake LLM): golden 17/38 passed, 30/30 real answered, 8/8 off-topic refused;
     held-out 6/15, 9/10, 5/5. 204 tests pass.
 
+- 2026-11-05 (Day 6 — free-tier providers, judge, cost guard, eval-real; still no key):
+  - Providers: `gemini` and `groq` (free tiers) next to `anthropic`, picked by `LLM_PROVIDER`, key
+    from `LLM_API_KEY` (sent in a header, never in URLs or errors). 429/5xx retried with
+    Retry-After. Optional separate judge model via `JUDGE_*`; it never borrows another
+    provider's key or model.
+  - Judge: rubric in `evals/judge_rubric.md` (correct, grounded, right_source, negations,
+    plain_language, safe_refusal, replaced_note), inserted into the judge prompt as written. Code
+    decides n/a (refusals, must-refuse, no abolished benefit named). Bad judge JSON → recorded
+    error, never a crash. `FakeJudge` for tests.
+  - `evals/judge_calibration.yaml`: 10 hand-labelled answers (passages copied word for word from
+    the snapshots, tested), each bad answer breaking one or two criteria. **Labels are my draft,
+    `reviewed: false` until you check them.** `make judge-calibrate` → agreement per criterion.
+  - Cost guard (`budget.py`): `EVAL_MAX_CALLS` (default 200) real calls per run; cache per
+    commit + model + prompt (off for uncommitted code); estimated and actual cost (free tiers 0;
+    paid prices from env, never hard-coded); pacing for free-tier rate limits. At the limit the
+    run stops, saves a partial report marked ABORTED, exits 3; a rerun reuses the cache.
+  - `make eval-real`: golden + held-out with the real model and the judge, dated reports with
+    per-criterion judge pass rates and reasons. Refuses to run with the fake provider.
+  - Found and fixed: `.env` was documented but never read (only `make docker-run` used it); now
+    loaded at the CLI / API / eval entry points, never overriding the shell, never in tests.
+    `save_report` captured its folder at import, so a test wrote into the real reports folder
+    (removed, fixed). `.env.example` pinned a Claude model name even for other providers.
+  - 253 tests pass.
+
 ## Next
-- Day 4 (plan): LLM-as-judge with a written rubric, regression report between runs.
-- First run with a real model: watch `retried` and `refused_not_grounded`. If the 60% key-word
-  threshold rejects good paraphrases, calibrate it on the golden set (never on held-out).
-- Remaining misses: golden `lmt-apply` (fact ranked below 8); held-out `h-partial-work-ability`
-  (coverage 0.47). Find a current page about municipal employment areas for the TE Office note.
+- **You:** review the 10 labels in `evals/judge_calibration.yaml`, set `reviewed: true`.
+- Get a free Gemini or Groq key; run `make judge-calibrate`, then `make eval-real`.
+- Compare the real run with the fake-LLM numbers in the README; watch `retried` and
+  `refused_not_grounded` (is the 60% key-word threshold too strict for real paraphrases?).
+- Regression report between two real runs (Day 4 plan, second half).
+- Day 6 plan: README "How we know it's correct", demo transcript, polish.
 
 ## Open questions
+- **The judge is unproven** until it has been calibrated against your reviewed labels. A model
+  judging its own answers tends to be lenient; use a different `JUDGE_PROVIDER` if possible.
+- **Free-tier terms:** providers may use free-tier traffic to improve their models. Fine for the
+  eval questions (no personal data); not for real users' questions through the API.
+- Default model names (`gemini-2.5-flash`, `llama-3.3-70b-versatile`) were chosen without
+  network checks; if one is retired, the first call fails with HTTP 404 — set `LLM_MODEL`.
 - **TE Office note cites a historical page:** no current page in our sources describes the end of
   the TE Offices; the note cites the TE24 reform page (the only one that states it).
 - **Notes count as facts:** abolished-benefit cases pass partly through our reviewed note text.

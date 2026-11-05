@@ -8,6 +8,12 @@ from jobseeker_assistant.retrieve import Index
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
+@pytest.fixture(autouse=True)
+def _ignore_local_dotenv(monkeypatch):
+    """A developer's own .env (real keys, tracing on) must never leak into tests."""
+    monkeypatch.setenv("JRA_NO_DOTENV", "1")
+
+
 @pytest.fixture
 def fixture_index() -> Index:
     return Index.from_snapshots(snapshots.load_all(FIXTURES / "sources"))

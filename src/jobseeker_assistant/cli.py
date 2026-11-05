@@ -6,6 +6,7 @@ import sys
 
 from . import snapshots
 from .answer import answer_question
+from .dotenv import load_dotenv
 from .glossary import load_glossary
 from .llm import get_llm
 from .retrieve import Index
@@ -13,6 +14,7 @@ from .source_tags import load_tags
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_dotenv()
     argv = sys.argv[1:] if argv is None else argv
     question = " ".join(argv).strip()
     if not question:

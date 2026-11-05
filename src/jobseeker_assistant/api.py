@@ -21,6 +21,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from . import snapshots
 from .answer import DISCLAIMER
+from .dotenv import load_dotenv
 from .glossary import Term, load_glossary
 from .graph import run_graph
 from .llm import LLM, get_llm
@@ -76,6 +77,7 @@ class Resources:
 
 
 def load_resources() -> Resources:
+    load_dotenv()
     snaps = snapshots.load_all()
     return Resources(
         index=Index.from_snapshots(snaps, load_tags()),
