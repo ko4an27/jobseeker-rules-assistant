@@ -121,9 +121,17 @@ missing snapshots, never overwrites), `make refresh` (explicitly re-fetch all), 
    LLM_API_KEY=your-key-here
    ```
 
-   Model names change; if the default is retired, set `LLM_MODEL`. A model judging its own
-   answers is lenient, so a *different* judge is better if you have a second key:
-   `JUDGE_PROVIDER=groq`, `JUDGE_API_KEY=...`.
+   Model names change; if the default is retired, set `LLM_MODEL`.
+
+   **Use a different model as judge**, so a model doesn't grade its own answers:
+
+   ```
+   LLM_MODEL=gemini-3.5-flash-lite      # answers
+   JUDGE_MODEL=gemini-3.7-flash         # judges (same provider: reuses LLM_API_KEY)
+   ```
+
+   Or another provider entirely: `JUDGE_PROVIDER=groq`, `JUDGE_API_KEY=...`. If the judge is
+   the same model as the answerer, the run prints a warning and the report says so.
 3. **Review the judge's calibration labels** in `evals/judge_calibration.yaml` (10 answers, each
    labelled pass/fail per rubric criterion). They are a draft: change any you disagree with and
    set `reviewed: true`. Then check the judge agrees with you:
@@ -134,6 +142,18 @@ missing snapshots, never overwrites), `make refresh` (explicitly re-fetch all), 
 
    It prints agreement per criterion and every disagreement with the judge's reason, and saves
    a report in `evals/reports/`. Don't trust judge scores on a criterion it disagrees with you on.
+
+   **Known judge weakness: Grounded is lenient.** In the first calibration
+   (`gemini-3.5-flash-lite` judging, 2026-11-05) the judge agreed with the human labels on the
+   overall verdict for 10/10 answers and on 50/53 individual checks, but passed *Grounded* for
+   two answers that should fail it: "EUR 37.21 per **month**" (the source says per day) and
+   "your employer is **guaranteed** 50%" (the source says "in most cases"). It treats "the
+   number comes from the source" as grounded even when the unit or framing around it changed.
+   Both answers still failed overall through *Meaning preserved*, so the overall verdict held.
+   That is why the **code-based grounding check stays as the backstop**: before an answer is
+   shown, `grounding.py` requires every number in a claim to appear in the cited passage and
+   most of its words to match, with one strict retry and then a refusal. The judge only
+   *scores* answers; it never decides what users see.
 4. **Run the evaluation:**
 
    ```bash
