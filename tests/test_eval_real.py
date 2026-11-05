@@ -192,3 +192,22 @@ def test_unavailable_answer_model_aborts_cleanly(real_index, tmp_path, reports_i
     assert "answering model unavailable" in capsys.readouterr().out
     [report] = reports_in_tmp.glob("*.json")
     assert "answering model unavailable" in json.loads(report.read_text())["meta"]["aborted"]
+
+
+def test_judge_timeout_is_recorded_not_fatal(real_index, tmp_path, reports_in_tmp):
+    """Real run 2026-11-05: a judge read timeout crashed the whole eval."""
+    import requests
+
+    from jobseeker_assistant.judge import LLMJudge
+    from jobseeker_assistant.llm import GeminiLLM
+
+    def post(url, headers, json, timeout):
+        raise requests.exceptions.ReadTimeout("Read timed out.")
+
+    judge_llm = GeminiLLM("gemini-3.7-flash", "k", post=post, sleep=lambda s: None)
+    llm, budget = _guarded(tmp_path, max_calls=500)
+    assert (
+        evals.run_real(_args(), real_index, load_glossary(), llm, LLMJudge(judge_llm), budget) == 0
+    )
+    [report] = reports_in_tmp.glob("*.json")
+    assert json.loads(report.read_text())["summary"]["judge_errors"] == "38/38"

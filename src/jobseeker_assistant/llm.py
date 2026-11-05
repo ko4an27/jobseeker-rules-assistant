@@ -139,7 +139,16 @@ class _HttpLLM:
 
     def _call(self, url: str, headers: dict, payload: dict) -> dict:
         for attempt in range(1, self.max_attempts + 1):
-            resp = self._post(url, headers=headers, json=payload, timeout=self._timeout)
+            try:
+                resp = self._post(url, headers=headers, json=payload, timeout=self._timeout)
+            except OSError as exc:  # timeouts / connection errors (requests' are OSErrors)
+                if attempt < self.max_attempts:
+                    self._sleep(2**attempt)
+                    continue
+                raise ProviderError(
+                    f"{self.provider}: no response from model {self.model} after "
+                    f"{self.max_attempts} attempts ({type(exc).__name__})"
+                ) from exc
             if resp.status_code == 200:
                 return resp.json()
             if resp.status_code in RETRY_STATUSES and attempt < self.max_attempts:
