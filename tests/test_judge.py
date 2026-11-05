@@ -46,7 +46,7 @@ def test_not_applicable_rules():
         "correct",
         "grounded",
         "right_source",
-        "negations",
+        "meaning_preserved",
         "replaced_note",
     }
     named = JudgeInput("labour market subsidy?", "a", [], names_abolished=True)
@@ -81,9 +81,10 @@ def test_parse_verdict_errors_never_raise(raw, msg):
 
 
 def test_llm_judge_uses_the_model_and_reports_failures():
-    llm = FakeLLM(_reply(**{**ALL_PASS, "negations": "fail"}))
+    llm = FakeLLM(_reply(**{**ALL_PASS, "meaning_preserved": "fail"}))
     v = LLMJudge(llm, rubric="R").evaluate(ITEM)
-    assert v.failed_criteria == ["negations"] and v.reasons["negations"] == "negations reason"
+    assert v.failed_criteria == ["meaning_preserved"]
+    assert v.reasons["meaning_preserved"] == "meaning_preserved reason"
     assert len(llm.calls) == 1
 
 
@@ -96,9 +97,9 @@ def test_fake_judge_fixed_scores_respect_na():
 # --- Calibration set ------------------------------------------------------------------
 
 
-def test_calibration_set_loads_ten_examples_marked_unreviewed():
+def test_calibration_set_loads_ten_reviewed_examples():
     examples, reviewed = load_calibration()
-    assert len(examples) == 10 and reviewed is False  # labels are a draft until you review
+    assert len(examples) == 10 and reviewed is True  # approved by the project owner
     assert len({e.id for e in examples}) == 10
 
 
@@ -134,12 +135,14 @@ def test_calibrate_perfect_judge_agrees_fully():
     labels = {(e.item.question, e.item.answer): e.labels for e in examples}
     result = calibrate(FakeJudge(lambda item: labels[(item.question, item.answer)]), examples)
     assert result["agreement_rate"] == 1.0 and result["disagreements"] == []
+    assert result["overall_agreement"] == "10/10"
 
 
 def test_calibrate_lenient_judge_shows_disagreements():
     examples = load_calibration()[0]
     result = calibrate(FakeJudge({}), examples)  # passes everything
     assert result["agreement_rate"] < 0.8
+    assert result["overall_agreement"] == "3/10"  # only c01, c06, c09 are all-pass
     assert {d["id"] for d in result["disagreements"]} >= {
         "c02-negation-flip",
         "c08-missing-replaced-note",

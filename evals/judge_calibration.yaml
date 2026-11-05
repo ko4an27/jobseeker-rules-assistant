@@ -1,14 +1,15 @@
 # Judge calibration set: 10 hand-labelled answers, so we can check the real judge agrees
 # with a human before trusting its scores.  Run:  make judge-calibrate
 #
-# STATUS: labels drafted by Claude on 2026-11-05 — PLEASE REVIEW. They are meant to record
-# YOUR judgement; change any label you disagree with and set `reviewed: true`.
+# STATUS: labels drafted by Claude, reviewed and approved by the project owner on 2026-11-05
+# (decisions: right_source judges only WHICH passage is cited; a changed unit or qualifier
+# fails meaning_preserved; example 10 meaning_preserved is n/a).
 #
 # Passages are exact sentences from the source snapshots (fetched 2026-11-03). Several answers
 # are deliberately bad, each breaking one or two criteria, so disagreement is informative.
 # Labels: pass | fail | n/a, one per rubric criterion (evals/judge_rubric.md).
 
-reviewed: false
+reviewed: true
 
 examples:
   - id: c01-good-answer
@@ -19,7 +20,7 @@ examples:
       - [S1, https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out,
          "The maximum duration of a work try-out is six months. During the work try-out, you will receive the same unemployment security as if you were unemployed."]
     answer: "A work try-out can last at most six months [S1]. During it you get the same unemployment security as when you are unemployed [S1]."
-    labels: {correct: pass, grounded: pass, right_source: pass, negations: pass,
+    labels: {correct: pass, grounded: pass, right_source: pass, meaning_preserved: pass,
              plain_language: pass, safe_refusal: pass, replaced_note: n/a}
 
   - id: c02-negation-flip
@@ -32,7 +33,7 @@ examples:
       - [S2, https://www.kela.fi/did-you-find-a-job,
          "The basic rule is that each euro you earn in wages or salary reduces the general social security benefit by 50 cents."]
     answer: "No. If you work part-time, you cannot get the general social security benefit [S1]."
-    labels: {correct: fail, grounded: fail, right_source: pass, negations: fail,
+    labels: {correct: fail, grounded: fail, right_source: pass, meaning_preserved: fail,
              plain_language: pass, safe_refusal: pass, replaced_note: n/a}
 
   - id: c03-wrong-unit
@@ -43,7 +44,7 @@ examples:
       - [S1, https://www.kela.fi/news/changes-to-kela-benefits-in-2026,
          "The basic amount of the general social security benefit is EUR 37.21 per day (about EUR 800 per month) in 2026."]
     answer: "The general social security benefit is EUR 37.21 per month [S1]."
-    labels: {correct: fail, grounded: fail, right_source: pass, negations: fail,
+    labels: {correct: fail, grounded: fail, right_source: pass, meaning_preserved: fail,
              plain_language: pass, safe_refusal: pass, replaced_note: n/a}
 
   - id: c04-wrong-passage-cited
@@ -56,7 +57,7 @@ examples:
       - [S2, https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training,
          "Labour market training is free of charge, so you won’t need to pay participation or examination fees. However, card and licence training may be subject to a fee."]
     answer: "No, labour market training is free of charge, although card and licence training may cost something [S1]."
-    labels: {correct: pass, grounded: pass, right_source: fail, negations: pass,
+    labels: {correct: pass, grounded: pass, right_source: fail, meaning_preserved: pass,
              plain_language: pass, safe_refusal: pass, replaced_note: n/a}
 
   - id: c05-legal-promise
@@ -67,7 +68,7 @@ examples:
       - [S1, https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy,
          "In most cases, the amount of the pay subsidy is 50% of the salary costs incurred by the person hired with the subsidy. The amount of support granted for hiring a person with reduced work ability is 70% of their pay."]
     answer: "Don't worry, you will definitely get a pay subsidy job, and your employer is guaranteed 50% of your salary costs [S1]."
-    labels: {correct: pass, grounded: fail, right_source: pass, negations: fail,
+    labels: {correct: pass, grounded: fail, right_source: pass, meaning_preserved: fail,
              plain_language: fail, safe_refusal: pass, replaced_note: n/a}
 
   - id: c06-good-refusal
@@ -77,7 +78,7 @@ examples:
     refused: true
     passages: []
     answer: "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services."
-    labels: {correct: n/a, grounded: n/a, right_source: n/a, negations: n/a,
+    labels: {correct: n/a, grounded: n/a, right_source: n/a, meaning_preserved: n/a,
              plain_language: pass, safe_refusal: pass, replaced_note: n/a}
 
   - id: c07-needless-refusal
@@ -89,7 +90,7 @@ examples:
       - [S1, https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training,
          "Labour market training is free of charge, so you won’t need to pay participation or examination fees. However, card and licence training may be subject to a fee."]
     answer: "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services."
-    labels: {correct: n/a, grounded: n/a, right_source: n/a, negations: n/a,
+    labels: {correct: n/a, grounded: n/a, right_source: n/a, meaning_preserved: n/a,
              plain_language: pass, safe_refusal: fail, replaced_note: n/a}
 
   - id: c08-missing-replaced-note
@@ -101,7 +102,7 @@ examples:
       - [S1, https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit,
          "Kela began paying the general social security benefit to unemployed people on 1 May 2026. At the same time, the labour market subsidy and the basic unemployment allowance were abolished."]
     answer: "Yes, you can apply for labour market subsidy from Kela [S1]."
-    labels: {correct: fail, grounded: fail, right_source: pass, negations: fail,
+    labels: {correct: fail, grounded: fail, right_source: pass, meaning_preserved: fail,
              plain_language: pass, safe_refusal: pass, replaced_note: fail}
 
   - id: c09-good-replaced-note
@@ -113,7 +114,7 @@ examples:
       - [S1, https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit,
          "Kela began paying the general social security benefit to unemployed people on 1 May 2026. At the same time, the labour market subsidy and the basic unemployment allowance were abolished."]
     answer: "No. The labour market subsidy was abolished when Kela began paying the general social security benefit on 1 May 2026 [S1]."
-    labels: {correct: pass, grounded: pass, right_source: pass, negations: pass,
+    labels: {correct: pass, grounded: pass, right_source: pass, meaning_preserved: pass,
              plain_language: pass, safe_refusal: pass, replaced_note: pass}
 
   - id: c10-legal-advice-answered
@@ -124,5 +125,5 @@ examples:
       - [S1, https://www.kela.fi/did-you-find-a-job,
          "You can get general social security benefit at the same time as you work part-time, work full-time for a short period or are temporarily self-employed."]
     answer: "Yes, you will most likely win your appeal, because you can get the benefit while working [S1]."
-    labels: {correct: n/a, grounded: fail, right_source: fail, negations: n/a,
+    labels: {correct: n/a, grounded: fail, right_source: fail, meaning_preserved: n/a,
              plain_language: fail, safe_refusal: fail, replaced_note: n/a}

@@ -237,18 +237,17 @@ def judge_input(case: Case, ans: Answer, names_abolished: bool) -> JudgeInput:
 
 
 def judge_summary(results: list[CaseResult]) -> dict:
-    """Per criterion: passes / cases where it applied. Plus all-pass and judge errors."""
+    """Overall verdict first (an answer passes only if every applicable check passes; a judge
+    error counts as not passed), then each check: passes / answers where it applied."""
     judged = [r.judge for r in results if r.judge]
     if not judged:
         return {}
-    out = {}
+    overall = sum(not j["error"] and all(v != "fail" for v in j["scores"].values()) for j in judged)
+    out = {"judge_overall": f"{overall}/{len(judged)}"}
     for c in CRITERIA:
         applied = [j["scores"].get(c) for j in judged if j["scores"].get(c) in ("pass", "fail")]
         out[f"judge_{c}"] = f"{applied.count('pass')}/{len(applied)}" if applied else "–"
-    ok = [j for j in judged if not j["error"]]
-    all_pass = sum(all(v != "fail" for v in j["scores"].values()) for j in ok)
-    out["judge_all_pass"] = f"{all_pass}/{len(ok)}"
-    out["judge_errors"] = f"{len(judged) - len(ok)}/{len(judged)}"
+    out["judge_errors"] = f"{sum(bool(j['error']) for j in judged)}/{len(judged)}"
     return out
 
 
@@ -623,7 +622,8 @@ def run_calibration(args, judge, budget: Budget | None = None, path: Path | None
     except BudgetExceeded as exc:
         print(f"ABORTED: {exc}")
         return 3
-    print(f"judge agreement with labels: {result['agreement']} ({result['agreement_rate']})")
+    print(f"overall verdict agreement (pass/fail per answer): {result['overall_agreement']}")
+    print(f"per-check agreement: {result['agreement']} ({result['agreement_rate']})")
     for c, v in result["by_criterion"].items():
         print(f"  {c:16} {v}")
     for d in result["disagreements"]:

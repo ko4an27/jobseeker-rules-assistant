@@ -150,7 +150,7 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
     from `LLM_API_KEY` (sent in a header, never in URLs or errors). 429/5xx retried with
     Retry-After. Optional separate judge model via `JUDGE_*`; it never borrows another
     provider's key or model.
-  - Judge: rubric in `evals/judge_rubric.md` (correct, grounded, right_source, negations,
+  - Judge: rubric in `evals/judge_rubric.md` (correct, grounded, right_source, meaning_preserved,
     plain_language, safe_refusal, replaced_note), inserted into the judge prompt as written. Code
     decides n/a (refusals, must-refuse, no abolished benefit named). Bad judge JSON → recorded
     error, never a crash. `FakeJudge` for tests.
