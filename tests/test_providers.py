@@ -62,6 +62,68 @@ def test_gemini_request_and_response():
     assert llm.last_usage == Usage(120, 8)
 
 
+@pytest.mark.parametrize(
+    "model, config",
+    [
+        ("gemini-3.7-flash", {"thinkingLevel": "low"}),  # Flash rejects "minimal"
+        ("gemini-3.5-flash-lite", {"thinkingLevel": "minimal"}),
+        ("gemini-2.5-flash", {"thinkingBudget": 0}),  # 2.x: budget, not level
+    ],
+)
+def test_gemini_keeps_thinking_as_small_as_the_model_allows(model, config):
+    post = FakePost(GEMINI_OK)
+    GeminiLLM(model, "k", post=post, sleep=lambda s: None).complete("s", "u")
+    assert post.calls[0]["json"]["generationConfig"]["thinkingConfig"] == config
+
+
+def test_gemini_falls_back_to_low_when_minimal_is_rejected():
+    rejected = Resp(400, text="Thinking level MINIMAL is not supported for this model.")
+    post = FakePost(rejected, GEMINI_OK, GEMINI_OK)
+    llm = GeminiLLM("gemini-x-flash-lite", "k", post=post, sleep=lambda s: None)
+    assert llm.complete("s", "u") == "Six months [S1]."
+    levels = [c["json"]["generationConfig"]["thinkingConfig"]["thinkingLevel"] for c in post.calls]
+    assert levels == ["minimal", "low"]
+    llm.complete("s", "u")  # remembered: no second rejected call
+    assert post.calls[-1]["json"]["generationConfig"]["thinkingConfig"]["thinkingLevel"] == "low"
+
+
+def test_gemini_other_400s_are_not_retried_with_low():
+    post = FakePost(Resp(400, text="Request contains an invalid argument."))
+    with pytest.raises(ProviderError, match="HTTP 400"):
+        GeminiLLM("gemini-3.5-flash-lite", "k", post=post, sleep=lambda s: None).complete("s", "u")
+    assert len(post.calls) == 1
+
+
+def test_gemini_drops_thought_parts_and_bills_thinking_tokens():
+    body = {
+        "candidates": [
+            {
+                "content": {
+                    "parts": [
+                        {"text": "Let me think...", "thought": True},
+                        {"text": "Six months [S1]."},
+                    ]
+                }
+            }
+        ],
+        "usageMetadata": {
+            "promptTokenCount": 100,
+            "candidatesTokenCount": 8,
+            "thoughtsTokenCount": 40,
+        },
+    }
+    llm = GeminiLLM("gemini-3.7-flash", "k", post=FakePost(Resp(200, body)), sleep=lambda s: None)
+    assert llm.complete("s", "u") == "Six months [S1]."
+    assert llm.last_usage == Usage(100, 48, 40)
+
+
+def test_thinking_level_from_env():
+    llm = get_llm({"LLM_PROVIDER": "gemini", "LLM_API_KEY": "k", "LLM_THINKING_LEVEL": "medium"})
+    assert llm.thinking_level == "medium"
+    with pytest.raises(ValueError, match="thinking level"):
+        get_llm({"LLM_PROVIDER": "gemini", "LLM_API_KEY": "k", "LLM_THINKING_LEVEL": "max"})
+
+
 def test_gemini_blocked_answer_is_empty_not_a_crash():
     llm = GeminiLLM("m", "k", post=FakePost(Resp(200, {"candidates": []})), sleep=lambda s: None)
     assert llm.complete("s", "u") == ""
