@@ -159,3 +159,36 @@ def test_self_judged_run_warns_and_marks_report(real_index, tmp_path, reports_in
     [report] = reports_in_tmp.glob("*.json")
     assert json.loads(report.read_text())["meta"]["self_judged"] is True
     assert "same model that wrote the answers" in report.with_suffix(".md").read_text()
+
+
+class _Down:
+    """A model that is always overloaded."""
+
+    provider, model = "gemini", "gemini-3.7-flash"
+
+    def complete(self, system, user):
+        from jobseeker_assistant.llm import ProviderError
+
+        raise ProviderError("gemini returned HTTP 503 for model gemini-3.7-flash: high demand")
+
+
+def test_unavailable_judge_is_recorded_not_fatal(real_index, tmp_path, reports_in_tmp, capsys):
+    from jobseeker_assistant.judge import LLMJudge
+
+    llm, budget = _guarded(tmp_path, max_calls=500)
+    code = evals.run_real(_args(), real_index, load_glossary(), llm, LLMJudge(_Down()), budget)
+    assert code == 0
+    [report] = reports_in_tmp.glob("*.json")
+    data = json.loads(report.read_text())
+    assert data["summary"]["judge_errors"] == "38/38"
+    assert data["summary"]["judge_overall"] == "0/38"  # errors never count as passed
+    assert "judge unavailable" in data["results"][0]["judge"]["error"]
+
+
+def test_unavailable_answer_model_aborts_cleanly(real_index, tmp_path, reports_in_tmp, capsys):
+    budget = Budget(500)
+    code = evals.run_real(_args(), real_index, load_glossary(), _Down(), FakeJudge(), budget)
+    assert code == 3
+    assert "answering model unavailable" in capsys.readouterr().out
+    [report] = reports_in_tmp.glob("*.json")
+    assert "answering model unavailable" in json.loads(report.read_text())["meta"]["aborted"]

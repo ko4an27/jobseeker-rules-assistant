@@ -52,10 +52,11 @@ from .judge import (
     CRITERIA,
     JudgeInput,
     LLMJudge,
+    Verdict,
     calibrate,
     load_calibration,
 )
-from .llm import LLM, get_llm
+from .llm import LLM, ProviderError, get_llm
 from .retrieve import Hit, Index
 from .source_tags import load_tags
 
@@ -236,9 +237,12 @@ def run(
         result.attempts = ans.attempts
         result.path = ans.path
         if judge is not None:
-            verdict = judge.evaluate(
-                judge_input(case, ans, bool(mentioned(case.question, abolished)))
-            )
+            try:
+                verdict = judge.evaluate(
+                    judge_input(case, ans, bool(mentioned(case.question, abolished)))
+                )
+            except ProviderError as exc:  # judge model unavailable (e.g. 503 after retries)
+                verdict = Verdict(error=f"judge unavailable: {exc}"[:300])
             result.judge = {
                 "scores": verdict.scores,
                 "reasons": verdict.reasons,
@@ -539,6 +543,8 @@ def evaluate_sets(args, index, llm, glossary, provider, judge=None, budget=None)
             run(cases, index, llm, args.min_score, args.min_coverage, glossary, judge, results)
         except BudgetExceeded as exc:
             aborted = str(exc)
+        except ProviderError as exc:  # the answering model is unavailable: stop, keep results
+            aborted = f"answering model unavailable: {exc}"[:300]
         meta = _meta(args, name, len(cases), provider, model, glossary, run_at)
         if judge is not None:
             meta["judge"] = getattr(getattr(judge, "llm", None), "model", type(judge).__name__)
@@ -629,7 +635,7 @@ def run_real(args, index, glossary, answer_llm, judge, budget: Budget) -> int:
         )
     try:
         summaries = evaluate_sets(args, index, answer_llm, glossary, provider, judge, budget)
-    except BudgetExceeded as exc:
+    except (BudgetExceeded, ProviderError) as exc:
         print(f"\nABORTED: {exc}")
         print(
             f"calls: {budget.calls}, cache hits: {budget.cache_hits}, "
