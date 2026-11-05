@@ -169,6 +169,21 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
     (removed, fixed). `.env.example` pinned a Claude model name even for other providers.
   - 253 tests pass.
 
+- 2026-11-05 (Gemini model choice, first real calls):
+  - list-models: 61 models visible to the key; stable text Flash with generateContent: 2.5, 3.5,
+    3.6, 3.7, 3.8; Flash-Lite: 2.5, 3.1, 3.5. Picked: newest stable Flash `gemini-3.8-flash`, but
+    it returned 503 "high demand" on every try, so the default is **`gemini-3.7-flash`**
+    (as agreed); cheaper option **`gemini-3.5-flash-lite`**. `-latest` aliases avoided (they move).
+  - Thinking: 3.x models reject `thinkingBudget` (HTTP 400) and take `thinkingLevel`; Flash rejects
+    "minimal", Flash-Lite accepts it. Now: 3.x Flash `low`, Flash-Lite `minimal`, 2.x budget 0,
+    automatic fallback to `low` if a level is rejected, `LLM_THINKING_LEVEL` override. Thinking
+    parts are dropped from answers; thinking tokens are counted as (billed) output.
+  - Confirmed on the free tier through `GeminiLLM`: `gemini-3.5-flash-lite` → "Hei! Tervehdys!",
+    16 in / 7 out / 0 thinking tokens. `gemini-3.7-flash` not yet confirmed (503 overload).
+  - Fixed: key masking replaced every occurrence of a short test key inside error text
+    ("Thinking" → "Thin***ing"); now only key-sized strings are masked.
+  - 260 tests pass.
+
 ## Next
 - **You:** review the 10 labels in `evals/judge_calibration.yaml`, set `reviewed: true`.
 - Get a free Gemini or Groq key; run `make judge-calibrate`, then `make eval-real`.
@@ -182,8 +197,9 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
   judging its own answers tends to be lenient; use a different `JUDGE_PROVIDER` if possible.
 - **Free-tier terms:** providers may use free-tier traffic to improve their models. Fine for the
   eval questions (no personal data); not for real users' questions through the API.
-- Default model names (`gemini-2.5-flash`, `llama-3.3-70b-versatile`) were chosen without
-  network checks; if one is retired, the first call fails with HTTP 404 — set `LLM_MODEL`.
+- `gemini-3.7-flash` (default) has not answered yet: 503 overload all afternoon. If it keeps
+  failing, run evals with `LLM_MODEL=gemini-3.5-flash-lite` (confirmed working). The Groq default
+  (`llama-3.3-70b-versatile`) is still unchecked.
 - **TE Office note cites a historical page:** no current page in our sources describes the end of
   the TE Offices; the note cites the TE24 reform page (the only one that states it).
 - **Notes count as facts:** abolished-benefit cases pass partly through our reviewed note text.

@@ -24,20 +24,30 @@ from typing import Any, Protocol
 
 DEFAULT_PROVIDER = "anthropic"
 DEFAULT_MODEL = "claude-haiku-5-5"
-# Defaults chosen 2026-11; model names change, so override with LLM_MODEL if one is retired.
+# Defaults; model names change, so override with LLM_MODEL if one is retired.
+# Gemini: picked 2026-11-05 from the list-models endpoint among stable (non-preview,
+# non-"latest" alias) text Flash models with generateContent. The newest, gemini-3.8-flash,
+# returned 503 "high demand" on every try that day, so the default is gemini-3.7-flash.
+# "-latest" aliases are avoided on purpose: they move silently, so eval runs wouldn't compare.
 DEFAULT_MODELS = {
     "anthropic": DEFAULT_MODEL,
-    "gemini": "gemini-2.5-flash",
-    "groq": "llama-3.3-70b-versatile",
+    "gemini": "gemini-3.7-flash",
+    "groq": "llama-3.3-70b-versatile",  # not checked against Groq's model list yet
+}
+# Cheaper option per provider: set LLM_MODEL to this to save quota or money.
+CHEAPER_MODELS = {
+    "gemini": "gemini-3.5-flash-lite",  # newest stable text Flash-Lite, 2026-11-05
 }
 PROVIDERS = (*DEFAULT_MODELS, "fake")
+THINKING_LEVELS = ("minimal", "low", "medium", "high")
 RETRY_STATUSES = {429, 500, 502, 503, 504}
 
 
 @dataclass(frozen=True)
 class Usage:
     input_tokens: int = 0
-    output_tokens: int = 0
+    output_tokens: int = 0  # includes thinking tokens (they are billed as output)
+    thinking_tokens: int = 0
 
 
 class LLM(Protocol):
@@ -139,38 +149,77 @@ class _HttpLLM:
                 )
                 self._sleep(min(wait, 60.0))
                 continue
-            detail = (resp.text or "")[:300].replace(self._key, "***") if self._key else ""
+            detail = (resp.text or "")[:300]
+            if len(self._key) >= 8:  # mask a real key; a 1-letter test key would mangle text
+                detail = detail.replace(self._key, "***")
             raise ProviderError(
                 f"{self.provider} returned HTTP {resp.status_code} for model {self.model}: {detail}"
             )
         raise ProviderError(f"{self.provider}: no response")  # pragma: no cover
 
 
+def default_thinking_level(model: str) -> str:
+    """Lowest thinking level each Gemini 3.x family accepts (checked 2026-11-05):
+    Flash-Lite takes "minimal"; Flash rejects it ("MINIMAL is not supported"), so "low"."""
+    return "minimal" if "flash-lite" in model else "low"
+
+
 class GeminiLLM(_HttpLLM):
-    """Google Gemini (free tier available) via the generateContent REST API."""
+    """Google Gemini (free tier available) via the generateContent REST API.
+
+    Gemini 2.5+ models "think" before answering, and thinking tokens count as (billed) output.
+    To keep reasoning from eating the output cap, thinking is kept as small as the model allows:
+    - Gemini 2.x: thinkingBudget = 0 (off);
+    - Gemini 3.x: thinkingLevel (3.x rejects thinkingBudget with HTTP 400) — "minimal" for
+      Flash-Lite, "low" for Flash; if a model rejects the level, retried once with "low".
+    LLM_THINKING_LEVEL overrides the level for 3.x models.
+    """
 
     provider = "gemini"
     base_url = "https://generativelanguage.googleapis.com/v1beta/models"
 
-    def complete(self, system: str, user: str) -> str:
-        data = self._call(
-            f"{self.base_url}/{self.model}:generateContent",
-            {"x-goog-api-key": self._key, "content-type": "application/json"},
-            {
-                "systemInstruction": {"parts": [{"text": system}]},
-                "contents": [{"role": "user", "parts": [{"text": user}]}],
-                "generationConfig": {"temperature": 0, "maxOutputTokens": self.max_tokens},
+    def __init__(self, model: str, api_key: str, thinking_level: str | None = None, **kw):
+        super().__init__(model, api_key, **kw)
+        self.thinking_level = thinking_level or default_thinking_level(model)
+
+    def thinking_config(self) -> dict:
+        if self.model.startswith("gemini-2."):
+            return {"thinkingBudget": 0}
+        return {"thinkingLevel": self.thinking_level}
+
+    def _payload(self, system: str, user: str) -> dict:
+        return {
+            "systemInstruction": {"parts": [{"text": system}]},
+            "contents": [{"role": "user", "parts": [{"text": user}]}],
+            "generationConfig": {
+                "temperature": 0,
+                "maxOutputTokens": self.max_tokens,
+                "thinkingConfig": self.thinking_config(),
             },
-        )
+        }
+
+    def complete(self, system: str, user: str) -> str:
+        url = f"{self.base_url}/{self.model}:generateContent"
+        headers = {"x-goog-api-key": self._key, "content-type": "application/json"}
+        try:
+            data = self._call(url, headers, self._payload(system, user))
+        except ProviderError as exc:
+            if "thinking level" not in str(exc).lower() or self.thinking_level == "low":
+                raise
+            self.thinking_level = "low"  # remembered for the next calls
+            data = self._call(url, headers, self._payload(system, user))
         usage = data.get("usageMetadata", {})
+        thoughts = usage.get("thoughtsTokenCount", 0)
         self.last_usage = Usage(
-            usage.get("promptTokenCount", 0), usage.get("candidatesTokenCount", 0)
+            usage.get("promptTokenCount", 0),
+            usage.get("candidatesTokenCount", 0) + thoughts,  # thinking is billed as output
+            thoughts,
         )
         candidates = data.get("candidates") or []
         if not candidates:  # e.g. blocked by a safety filter
             return ""
         parts = candidates[0].get("content", {}).get("parts", [])
-        return "".join(part.get("text", "") for part in parts)
+        return "".join(p.get("text", "") for p in parts if not p.get("thought"))
 
 
 class GroqLLM(_HttpLLM):
@@ -232,5 +281,8 @@ def get_llm(env: dict[str, str] | None = None, prefix: str = "LLM") -> LLM:
     if provider == "anthropic":
         return AnthropicLLM(model=model, api_key=key)
     if provider == "gemini":
-        return GeminiLLM(model=model, api_key=key)
+        level = own("THINKING_LEVEL") or (env.get("LLM_THINKING_LEVEL", "").strip() if same else "")
+        if level and level not in THINKING_LEVELS:
+            raise ValueError(f"thinking level must be one of {', '.join(THINKING_LEVELS)}")
+        return GeminiLLM(model=model, api_key=key, thinking_level=level or None)
     return GroqLLM(model=model, api_key=key)

@@ -93,7 +93,8 @@ variables already set in your shell win.
 | Variable | Meaning | Default |
 |---|---|---|
 | `LLM_PROVIDER` | `gemini` or `groq` (free tiers), `anthropic`, or `fake` (offline, no key) | `anthropic` |
-| `LLM_MODEL` | model id | gemini `gemini-2.5-flash`, groq `llama-3.3-70b-versatile`, anthropic `claude-haiku-5-5` |
+| `LLM_MODEL` | model id | gemini `gemini-3.7-flash` (cheaper: `gemini-3.5-flash-lite`), groq `llama-3.3-70b-versatile`, anthropic `claude-haiku-5-5` |
+| `LLM_THINKING_LEVEL` | Gemini 3.x thinking: `minimal`/`low`/`medium`/`high` (thinking tokens are billed as output) | Flash-Lite `minimal`, Flash `low` |
 | `LLM_API_KEY` | the provider's key, only via env / `.env` (`ANTHROPIC_API_KEY` also works for anthropic) | — |
 | `JUDGE_PROVIDER` / `JUDGE_MODEL` / `JUDGE_API_KEY` | optional: a different model as judge | same as `LLM_*` |
 | `EVAL_MAX_CALLS` | at most this many real model calls per eval run | `200` |
