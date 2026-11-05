@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
@@ -105,10 +106,33 @@ def load_golden(path: Path = GOLDEN) -> list[Case]:
     return cases
 
 
-def fact_present(fact: str, text: str) -> bool:
-    """'a | b' matches if either phrase is in the text (case-insensitive)."""
+_NUMBER_WORDS = {
+    word: str(n)
+    for n, word in enumerate(
+        "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+        "fifteen sixteen seventeen eighteen nineteen twenty".split()
+    )
+} | {"thirty": "30", "forty": "40", "fifty": "50", "sixty": "60", "hundred": "100"}
+_NUMBER_WORD_RE = re.compile(r"\b(" + "|".join(_NUMBER_WORDS) + r")\b")
+
+
+def normalise(text: str) -> str:
+    """Lower case, single spaces, number words as digits ("two" -> "2"), so a key fact like
+    "2 study programmes" is found in "at least two study programmes". Applied to both the
+    expected fact and the answer, for golden and held-out alike (added after the first real
+    eval, 2026-11-05: a correct answer said "two" where the label said "2")."""
     text = " ".join(text.lower().split())
-    return any(alt.strip().lower() in text for alt in fact.split("|"))
+    return _NUMBER_WORD_RE.sub(lambda m: _NUMBER_WORDS[m.group(1)], text)
+
+
+def fact_present(fact: str, text: str) -> bool:
+    """'a | b' matches if either phrase is in the text (case-insensitive, number words = digits)."""
+    text = normalise(text)
+    # A fact must start at a word boundary ("6 months" is not in "16 months"); its end may run
+    # on, so plurals still match ("e-service" in "e-services").
+    return any(
+        re.search(r"(?<!\w)" + re.escape(normalise(alt.strip())), text) for alt in fact.split("|")
+    )
 
 
 def _urls_of_hit(hit: Hit) -> set[str]:

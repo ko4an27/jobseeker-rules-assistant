@@ -154,7 +154,13 @@ def test_historical_page_without_replacement_gets_plain_note():
 def test_system_prompt_explains_historical_and_employer_labels():
     from jobseeker_assistant.answer import SYSTEM_PROMPT
 
-    assert "HISTORICAL" in SYSTEM_PROMPT and "cite both" in SYSTEM_PROMPT
+    assert "HISTORICAL" in SYSTEM_PROMPT
+    # The code adds the "replaced by" notes. Asking the model to comment on historical sources
+    # made it write sentences ABOUT the sources, which the grounding check rightly rejects
+    # (real eval 2026-11-05, reform-municipalities). The prompt must not ask for that.
+    assert "cite both" not in SYSTEM_PROMPT
+    assert "say clearly that it was replaced" not in SYSTEM_PROMPT
+    assert "Do not write about the sources themselves" in SYSTEM_PROMPT
     assert "FOR EMPLOYERS" in SYSTEM_PROMPT and "jobseeker's point" in SYSTEM_PROMPT
 
 

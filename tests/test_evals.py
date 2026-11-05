@@ -140,3 +140,37 @@ def test_refusal_reason_needs_must_refuse(tmp_path):
     )
     with pytest.raises(ValueError, match="refusal_reason"):
         load_golden(f)
+
+
+@pytest.mark.parametrize(
+    "fact, text",
+    [
+        ("2 study programmes", "you must apply for at least two study programmes"),  # 2026-11-05
+        ("two study programmes", "apply to 2 study programmes"),  # works both ways
+        ("six months | 6 months", "It lasts at most Six months."),
+        ("four job opportunities", "apply for 4 job opportunities a month"),
+        ("7 working days", "a waiting period of seven working days"),
+        ("21 weeks", "a qualifying period of twenty-one weeks".replace("twenty-one", "21")),
+    ],
+)
+def test_fact_present_treats_number_words_as_digits(fact, text):
+    assert fact_present(fact, text)
+
+
+@pytest.mark.parametrize(
+    "fact, text",
+    [
+        ("2 study programmes", "apply for at least three study programmes"),
+        ("6 months", "it lasts sixteen months"),  # whole words only: "six" in "sixteen" is not 6
+        ("1 May 2026", "someone may apply"),
+    ],
+)
+def test_number_normalising_does_not_create_false_matches(fact, text):
+    assert not fact_present(fact, text)
+
+
+def test_normalise():
+    from jobseeker_assistant.evals import normalise
+
+    assert normalise("At  least TWO\nweeks") == "at least 2 weeks"
+    assert normalise("someone") == "someone"  # 'one' inside a word stays
