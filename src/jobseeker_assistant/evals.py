@@ -311,6 +311,12 @@ def render_markdown(meta: dict, summary: dict, results: list[CaseResult]) -> str
     ]
     if meta.get("aborted"):
         lines += [f"**ABORTED:** {meta['aborted']} — results below are partial.", ""]
+    if meta.get("self_judged"):
+        lines += [
+            f"**Note:** the judge (`{meta['judge']}`) is the same model that wrote the answers, "
+            "so judge scores may be lenient. Set JUDGE_MODEL to a different model.",
+            "",
+        ]
     if meta.get("budget"):
         b = meta["budget"]
         lines += [
@@ -512,6 +518,7 @@ def evaluate_sets(args, index, llm, glossary, provider, judge=None, budget=None)
         meta = _meta(args, name, len(cases), provider, model, glossary, run_at)
         if judge is not None:
             meta["judge"] = getattr(getattr(judge, "llm", None), "model", type(judge).__name__)
+            meta["self_judged"] = is_self_judged(llm, judge)
         if budget is not None:
             meta["budget"] = budget.summary()
             meta["cost_text"] = format_cost(budget.cost)
@@ -524,6 +531,18 @@ def evaluate_sets(args, index, llm, glossary, provider, judge=None, budget=None)
         if aborted:
             raise BudgetExceeded(meta["aborted"])
     return summaries
+
+
+def is_self_judged(answer_llm, judge) -> bool:
+    """True if the judge runs on the same provider and model as the answering model."""
+    judge_llm = getattr(judge, "llm", None)
+    if judge_llm is None:
+        return False
+
+    def ident(m):
+        return (getattr(m, "provider", None), getattr(m, "model", None))
+
+    return ident(answer_llm) == ident(judge_llm) and ident(answer_llm) != (None, None)
 
 
 def print_summaries(summaries: dict) -> None:
@@ -578,6 +597,12 @@ def run_real(args, index, glossary, answer_llm, judge, budget: Budget) -> int:
         f"{format_cost(estimate_cost(prices, min(worst, budget.max_calls)))}"
     )
     provider = getattr(answer_llm, "provider", "unknown")
+    if is_self_judged(answer_llm, judge):
+        print(
+            f"WARNING: the judge is the same model as the answerer ({answer_llm.model}), so it "
+            "grades its own answers and may be lenient. Set JUDGE_MODEL (e.g. gemini-3.7-flash) "
+            "or JUDGE_PROVIDER to use a different judge."
+        )
     try:
         summaries = evaluate_sets(args, index, answer_llm, glossary, provider, judge, budget)
     except BudgetExceeded as exc:

@@ -197,6 +197,27 @@ Day 5b adds 3 golden cases (35 → 38). Legal-advice questions are refused **by 
 since Day 3 (5/5 across both sets), not just by low word overlap. Held-out "real answered" never
 moved: the one miss ("certificate of partial work ability", coverage 0.47) was not tuned for.
 
+### First run with a real model (2026-11-05)
+
+`gemini-3.5-flash-lite` (free tier, Flash was overloaded that day) answered; the same model
+judged (self-judged, so judge scores may be lenient). 98 model calls, $0. Reports:
+`evals/reports/2026-11-05T191141Z_gemini_*_flash-lite.md`.
+
+| | Golden (38) | Held-out (15) |
+|---|---|---|
+| **Judge overall** (every applicable check passes) | **36/38** | **14/15** |
+| Exact checks passed (refusal ok + right source cited + key facts in answer) | 35/38 | 13/15 |
+| Off-topic refused | 8/8 | 5/5 |
+| Real questions answered | 28/30 | 9/10 |
+| Key facts in the answer | 28/30 | 8/10 |
+| Sent back by the grounding check (strict retry) | 6/38 → 5 fixed, 1 refused | 0/15 |
+| Judge per check: correct · grounded · right source · meaning preserved | 28/28 · 28/28 · 28/28 · 28/28 | 9/9 · 9/9 · 9/9 · 9/9 |
+| Judge per check: plain language · safe refusal · replaced note | 38/38 · 28/30 · 8/8 | 15/15 · 10/11 · 1/1 |
+
+With the fake model the same sets scored 17/38 and 6/15 on the exact checks: the fake only
+repeats one sentence. Of the 5 real failures, 3 are our own checks or labels being too strict
+(see PROGRESS.md), not wrong answers.
+
 ## What I learned
 
 - **Most failures were retrieval, not the model.** When an answer lacked the key fact, the fact
