@@ -211,3 +211,13 @@ def test_judge_timeout_is_recorded_not_fatal(real_index, tmp_path, reports_in_tm
     )
     [report] = reports_in_tmp.glob("*.json")
     assert json.loads(report.read_text())["summary"]["judge_errors"] == "38/38"
+
+
+def test_judge_gets_a_larger_output_cap_than_answers():
+    from jobseeker_assistant.evals import JUDGE_MAX_TOKENS, judge_model_from_env
+    from jobseeker_assistant.llm import get_llm
+
+    env = {"LLM_PROVIDER": "gemini", "LLM_API_KEY": "k", "JUDGE_MODEL": "gemini-3.6-flash"}
+    judge = judge_model_from_env(env)
+    assert judge.model == "gemini-3.6-flash" and judge.max_tokens == JUDGE_MAX_TOKENS == 2000
+    assert get_llm(env).max_tokens == 800  # answers unchanged

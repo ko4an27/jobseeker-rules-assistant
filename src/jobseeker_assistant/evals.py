@@ -563,6 +563,19 @@ def evaluate_sets(args, index, llm, glossary, provider, judge=None, budget=None)
     return summaries
 
 
+# The judge writes a JSON verdict with a reason per check; thinking models (gemini-3.6-flash
+# used 276 thinking tokens for a five-word reply on 2026-11-05) can spend much of an 800-token
+# cap before writing it, cutting the JSON off. Answers keep their own, smaller cap.
+JUDGE_MAX_TOKENS = 2000
+
+
+def judge_model_from_env(env: dict | None = None):
+    llm = get_llm(env, prefix="JUDGE")
+    if hasattr(llm, "max_tokens"):
+        llm.max_tokens = max(llm.max_tokens, JUDGE_MAX_TOKENS)
+    return llm
+
+
 def is_self_judged(answer_llm, judge) -> bool:
     """True if the judge runs on the same provider and model as the answering model."""
     judge_llm = getattr(judge, "llm", None)
@@ -600,7 +613,7 @@ def real_main(args, index, glossary) -> int:
         )
         return 2
     try:
-        answer_llm, judge_llm = get_llm(), get_llm(prefix="JUDGE")
+        answer_llm, judge_llm = get_llm(), judge_model_from_env()
     except (RuntimeError, ValueError) as exc:
         print(f"not configured: {exc}")
         return 2
@@ -654,7 +667,7 @@ def run_real(args, index, glossary, answer_llm, judge, budget: Budget) -> int:
 def judge_calibrate_main(args) -> int:
     """make judge-calibrate: does the judge agree with the hand labels?"""
     try:
-        judge_llm = get_llm(prefix="JUDGE")
+        judge_llm = judge_model_from_env()
     except (RuntimeError, ValueError) as exc:
         print(f"not configured: {exc}")
         return 2
