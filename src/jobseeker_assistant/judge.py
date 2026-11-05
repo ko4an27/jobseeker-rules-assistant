@@ -29,13 +29,13 @@ CRITERIA = (
     "correct",
     "grounded",
     "right_source",
-    "negations",
+    "meaning_preserved",
     "plain_language",
     "safe_refusal",
     "replaced_note",
 )
 VERDICTS = {"pass", "fail", "n/a"}
-ANSWER_CONTENT = ("correct", "grounded", "right_source", "negations")
+ANSWER_CONTENT = ("correct", "grounded", "right_source", "meaning_preserved")
 
 
 @dataclass(frozen=True)
@@ -192,13 +192,17 @@ def calibrate(judge, examples: list[CalibrationExample]) -> dict:
     """Agreement per criterion, counting only criteria the judge actually decided
     (n/a-by-rule criteria agree automatically and would inflate the number)."""
     per: dict[str, list[bool]] = {c: [] for c in CRITERIA}
+    overall: list[bool] = []
     disagreements, errors = [], []
     for ex in examples:
         verdict = judge.evaluate(ex.item)
         if verdict.error:
             errors.append({"id": ex.id, "error": verdict.error})
+            overall.append(False)  # a judge error never counts as agreement
             continue
         decided = set(CRITERIA) - not_applicable(ex.item)
+        label_pass = all(ex.labels[c] != "fail" for c in CRITERIA)
+        overall.append(label_pass == verdict.passed)
         for c in decided:
             agree = verdict.scores.get(c) == ex.labels[c]
             per[c].append(agree)
@@ -214,6 +218,7 @@ def calibrate(judge, examples: list[CalibrationExample]) -> dict:
                 )
     all_votes = [v for votes in per.values() for v in votes]
     return {
+        "overall_agreement": f"{sum(overall)}/{len(overall)}",
         "agreement": f"{sum(all_votes)}/{len(all_votes)}",
         "agreement_rate": round(sum(all_votes) / len(all_votes), 3) if all_votes else None,
         "by_criterion": {c: f"{sum(v)}/{len(v)}" for c, v in per.items() if v},

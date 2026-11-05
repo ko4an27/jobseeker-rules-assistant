@@ -1,8 +1,11 @@
 # Judge rubric
 
 The LLM judge scores one answer at a time against this rubric. Each criterion gets
-**pass**, **fail** or **n/a**, with a one-sentence reason. This file is inserted into the
-judge's prompt as written, so editing it changes the judge.
+**pass**, **fail** or **n/a**, with a one-sentence reason. Each criterion measures one thing
+only. This file is inserted into the judge's prompt as written, so editing it changes the judge.
+
+**Overall verdict:** an answer passes only if every applicable criterion passes (n/a criteria
+are ignored).
 
 The judge sees: the question, the answer, the numbered source passages the answer was given
 ([S1], [S2], …), the expected key facts (if any), whether the question must be refused, and
@@ -25,13 +28,18 @@ The disclaimer and plain "check with Kela" advice are not facts.
 **Pass** if each citation [S#] points to the passage the sentence's information comes from.
 **Fail** if a sentence cites a passage about something else while a different passage (or no
 passage) holds that information. This is only about *which* passage is cited: a wrong claim
-citing the right passage passes here and fails under `grounded` / `negations` instead.
+citing the right passage passes here and fails under `grounded` / `meaning_preserved` instead.
 
-## 4. negations
-**Pass** if the answer keeps the sources' meaning on the things that flip easily: not / no /
-only / unless / except, can vs cannot, maximum vs minimum, before vs after, numbers and units.
-**Fail** if any of these is flipped or changed (e.g. "cannot work part-time" when the source
-says you can; "at least six months" when the source says at most).
+## 4. meaning_preserved
+**Pass** if the answer keeps the sources' meaning on the things that change easily:
+- **negations:** not / no / can vs cannot / only / unless / except;
+- **units and numbers:** per day vs per month, euros vs percent, the number itself;
+- **qualifiers:** "in most cases", "usually", "up to", "at most", "before", "after" — dropping
+  or strengthening one changes the meaning ("in most cases 50%" is not "guaranteed 50%").
+
+**Fail** if any of these is flipped, dropped or changed (e.g. "cannot work part-time" when the
+source says you can; "EUR 37.21 per month" when the source says per day). **n/a** if the answer
+restates no source statement at all.
 
 ## 5. plain_language
 **Pass** if the answer is short (about 120 words or fewer), uses plain everyday words, makes

@@ -6,7 +6,7 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
 - [x] Day 1 — setup (Python, pytest, CI), source snapshots of ~20 official pages, first RAG answer with citations
 - [x] Day 2 — golden test set (30–40 questions incl. out-of-scope), simple exact-check evals
 - [x] Day 3 — LangGraph flow: retrieve → answer → self-check grounding → refuse if not covered
-- [~] Day 4 — LLM-as-judge with a rubric (built, needs a real run), regression report between runs
+- [~] Day 4 — LLM-as-judge with a rubric (done, first real run 2026-11-05), regression report between runs
 - [x] Day 5 — Langfuse tracing, FastAPI endpoint, Docker (5a, fake LLM)
 - [ ] Day 6 — README ("How we know it's correct"), demo transcript, polish
 - [ ] Message Petr Vanek with the link + apply to If
@@ -150,7 +150,7 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
     from `LLM_API_KEY` (sent in a header, never in URLs or errors). 429/5xx retried with
     Retry-After. Optional separate judge model via `JUDGE_*`; it never borrows another
     provider's key or model.
-  - Judge: rubric in `evals/judge_rubric.md` (correct, grounded, right_source, negations,
+  - Judge: rubric in `evals/judge_rubric.md` (correct, grounded, right_source, meaning_preserved,
     plain_language, safe_refusal, replaced_note), inserted into the judge prompt as written. Code
     decides n/a (refusals, must-refuse, no abolished benefit named). Bad judge JSON → recorded
     error, never a crash. `FakeJudge` for tests.
@@ -184,12 +184,49 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
     ("Thinking" → "Thin***ing"); now only key-sized strings are masked.
   - 260 tests pass.
 
+- 2026-11-05 (judge calibration + first real eval, gemini-3.5-flash-lite):
+  - Rubric: "negations" → **meaning_preserved** (negations, units like per day/per month, qualifiers
+    like "in most cases"). **Overall verdict**: an answer passes only if every applicable check
+    passes; a judge error counts as not passed; reported first. Labels reviewed and approved by
+    the project owner (right_source judges only which passage is cited).
+  - `make judge-calibrate`: overall verdict agreement **10/10**, per check **50/53**. The judge is
+    lenient on *grounded*: it passed "EUR 37.21 per month" and "guaranteed 50%" because the
+    numbers come from the source. Both still failed overall via meaning_preserved. The code-based
+    grounding check stays as the backstop (README).
+  - `make eval-real` (98 calls, $0): judge overall golden **36/38**, held-out **14/15**; exact checks
+    35/38 and 13/15 (fake model: 17/38, 6/15). 6 golden answers were sent back by the grounding
+    check; 5 passed on the strict retry, 1 was refused.
+  - Self-judging: the run now warns, and the report says so, when the judge is the same model as
+    the answerer; `JUDGE_MODEL=gemini-3.7-flash` uses a different model with the same key.
+  - Five most interesting failures:
+    1. `reform-municipalities` — **refused, although the core answer was right.** Both drafts
+       opened with the correct, supported sentence ("…transferred to employment areas formed by
+       municipalities on 1 January 2025"), then added a sentence *about the sources* ("Sources
+       [S3]–[S5] are historical texts…"). The grounding check rejected that, so the whole answer
+       was refused. Our own prompt causes it: it asks the model to say when a HISTORICAL source
+       was replaced, but the code already adds that note.
+    2. `lmt-apply` — model said NOT_COVERED. Correct given what it saw: the "e-service" fact is the
+       one golden fact still ranked below the top 8 (retrieval). The judge marked the refusal
+       unsafe; a retrieval gap, not a model error.
+    3. `h-partial-work-ability` — refused by the coverage gate (0.47 < 0.50), the known held-out
+       miss. The judge agrees the passages had an answer.
+    4. `h-under-25-study` — **correct answer marked wrong by our exact check**: the model wrote
+       "at least two study programmes"; the expected fact was "2 study programmes | two study
+       places". A grading gap, not a model error.
+    5. `tricky-one-euro` — **correct answer, wrong-source by our label**: it cited the Kela FAQ,
+       which also states the 50-cents rule; the golden case listed only two other pages.
+  - 263 tests pass.
+
 ## Next
-- **You:** review the 10 labels in `evals/judge_calibration.yaml`, set `reviewed: true`.
-- Get a free Gemini or Groq key; run `make judge-calibrate`, then `make eval-real`.
-- Compare the real run with the fake-LLM numbers in the README; watch `retried` and
-  `refused_not_grounded` (is the 60% key-word threshold too strict for real paraphrases?).
-- Regression report between two real runs (Day 4 plan, second half).
+- **Fix the prompt conflict** (failure 1): tell the model not to write about the sources
+  themselves; the code already adds the "replaced by" notes. Re-run golden.
+- **Fix two grading gaps** (failures 4–5): add "two study programmes" as an accepted phrasing and
+  the Kela FAQ as an expected source. Changing held-out *labels* (not the system) after seeing
+  results — agree first, and record it.
+- Re-run on Flash (`gemini-3.7-flash`) when it isn't overloaded, judged by a different model,
+  and compare with this run (regression report).
+- Grounding threshold: 6/38 golden answers were sent back, 5 passed on retry. Check whether the
+  60% key-word threshold or meta-sentences (failure 1) cause most retries before changing it.
 - Day 6 plan: README "How we know it's correct", demo transcript, polish.
 
 ## Open questions

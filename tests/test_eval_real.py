@@ -104,6 +104,58 @@ def test_real_main_without_key_is_a_clean_error(monkeypatch, capsys, real_index)
 def test_run_calibration_with_fake_judge(reports_in_tmp, capsys):
     assert evals.run_calibration(_args(judge_calibrate=True, real=False), FakeJudge()) == 0
     out = capsys.readouterr().out
-    assert "not marked reviewed" in out and "judge agreement with labels" in out
+    assert "not marked reviewed" not in out and "overall verdict agreement" in out
     [report] = reports_in_tmp.glob("*judge-calibration*.json")
-    assert json.loads(report.read_text())["labels_reviewed"] is False
+    assert json.loads(report.read_text())["labels_reviewed"] is True
+
+
+def test_overall_verdict_needs_every_applicable_check_and_counts_errors_as_not_passed():
+    from jobseeker_assistant.evals import CaseResult, judge_summary
+
+    def r(scores, error=""):
+        res = CaseResult("i", "current", "q", False, False, "", True, True, True, True, True)
+        res.judge = {"scores": scores, "reasons": {}, "error": error}
+        return res
+
+    s = judge_summary(
+        [
+            r({"correct": "pass", "grounded": "pass", "replaced_note": "n/a"}),  # passes
+            r({"correct": "pass", "grounded": "fail"}),  # one failing check
+            r({}, error="judge reply had no JSON object"),  # judge error
+        ]
+    )
+    assert list(s)[0] == "judge_overall" and s["judge_overall"] == "1/3"
+    assert s["judge_grounded"] == "1/2" and s["judge_replaced_note"] == "–"
+    assert s["judge_errors"] == "1/3"
+
+
+class _Model:
+    def __init__(self, provider, model):
+        self.provider, self.model = provider, model
+
+
+class _Judge:
+    def __init__(self, llm):
+        self.llm = llm
+
+
+def test_self_judged_detection():
+    from jobseeker_assistant.evals import is_self_judged
+
+    lite = _Model("gemini", "gemini-3.5-flash-lite")
+    assert is_self_judged(lite, _Judge(_Model("gemini", "gemini-3.5-flash-lite")))
+    assert not is_self_judged(lite, _Judge(_Model("gemini", "gemini-3.7-flash")))
+    assert not is_self_judged(lite, _Judge(_Model("groq", "gemini-3.5-flash-lite")))
+    assert not is_self_judged(lite, FakeJudge())  # fake judge has no model
+
+
+def test_self_judged_run_warns_and_marks_report(real_index, tmp_path, reports_in_tmp, capsys):
+    from jobseeker_assistant.judge import LLMJudge
+
+    llm, budget = _guarded(tmp_path, max_calls=500)
+    judge = LLMJudge(llm)  # same guarded fake model for answering and judging
+    evals.run_real(_args(), real_index, load_glossary(), llm, judge, budget)
+    assert "WARNING: the judge is the same model" in capsys.readouterr().out
+    [report] = reports_in_tmp.glob("*.json")
+    assert json.loads(report.read_text())["meta"]["self_judged"] is True
+    assert "same model that wrote the answers" in report.with_suffix(".md").read_text()
