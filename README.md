@@ -87,12 +87,17 @@ If Docker Hub rate-limits the base image, pass a mirror:
 `docker build --build-arg PYTHON_IMAGE=mirror.gcr.io/library/python:3.12-slim .`
 
 **Real model and tracing:** copy `.env.example` to `.env` (git-ignored) and fill in keys.
+`make ask`, `make api`, `make eval-real` and `make judge-calibrate` read `.env` automatically;
+variables already set in your shell win.
 
 | Variable | Meaning | Default |
 |---|---|---|
-| `LLM_PROVIDER` | `anthropic` or `fake` (offline, no key) | `anthropic` |
-| `LLM_MODEL` | model id | `claude-haiku-5-5` |
-| `ANTHROPIC_API_KEY` | secret, only via env / `.env` | — |
+| `LLM_PROVIDER` | `gemini` or `groq` (free tiers), `anthropic`, or `fake` (offline, no key) | `anthropic` |
+| `LLM_MODEL` | model id | gemini `gemini-2.5-flash`, groq `llama-3.3-70b-versatile`, anthropic `claude-haiku-5-5` |
+| `LLM_API_KEY` | the provider's key, only via env / `.env` (`ANTHROPIC_API_KEY` also works for anthropic) | — |
+| `JUDGE_PROVIDER` / `JUDGE_MODEL` / `JUDGE_API_KEY` | optional: a different model as judge | same as `LLM_*` |
+| `EVAL_MAX_CALLS` | at most this many real model calls per eval run | `200` |
+| `LLM_PRICE_INPUT_PER_MTOK` / `LLM_PRICE_OUTPUT_PER_MTOK` | prices for paid providers (cost report) | free tiers: 0 |
 | `LANGFUSE_ENABLED` | `true` turns Langfuse tracing on | off |
 | `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` | Langfuse keys and server | — |
 | `LANGFUSE_LOG_TEXT` | `true` also sends question + answer text (default: metadata only) | off |
@@ -104,6 +109,53 @@ With tracing off, the Langfuse package is not even imported, so nothing is sent 
 Other commands: `make ask Q="..."` (one question on the command line), `make ingest` (fetch
 missing snapshots, never overwrites), `make refresh` (explicitly re-fetch all), `make sweep`
 (refusal cutoff table, golden set only).
+
+### Evaluate with a real model (free tier)
+
+1. **Get a free key** from Google AI Studio (Gemini) or the Groq console.
+2. **Put it in `.env`** (git-ignored):
+
+   ```
+   LLM_PROVIDER=gemini
+   LLM_API_KEY=your-key-here
+   ```
+
+   Model names change; if the default is retired, set `LLM_MODEL`. A model judging its own
+   answers is lenient, so a *different* judge is better if you have a second key:
+   `JUDGE_PROVIDER=groq`, `JUDGE_API_KEY=...`.
+3. **Review the judge's calibration labels** in `evals/judge_calibration.yaml` (10 answers, each
+   labelled pass/fail per rubric criterion). They are a draft: change any you disagree with and
+   set `reviewed: true`. Then check the judge agrees with you:
+
+   ```bash
+   make judge-calibrate
+   ```
+
+   It prints agreement per criterion and every disagreement with the judge's reason, and saves
+   a report in `evals/reports/`. Don't trust judge scores on a criterion it disagrees with you on.
+4. **Run the evaluation:**
+
+   ```bash
+   make eval-real
+   ```
+
+   Golden (38) and held-out (15) questions, answered by the real model and scored by the judge
+   against `evals/judge_rubric.md`. A dated report per set goes to `evals/reports/`: the exact
+   checks as before, plus pass rates per judge criterion and the judge's reason for every failure.
+
+**Limits and cost.** Before starting it prints the plan: cases, the maximum number of model
+calls (≤ 3 per question: answer, one grounding retry, judge) and the estimated maximum cost
+($0 on free tiers). A run never makes more than `EVAL_MAX_CALLS` (default 200) real calls: at
+the limit it stops cleanly, saves what it has (marked ABORTED) and exits with code 3. Responses
+are cached per commit, model and prompt (`evals/.cache/`, git-ignored), so rerunning finishes
+the remaining questions without paying for the done ones; uncommitted code turns the cache off.
+Calls are spaced out for free-tier rate limits (Gemini ~6 s, Groq ~2 s apart), so a full Gemini
+run takes up to ~16 minutes. Paid providers: set the two `LLM_PRICE_*` variables, otherwise the
+cost is shown as unknown — prices are not hard-coded because they change.
+
+**Privacy.** Free tiers often let the provider use what you send to improve their models; check
+the provider's terms. The eval questions contain no personal data. Do not point the public API
+(`make api`) at a free tier with real people's questions.
 
 ## Results
 

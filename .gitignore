@@ -16,3 +16,6 @@ venv/
 .vscode/
 .idea/
 .DS_Store
+
+# Cached model responses from real eval runs
+evals/.cache/

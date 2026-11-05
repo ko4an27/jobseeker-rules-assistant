@@ -32,8 +32,28 @@ from pathlib import Path
 import yaml
 
 from . import snapshots
+from .abolished import load_abolished, mentioned
 from .answer import Answer, answer_question
+from .budget import (
+    Budget,
+    BudgetExceeded,
+    GuardedLLM,
+    ResponseCache,
+    estimate_cost,
+    format_cost,
+    max_calls_from_env,
+    prices_for,
+)
+from .dotenv import load_dotenv
 from .glossary import Term, expand, load_glossary
+from .judge import (
+    CALIBRATION_PATH,
+    CRITERIA,
+    JudgeInput,
+    LLMJudge,
+    calibrate,
+    load_calibration,
+)
 from .llm import LLM, get_llm
 from .retrieve import Hit, Index
 from .source_tags import load_tags
@@ -116,6 +136,7 @@ class CaseResult:
     glossary_used: list[str] = field(default_factory=list)
     attempts: int = 0  # LLM calls; 2 means the grounding check sent it back once
     path: list[str] = field(default_factory=list)
+    judge: dict | None = None  # {"scores": {criterion: pass|fail|n/a}, "reasons", "error"}
 
     @property
     def passed(self) -> bool:
@@ -168,13 +189,18 @@ def run(
     min_score: float | None = None,
     min_coverage: float | None = None,
     glossary: list[Term] | None = None,
+    judge=None,
+    into: list[CaseResult] | None = None,
 ):
+    """Answer and grade every case; with `judge`, also score each answer against the rubric.
+    Results are appended to `into` as they come, so a run stopped by the budget keeps them."""
     kwargs: dict = {"glossary": glossary}
     if min_score is not None:
         kwargs["min_score"] = min_score
     if min_coverage is not None:
         kwargs["min_coverage"] = min_coverage
-    results = []
+    results = into if into is not None else []
+    abolished = load_abolished() if judge else []
     for case in cases:
         exp = expand(case.question, glossary or [])
         top = index.search(exp.retrieval_query, k=4)
@@ -185,8 +211,45 @@ def run(
         result.glossary_used = ans.glossary_used
         result.attempts = ans.attempts
         result.path = ans.path
+        if judge is not None:
+            verdict = judge.evaluate(
+                judge_input(case, ans, bool(mentioned(case.question, abolished)))
+            )
+            result.judge = {
+                "scores": verdict.scores,
+                "reasons": verdict.reasons,
+                "error": verdict.error,
+            }
         results.append(result)
     return results
+
+
+def judge_input(case: Case, ans: Answer, names_abolished: bool) -> JudgeInput:
+    return JudgeInput(
+        question=case.question,
+        answer=ans.text,
+        passages=[(f"S{i}", h.passage.url, h.passage.text) for i, h in enumerate(ans.hits, 1)],
+        key_facts=case.key_facts,
+        must_refuse=case.must_refuse,
+        refused=ans.refused,
+        names_abolished=names_abolished,
+    )
+
+
+def judge_summary(results: list[CaseResult]) -> dict:
+    """Per criterion: passes / cases where it applied. Plus all-pass and judge errors."""
+    judged = [r.judge for r in results if r.judge]
+    if not judged:
+        return {}
+    out = {}
+    for c in CRITERIA:
+        applied = [j["scores"].get(c) for j in judged if j["scores"].get(c) in ("pass", "fail")]
+        out[f"judge_{c}"] = f"{applied.count('pass')}/{len(applied)}" if applied else "–"
+    ok = [j for j in judged if not j["error"]]
+    all_pass = sum(all(v != "fail" for v in j["scores"].values()) for j in ok)
+    out["judge_all_pass"] = f"{all_pass}/{len(ok)}"
+    out["judge_errors"] = f"{len(judged) - len(ok)}/{len(judged)}"
+    return out
 
 
 def _rate(values: list[bool | None]) -> str:
@@ -213,6 +276,7 @@ def summarize(results: list[CaseResult]) -> dict:
         "retried": f"{sum(r.attempts > 1 for r in results)}/{len(results)}",
         "refused_not_grounded": f"{sum(r.refusal_reason == 'not_grounded' for r in results)}"
         f"/{len(results)}",
+        **judge_summary(results),
     }
 
 
@@ -245,6 +309,18 @@ def render_markdown(meta: dict, summary: dict, results: list[CaseResult]) -> str
         f" · min_coverage: `{meta.get('min_coverage', '–')}` · commit: `{meta['commit']}`"
         f" · cases: {meta['cases']}",
         "",
+    ]
+    if meta.get("aborted"):
+        lines += [f"**ABORTED:** {meta['aborted']} — results below are partial.", ""]
+    if meta.get("budget"):
+        b = meta["budget"]
+        lines += [
+            f"Model calls: {b['calls']} (+{b['cache_hits']} from cache) of max {b['max_calls']}"
+            f" · tokens in/out: {b['input_tokens']}/{b['output_tokens']}"
+            f" · cost: {meta.get('cost_text', b['cost_usd'])}",
+            "",
+        ]
+    lines += [
         "| Metric | Result |",
         "|---|---|",
     ]
@@ -266,12 +342,29 @@ def render_markdown(meta: dict, summary: dict, results: list[CaseResult]) -> str
             f" | {_mark(r.facts_in_answer)} | {_mark(r.facts_in_sources)} | {r.top_score}"
             f" | {r.top_coverage} |"
         )
+    judged = [r for r in results if r.judge]
+    if judged:
+        lines += [
+            "",
+            "## Judge",
+            "",
+            "| Case | Failed criteria | Judge's reasons |",
+            "|---|---|---|",
+        ]
+        for r in judged:
+            if r.judge["error"]:
+                lines.append(f"| {r.id} | judge error | {r.judge['error']} |")
+                continue
+            failed = [c for c, v in r.judge["scores"].items() if v == "fail"]
+            why = "; ".join(f"{c}: {r.judge['reasons'].get(c, '')}" for c in failed)
+            lines.append(f"| {r.id} | {', '.join(failed) or '—'} | {why.replace('|', '/')} |")
     return "\n".join(lines) + "\n"
 
 
 def save_report(
-    results: list[CaseResult], meta: dict, directory: Path = REPORTS
+    results: list[CaseResult], meta: dict, directory: Path | None = None
 ) -> tuple[Path, Path]:
+    directory = directory or REPORTS  # looked up at call time, so tests can redirect it
     directory.mkdir(parents=True, exist_ok=True)
     stem = meta["run_at"].replace(":", "").replace("+0000", "Z") + f"_{meta['llm_provider']}"
     if meta.get("label"):
@@ -335,6 +428,7 @@ SETS = {"golden": GOLDEN, "heldout": HELDOUT}
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--min-score", type=float, default=None)
     parser.add_argument("--min-coverage", type=float, default=None)
@@ -343,6 +437,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-save", action="store_true")
     parser.add_argument("--no-glossary", action="store_true", help="turn query expansion off")
     parser.add_argument("--label", default="", help="short tag added to the report file name")
+    parser.add_argument(
+        "--real", action="store_true", help="real model + LLM judge (make eval-real)"
+    )
+    parser.add_argument("--judge-calibrate", action="store_true", help="judge vs hand labels")
     args = parser.parse_args(argv)
 
     index = Index.from_snapshots(snapshots.load_all(), load_tags())
@@ -361,39 +459,196 @@ def main(argv: list[str] | None = None) -> int:
                 )
         return 0
 
-    from .answer import DEFAULT_MIN_COVERAGE, DEFAULT_MIN_SCORE
+    if args.judge_calibrate:
+        return judge_calibrate_main(args)
+    if args.real:
+        return real_main(args, index, glossary)
 
     llm = get_llm()
     provider = os.environ.get("LLM_PROVIDER", "anthropic")
-    run_at = datetime.now(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%S%z")
+    summaries = evaluate_sets(args, index, llm, glossary, provider)
+    print_summaries(summaries)
+    return 0
+
+
+def _meta(args, name: str, cases: int, provider: str, model: str, glossary, run_at: str) -> dict:
+    from .answer import DEFAULT_MIN_COVERAGE, DEFAULT_MIN_SCORE
+
+    return {
+        "run_at": run_at,
+        "set": name,
+        "llm_provider": provider,
+        "llm": model,
+        "min_score": args.min_score if args.min_score is not None else DEFAULT_MIN_SCORE,
+        "min_coverage": args.min_coverage
+        if args.min_coverage is not None
+        else DEFAULT_MIN_COVERAGE,
+        "commit": _git_commit(),
+        "glossary_terms": len(glossary),
+        "cases": cases,
+        "label": "_".join(x for x in (name, args.label) if x),
+    }
+
+
+def _now() -> str:
+    return datetime.now(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%S%z")
+
+
+def evaluate_sets(args, index, llm, glossary, provider, judge=None, budget=None) -> dict:
+    """Run the chosen sets; save one report per set. Returns {set: summary}.
+    With a budget, a BudgetExceeded stops the run: what was done is saved, marked aborted,
+    and the error is re-raised for the caller to report."""
+    run_at = _now()
     names = list(SETS) if args.set == "both" else [args.set]
-    summaries = {}
+    model = provider if provider == "fake" else getattr(llm, "model", "default")
+    summaries: dict = {}
     for name in names:
         cases = load_golden(SETS[name])
-        results = run(cases, index, llm, args.min_score, args.min_coverage, glossary)
-        meta = {
-            "run_at": run_at,
-            "set": name,
-            "llm_provider": provider,
-            "llm": provider if provider == "fake" else os.environ.get("LLM_MODEL", "default"),
-            "min_score": args.min_score if args.min_score is not None else DEFAULT_MIN_SCORE,
-            "min_coverage": (
-                args.min_coverage if args.min_coverage is not None else DEFAULT_MIN_COVERAGE
-            ),
-            "commit": _git_commit(),
-            "glossary_terms": len(glossary),
-            "cases": len(cases),
-            "label": "_".join(x for x in (name, args.label) if x),
-        }
-        summaries[name] = summarize(results)
+        results: list[CaseResult] = []
+        aborted = ""
+        try:
+            run(cases, index, llm, args.min_score, args.min_coverage, glossary, judge, results)
+        except BudgetExceeded as exc:
+            aborted = str(exc)
+        meta = _meta(args, name, len(cases), provider, model, glossary, run_at)
+        if judge is not None:
+            meta["judge"] = getattr(getattr(judge, "llm", None), "model", type(judge).__name__)
+        if budget is not None:
+            meta["budget"] = budget.summary()
+            meta["cost_text"] = format_cost(budget.cost)
+        if aborted:
+            meta["aborted"] = f"{aborted} (stopped after {len(results)}/{len(cases)} cases)"
+        summaries[name] = summarize(results) if results else {}
         if not args.no_save:
             _, md_path = save_report(results, meta)
             print(f"report: {md_path.relative_to(ROOT)}")
+        if aborted:
+            raise BudgetExceeded(meta["aborted"])
+    return summaries
+
+
+def print_summaries(summaries: dict) -> None:
+    names = [n for n in summaries if summaries[n]]
+    if not names:
+        return
     print(f"\n{'metric':22}" + "".join(f"{n:>12}" for n in names))
     for key in summaries[names[0]]:
         if key == "by_category":
             continue
-        print(f"{key:22}" + "".join(f"{summaries[n][key]:>12}" for n in names))
+        print(f"{key:22}" + "".join(f"{summaries[n].get(key, '–'):>12}" for n in names))
+
+
+def _guard(llm, budget: Budget, cache: ResponseCache, role: str) -> GuardedLLM:
+    return GuardedLLM(llm, budget, cache, _git_commit(), role=role)
+
+
+def real_main(args, index, glossary) -> int:
+    """make eval-real: golden + held-out with the real provider and the LLM judge."""
+    provider = os.environ.get("LLM_PROVIDER", "anthropic").strip().lower()
+    if provider == "fake":
+        print(
+            "eval-real needs a real model: set LLM_PROVIDER (gemini, groq or anthropic) "
+            "and LLM_API_KEY in .env. For the free offline eval use `make eval`."
+        )
+        return 2
+    try:
+        answer_llm, judge_llm = get_llm(), get_llm(prefix="JUDGE")
+    except (RuntimeError, ValueError) as exc:
+        print(f"not configured: {exc}")
+        return 2
+    commit = _git_commit()
+    budget = Budget(max_calls_from_env())
+    cache = ResponseCache(enabled=not commit.endswith("+dirty"))
+    if not cache.enabled:
+        print("note: uncommitted changes, so the response cache is off for this run")
+    answer, judge_model = (
+        _guard(answer_llm, budget, cache, "answer"),
+        _guard(judge_llm, budget, cache, "judge"),
+    )
+    return run_real(args, index, glossary, answer, LLMJudge(judge_model), budget)
+
+
+def run_real(args, index, glossary, answer_llm, judge, budget: Budget) -> int:
+    names = list(SETS) if args.set == "both" else [args.set]
+    n_cases = sum(len(load_golden(SETS[n])) for n in names)
+    worst = n_cases * 3  # up to 2 answer calls (retry) + 1 judge call per case
+    prices = getattr(answer_llm, "prices", prices_for("fake"))
+    print(
+        f"plan: {n_cases} cases, at most {min(worst, budget.max_calls)} model calls "
+        f"(limit {budget.max_calls}), estimated max cost "
+        f"{format_cost(estimate_cost(prices, min(worst, budget.max_calls)))}"
+    )
+    provider = getattr(answer_llm, "provider", "unknown")
+    try:
+        summaries = evaluate_sets(args, index, answer_llm, glossary, provider, judge, budget)
+    except BudgetExceeded as exc:
+        print(f"\nABORTED: {exc}")
+        print(
+            f"calls: {budget.calls}, cache hits: {budget.cache_hits}, "
+            f"cost: {format_cost(budget.cost)}"
+        )
+        return 3
+    print_summaries(summaries)
+    print(
+        f"\ncalls: {budget.calls} (+{budget.cache_hits} cached) of max {budget.max_calls}; "
+        f"tokens in/out {budget.input_tokens}/{budget.output_tokens}; "
+        f"cost {format_cost(budget.cost)}"
+    )
+    return 0
+
+
+def judge_calibrate_main(args) -> int:
+    """make judge-calibrate: does the judge agree with the hand labels?"""
+    try:
+        judge_llm = get_llm(prefix="JUDGE")
+    except (RuntimeError, ValueError) as exc:
+        print(f"not configured: {exc}")
+        return 2
+    commit = _git_commit()
+    budget = Budget(max_calls_from_env())
+    cache = ResponseCache(enabled=not commit.endswith("+dirty"))
+    judge = LLMJudge(_guard(judge_llm, budget, cache, "judge"))
+    return run_calibration(args, judge, budget)
+
+
+def run_calibration(args, judge, budget: Budget | None = None, path: Path | None = None) -> int:
+    examples, reviewed = load_calibration(path or CALIBRATION_PATH)
+    if not reviewed:
+        print(
+            "WARNING: evals/judge_calibration.yaml is not marked reviewed: the labels are a "
+            "draft. Agreement with unreviewed labels proves little."
+        )
+    try:
+        result = calibrate(judge, examples)
+    except BudgetExceeded as exc:
+        print(f"ABORTED: {exc}")
+        return 3
+    print(f"judge agreement with labels: {result['agreement']} ({result['agreement_rate']})")
+    for c, v in result["by_criterion"].items():
+        print(f"  {c:16} {v}")
+    for d in result["disagreements"]:
+        print(
+            f"  disagree {d['id']} {d['criterion']}: label={d['label']} judge={d['judge']} "
+            f"({d['judge_reason']})"
+        )
+    for e in result["errors"]:
+        print(f"  judge error {e['id']}: {e['error']}")
+    if not args.no_save:
+        REPORTS.mkdir(parents=True, exist_ok=True)
+        model = getattr(getattr(judge, "llm", None), "model", type(judge).__name__)
+        stem = f"{_now().replace(':', '').replace('+0000', 'Z')}_judge-calibration_{model}"
+        data = {
+            "run_at": _now(),
+            "judge": model,
+            "labels_reviewed": reviewed,
+            "commit": _git_commit(),
+            **result,
+        }
+        if budget is not None:
+            data["budget"] = budget.summary()
+        out = REPORTS / f"{stem}.json"
+        out.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"report: {out.relative_to(ROOT)}")
     return 0
 
 
