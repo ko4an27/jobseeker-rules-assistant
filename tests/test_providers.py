@@ -203,3 +203,35 @@ def test_fake_llm_reports_rough_usage():
     llm = FakeLLM("x")
     llm.complete("a" * 40, "b" * 40)
     assert llm.last_usage.input_tokens == 20
+
+
+def test_network_timeouts_are_retried_then_become_provider_errors():
+    import requests
+
+    calls = []
+
+    def post(url, headers, json, timeout):
+        calls.append(1)
+        raise requests.exceptions.ReadTimeout("Read timed out. (read timeout=60.0)")
+
+    waits = []
+    llm = GeminiLLM("gemini-3.7-flash", "secret-key-123", post=post, sleep=waits.append)
+    with pytest.raises(ProviderError, match="no response from model gemini-3.7-flash") as err:
+        llm.complete("s", "u")
+    assert len(calls) == 3 and waits == [2, 4]
+    assert "secret-key-123" not in str(err.value)
+
+
+def test_a_timeout_then_success_recovers():
+    import requests
+
+    replies = [requests.exceptions.ConnectionError("reset"), GEMINI_OK]
+
+    def post(url, headers, json, timeout):
+        r = replies.pop(0)
+        if isinstance(r, Exception):
+            raise r
+        return r
+
+    llm = GeminiLLM("gemini-3.7-flash", "k", post=post, sleep=lambda s: None)
+    assert llm.complete("s", "u") == "Six months [S1]."

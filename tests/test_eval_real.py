@@ -159,3 +159,111 @@ def test_self_judged_run_warns_and_marks_report(real_index, tmp_path, reports_in
     [report] = reports_in_tmp.glob("*.json")
     assert json.loads(report.read_text())["meta"]["self_judged"] is True
     assert "same model that wrote the answers" in report.with_suffix(".md").read_text()
+
+
+class _Down:
+    """A model that is always overloaded."""
+
+    provider, model = "gemini", "gemini-3.7-flash"
+
+    def complete(self, system, user):
+        from jobseeker_assistant.llm import ProviderError
+
+        raise ProviderError("gemini returned HTTP 503 for model gemini-3.7-flash: high demand")
+
+
+def test_unavailable_judge_is_recorded_not_fatal(real_index, tmp_path, reports_in_tmp, capsys):
+    from jobseeker_assistant.judge import LLMJudge
+
+    llm, budget = _guarded(tmp_path, max_calls=500)
+    code = evals.run_real(_args(), real_index, load_glossary(), llm, LLMJudge(_Down()), budget)
+    assert code == 0
+    [report] = reports_in_tmp.glob("*.json")
+    data = json.loads(report.read_text())
+    assert data["summary"]["judge_errors"] == "38/38"
+    assert data["summary"]["judge_overall"] == "0/38"  # errors never count as passed
+    assert "judge unavailable" in data["results"][0]["judge"]["error"]
+
+
+def test_unavailable_answer_model_aborts_cleanly(real_index, tmp_path, reports_in_tmp, capsys):
+    budget = Budget(500)
+    code = evals.run_real(_args(), real_index, load_glossary(), _Down(), FakeJudge(), budget)
+    assert code == 3
+    assert "answering model unavailable" in capsys.readouterr().out
+    [report] = reports_in_tmp.glob("*.json")
+    assert "answering model unavailable" in json.loads(report.read_text())["meta"]["aborted"]
+
+
+def test_judge_timeout_is_recorded_not_fatal(real_index, tmp_path, reports_in_tmp):
+    """Real run 2026-11-05: a judge read timeout crashed the whole eval."""
+    import requests
+
+    from jobseeker_assistant.judge import LLMJudge
+    from jobseeker_assistant.llm import GeminiLLM
+
+    def post(url, headers, json, timeout):
+        raise requests.exceptions.ReadTimeout("Read timed out.")
+
+    judge_llm = GeminiLLM("gemini-3.7-flash", "k", post=post, sleep=lambda s: None)
+    llm, budget = _guarded(tmp_path, max_calls=500)
+    assert (
+        evals.run_real(_args(), real_index, load_glossary(), llm, LLMJudge(judge_llm), budget) == 0
+    )
+    [report] = reports_in_tmp.glob("*.json")
+    assert json.loads(report.read_text())["summary"]["judge_errors"] == "38/38"
+
+
+def test_judge_gets_a_larger_output_cap_than_answers():
+    from jobseeker_assistant.evals import JUDGE_MAX_TOKENS, judge_model_from_env
+    from jobseeker_assistant.llm import get_llm
+
+    env = {"LLM_PROVIDER": "gemini", "LLM_API_KEY": "k", "JUDGE_MODEL": "gemini-3.6-flash"}
+    judge = judge_model_from_env(env)
+    assert judge.model == "gemini-3.6-flash" and judge.max_tokens == JUDGE_MAX_TOKENS == 2000
+    assert get_llm(env).max_tokens == 800  # answers unchanged
+
+
+def test_code_fingerprint_ignores_report_commits_but_not_code_changes(tmp_path):
+    import shutil
+    import subprocess
+
+    if shutil.which("git") is None:  # the slim Docker test image has no git
+        pytest.skip("git not installed")
+
+    from jobseeker_assistant.evals import code_fingerprint
+
+    def git(*args):
+        subprocess.run(["git", *args], cwd=tmp_path, check=True, capture_output=True)
+
+    git("init", "-q")
+    git("config", "user.email", "t@example.test")
+    git("config", "user.name", "t")
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "a.py").write_text("x = 1\n")
+    (tmp_path / "evals" / "reports").mkdir(parents=True)
+    git("add", "-A")
+    git("commit", "-qm", "code")
+    first = code_fingerprint(tmp_path)
+    assert first
+
+    (tmp_path / "evals" / "reports" / "r.json").write_text("{}")
+    git("add", "-A")
+    git("commit", "-qm", "reports only")
+    assert code_fingerprint(tmp_path) == first  # the cache survives a reports-only commit
+
+    (tmp_path / "src" / "a.py").write_text("x = 2\n")
+    assert code_fingerprint(tmp_path) is None  # uncommitted code change: cache off
+    git("commit", "-qam", "code change")
+    assert code_fingerprint(tmp_path) not in (None, first)
+
+
+def test_code_fingerprint_without_git_turns_the_cache_off(tmp_path, monkeypatch):
+    import subprocess
+
+    from jobseeker_assistant.evals import code_fingerprint
+
+    def no_git(*args, **kwargs):
+        raise FileNotFoundError("git")
+
+    monkeypatch.setattr(subprocess, "run", no_git)
+    assert code_fingerprint(tmp_path) is None

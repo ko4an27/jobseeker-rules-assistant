@@ -140,3 +140,111 @@ def test_refusal_reason_needs_must_refuse(tmp_path):
     )
     with pytest.raises(ValueError, match="refusal_reason"):
         load_golden(f)
+
+
+@pytest.mark.parametrize(
+    "fact, text",
+    [
+        ("2 study programmes", "you must apply for at least two study programmes"),  # 2026-11-05
+        ("two study programmes", "apply to 2 study programmes"),  # works both ways
+        ("six months | 6 months", "It lasts at most Six months."),
+        ("four job opportunities", "apply for 4 job opportunities a month"),
+        ("7 working days", "a waiting period of seven working days"),
+        ("21 weeks", "a qualifying period of twenty-one weeks".replace("twenty-one", "21")),
+    ],
+)
+def test_fact_present_treats_number_words_as_digits(fact, text):
+    assert fact_present(fact, text)
+
+
+@pytest.mark.parametrize(
+    "fact, text",
+    [
+        ("2 study programmes", "apply for at least three study programmes"),
+        ("6 months", "it lasts sixteen months"),  # whole words only: "six" in "sixteen" is not 6
+        ("1 May 2026", "someone may apply"),
+    ],
+)
+def test_number_normalising_does_not_create_false_matches(fact, text):
+    assert not fact_present(fact, text)
+
+
+def test_normalise():
+    from jobseeker_assistant.evals import normalise
+
+    assert normalise("At  least TWO\nweeks") == "at least 2 week"  # units singular
+    assert normalise("someone") == "someone"  # 'one' inside a word stays
+
+
+@pytest.mark.parametrize(
+    "fact, text",
+    [
+        # h-status-report, real eval 2026-11-06: "a 2-week period" vs expected "2 weeks"
+        ("2 weeks", "a status report covering a 2-week period"),
+        ("2 weeks", "a two-week period"),
+        ("2 weeks", "a Two-Week period"),
+        ("6 months | six months", "a 6-month work try-out"),
+        ("7 working days", "a waiting period of 7 working day"),  # singular
+        ("21 weeks", "a 21-week qualifying period"),
+        ("2 weeks", "after 2 weeks"),  # plain plural still works
+    ],
+)
+def test_fact_present_matches_hyphenated_and_singular_units(fact, text):
+    assert fact_present(fact, text)
+
+
+@pytest.mark.parametrize(
+    "fact, text",
+    [
+        ("2 weeks", "a 12-week period"),  # word boundary still holds
+        ("2 weeks", "2 days"),
+        ("e-service", "the online service"),  # hyphens between letters are untouched
+    ],
+)
+def test_unit_normalising_does_not_create_false_matches(fact, text):
+    assert not fact_present(fact, text)
+
+
+def test_normalise_units():
+    from jobseeker_assistant.evals import normalise
+
+    assert normalise("a two-week period") == "a 2 week period"
+    assert normalise("6 Months, 3 days") == "6 month, 3 day"
+    assert normalise("e-service") == "e-service"
+
+
+def test_regrade_rescores_saved_answers_without_model_calls():
+    from jobseeker_assistant.evals import regrade
+
+    cases = [
+        Case(
+            "h1", "current", "When is the first report?", False, ("2 weeks",), ("https://k.test",)
+        ),
+        Case("o1", "out_of_scope", "pizza?", True),
+    ]
+    report = {
+        "results": [
+            {
+                "id": "h1",
+                "passed": False,
+                "refusal_ok": True,
+                "source_cited": True,
+                "refused": False,
+                "answer": "Submit a report covering a 2-week period [S1].",
+            },
+            {
+                "id": "o1",
+                "passed": True,
+                "refusal_ok": True,
+                "source_cited": None,
+                "refused": True,
+                "answer": "I can't confirm this.",
+            },
+        ]
+    }
+    result = regrade(report, cases)
+    assert result == {
+        "before": "1/2",
+        "after": "2/2",
+        "changed": [{"id": "h1", "before": False, "after": True}],
+    }

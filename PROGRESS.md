@@ -217,14 +217,29 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
        which also states the 50-cents rule; the golden case listed only two other pages.
   - 263 tests pass.
 
+- 2026-11-06 (fixes from the first real eval; self-judge vs separate judge):
+  - Prompt no longer asks for comments on HISTORICAL sources; says not to write about the sources
+    themselves. Number words count as digits; facts must start at a word boundary (old substring
+    bug: "6 months" was found in "16 months"); hyphenated/singular units match ("2-week" = "2
+    weeks") — the last one made after seeing held-out results, documented with before/after.
+    Golden `tricky-one-euro` accepts the Kela FAQ. No held-out label changed.
+  - Robustness found by the runs: judge unavailable (503/429/timeouts) → recorded judge error, not
+    a crash; answering model unavailable → clean abort; network timeouts retried; judge output cap
+    2000 tokens (3.6-Flash spent 276 thinking tokens on a five-word reply).
+  - Cache key is now a fingerprint of code, sources, eval sets and rubric, not the commit: a
+    reports-only commit had invalidated the cache and every answer was regenerated.
+  - Second run (Flash-Lite): golden 37/38 (was 35), retries 2 (was 6), none refused as ungrounded.
+    `gemini-3.7-flash` timed out all day; `gemini-3.6-flash` judged but its free tier is 20
+    requests/day, so 28/53 answers got a separate verdict. On those 28, same answers: overall
+    agreement 27/28; the one disagreement had the self-judge stricter (agreeing with the exact check).
+  - Run-to-run variance: an identical re-run gave different answers to 32/53 questions.
+  - 294 tests pass.
+
 ## Next
-- **Fix the prompt conflict** (failure 1): tell the model not to write about the sources
-  themselves; the code already adds the "replaced by" notes. Re-run golden.
-- **Fix two grading gaps** (failures 4–5): add "two study programmes" as an accepted phrasing and
-  the Kela FAQ as an expected source. Changing held-out *labels* (not the system) after seeing
-  results — agree first, and record it.
-- Re-run on Flash (`gemini-3.7-flash`) when it isn't overloaded, judged by a different model,
-  and compare with this run (regression report).
+- Finish the separate-judge pass: 25 answers still need a 3.6-Flash (or 3.7-Flash) verdict; the
+  cache keeps the rest, so ~2 more days of free quota, or a judge with a larger free tier.
+- Variance: run each setting 2–3 times and report the spread, not one number.
+- Regression report between two runs (Day 4 plan, second half).
 - Grounding threshold: 6/38 golden answers were sent back, 5 passed on retry. Check whether the
   60% key-word threshold or meta-sentences (failure 1) cause most retries before changing it.
 - Day 6 plan: README "How we know it's correct", demo transcript, polish.

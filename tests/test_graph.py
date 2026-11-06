@@ -93,3 +93,31 @@ def test_extractive_fake_is_grounded_on_real_snapshots():
     idx = Index.from_snapshots(snapshots.load_all(), load_tags())
     ans, path = run_graph("How long can a work try-out last?", idx, FakeLLM())
     assert "generate_strict" not in path and not ans.refused
+
+
+def test_sentence_about_the_sources_is_rejected_by_grounding(tagged_index):
+    """Real-eval failure 2026-11-05 (reform-municipalities): a correct answer plus a sentence
+    ABOUT the sources ("[S1] is a historical text…") was refused. The prompt no longer asks
+    for such sentences; if a model still writes one, the grounding check still rejects it."""
+
+    def label(user, url_part):
+        return next(line for line in user.splitlines() if url_part in line).split("]")[0] + "]"
+
+    def reply(system, user):
+        new, old = label(user, "new-benefit"), label(user, "old-benefit")
+        return (
+            f"The new benefit is paid to unemployed jobseekers {new}. "
+            f"Source {old} is a historical text written before the change {old}."
+        )
+
+    ans, path = run_graph("Can I get the old benefit?", tagged_index, FakeLLM(reply), abolished=[])
+    assert path[-1] == "refuse" and ans.refusal_reason == "not_grounded"
+
+
+def test_same_answer_without_the_meta_sentence_is_answered(tagged_index):
+    def reply(system, user):
+        new = next(line for line in user.splitlines() if "new-benefit" in line).split("]")[0]
+        return f"The new benefit is paid to unemployed jobseekers {new}]."
+
+    ans, path = run_graph("Can I get the old benefit?", tagged_index, FakeLLM(reply), abolished=[])
+    assert path[-1] == "finalize" and not ans.refused

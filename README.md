@@ -218,6 +218,55 @@ With the fake model the same sets scored 17/38 and 6/15 on the exact checks: the
 repeats one sentence. Of the 5 real failures, 3 are our own checks or labels being too strict
 (see PROGRESS.md), not wrong answers.
 
+### Second run: fixes, and self-judge vs separate judge (2026-11-06)
+
+After fixing the first run's findings (the prompt no longer asks the model to comment on
+historical sources; number words count as digits; the Kela FAQ is an accepted source for one
+golden case), Flash-Lite answered again:
+
+| | First run | Second run |
+|---|---|---|
+| Golden exact checks passed | 35/38 | **37/38** |
+| Golden answers sent back by the grounding check | 6 | **2** |
+| Golden answers refused as not grounded | 1 | **0** |
+| Held-out exact checks passed | 13/15 | 12/15 → **13/15** with the checker fix below |
+
+**Self-judge vs separate judge, on the same answers.** The separate judge was meant to be
+`gemini-3.7-flash`, but it timed out all day; `gemini-3.6-flash` judged instead. Its free tier
+allows only **20 requests per day**, so it scored 28 of the 53 answers. Flash-Lite then judged
+the *same* 53 answers (reused from the cache).
+
+| On the 28 answers both judged | Separate judge (3.6-Flash) | Self-judge (Flash-Lite) |
+|---|---|---|
+| Overall verdict: pass | 28/28 | 27/28 |
+| Overall verdict agreement | 27/28 | |
+| Per-check agreement | 166/172 | |
+
+Five of the six per-check differences are cosmetic ("n/a" vs "pass" on *safe refusal*). The
+one real disagreement went the **opposite** way to the usual worry: on `lmt-apply` the separate
+judge passed *correct*, while the self-judge failed it — and so did our exact check (the
+"e-service" fact is missing). On this sample, self-judging was not more lenient. With 28
+answers and one disagreement, that is a hint, not a result. Self-judge on all 53: golden 37/38,
+held-out 14/15.
+
+**Same question, different answer.** In a re-run of the identical code and prompts at
+temperature 0, Flash-Lite gave a word-for-word different answer to **32 of 53** questions. To
+compare two runs fairly, compare them on the same answers (the cache does this), or run each
+setting more than once.
+
+**Checker fix made after seeing held-out results.** The held-out case `h-status-report` failed
+because the answer said "a **2-week** period" and the expected fact was "2 weeks". The label was
+*not* changed. Instead the key-fact checker now treats hyphenated and singular forms as the
+same ("2-week" = "two-week" = "2 weeks"), for both sets. Because this change was made after
+looking at held-out answers, here is its effect, re-scored on the same saved answers
+(`python -m jobseeker_assistant.evals --regrade <report.json>`, no model calls):
+
+| Held-out exact checks passed | Before the fix | After the fix |
+|---|---|---|
+| Second run | 12/15 | **13/15** (`h-status-report`) |
+
+Golden was unchanged by it (37/38).
+
 ## What I learned
 
 - **Most failures were retrieval, not the model.** When an answer lacked the key fact, the fact

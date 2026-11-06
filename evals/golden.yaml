@@ -236,6 +236,9 @@
   expected_sources:
     - https://www.kela.fi/did-you-find-a-job
     - https://www.kela.fi/unemployment-general-social-security-benefit
+    # Added 2026-11-05 after the first real eval: the FAQ also states the 50-cents rule
+    # ("…reduced by 50 cents for every 1 euro you earn"), and a correct answer cited it.
+    - https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit
 
 - id: tricky-palkkatuki
   category: tricky

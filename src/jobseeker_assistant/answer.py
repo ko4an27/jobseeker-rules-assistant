@@ -53,9 +53,9 @@ Rules:
 - If the sources do not answer the question, reply with exactly: {NOT_COVERED}
 - Plain, short language (max ~120 words). No legal promises. Do not ask for personal data.
 - If sources disagree or may be outdated, say so.
-- Sources marked HISTORICAL describe rules that no longer apply. If you use one, say clearly \
-that it was replaced (the label says by what and when) and cite both the historical source \
-and the current source. Base the current rules on the current source.
+- Sources marked HISTORICAL describe rules that no longer apply: base the current rules on \
+the other sources. Do not write about the sources themselves (which ones are historical, \
+when they were written); a note about replaced rules is added to your answer automatically.
 - Sources marked FOR EMPLOYERS are written for employers. Answer from the jobseeker's point \
 of view: explain what it means for the jobseeker; do not give employer instructions as if \
 the user were the employer."""

@@ -21,8 +21,10 @@ A case passes if refusal_ok and, for in-scope cases, source_cited and facts_in_a
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
@@ -51,10 +53,11 @@ from .judge import (
     CRITERIA,
     JudgeInput,
     LLMJudge,
+    Verdict,
     calibrate,
     load_calibration,
 )
-from .llm import LLM, get_llm
+from .llm import LLM, ProviderError, get_llm
 from .retrieve import Hit, Index
 from .source_tags import load_tags
 
@@ -105,10 +108,41 @@ def load_golden(path: Path = GOLDEN) -> list[Case]:
     return cases
 
 
-def fact_present(fact: str, text: str) -> bool:
-    """'a | b' matches if either phrase is in the text (case-insensitive)."""
+_NUMBER_WORDS = {
+    word: str(n)
+    for n, word in enumerate(
+        "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+        "fifteen sixteen seventeen eighteen nineteen twenty".split()
+    )
+} | {"thirty": "30", "forty": "40", "fifty": "50", "sixty": "60", "hundred": "100"}
+_NUMBER_WORD_RE = re.compile(r"\b(" + "|".join(_NUMBER_WORDS) + r")\b")
+_UNIT_PLURAL_RE = re.compile(r"\b(day|week|month|year|hour)s\b")
+
+
+def normalise(text: str) -> str:
+    """Lower case, single spaces, number words as digits ("two" -> "2"), so a key fact like
+    "2 study programmes" is found in "at least two study programmes". Applied to both the
+    expected fact and the answer, for golden and held-out alike (added after the first real
+    eval, 2026-11-05: a correct answer said "two" where the label said "2").
+
+    Also (added 2026-11-06, after seeing held-out results: "a 2-week period" vs "2 weeks"):
+    a number joined to a word by a hyphen is split ("2-week" -> "2 week", "two-week" -> "2 week"),
+    and time units are made singular ("weeks" -> "week"), on both sides, so plural, singular and
+    hyphenated forms match. Hyphens between letters ("e-service") are left alone."""
     text = " ".join(text.lower().split())
-    return any(alt.strip().lower() in text for alt in fact.split("|"))
+    text = _NUMBER_WORD_RE.sub(lambda m: _NUMBER_WORDS[m.group(1)], text)
+    text = re.sub(r"(\d)-(?=[a-z])", r"\1 ", text)
+    return _UNIT_PLURAL_RE.sub(lambda m: m.group(1), text)
+
+
+def fact_present(fact: str, text: str) -> bool:
+    """'a | b' matches if either phrase is in the text (case-insensitive, number words = digits)."""
+    text = normalise(text)
+    # A fact must start at a word boundary ("6 months" is not in "16 months"); its end may run
+    # on, so plurals still match ("e-service" in "e-services").
+    return any(
+        re.search(r"(?<!\w)" + re.escape(normalise(alt.strip())), text) for alt in fact.split("|")
+    )
 
 
 def _urls_of_hit(hit: Hit) -> set[str]:
@@ -212,9 +246,12 @@ def run(
         result.attempts = ans.attempts
         result.path = ans.path
         if judge is not None:
-            verdict = judge.evaluate(
-                judge_input(case, ans, bool(mentioned(case.question, abolished)))
-            )
+            try:
+                verdict = judge.evaluate(
+                    judge_input(case, ans, bool(mentioned(case.question, abolished)))
+                )
+            except ProviderError as exc:  # judge model unavailable (e.g. 503 after retries)
+                verdict = Verdict(error=f"judge unavailable: {exc}"[:300])
             result.judge = {
                 "scores": verdict.scores,
                 "reasons": verdict.reasons,
@@ -279,6 +316,45 @@ def summarize(results: list[CaseResult]) -> dict:
     }
 
 
+# Everything that shapes an answer or a verdict. Reports are deliberately not in it.
+CACHE_INPUTS = (
+    "src",
+    "sources",
+    "evals/golden.yaml",
+    "evals/heldout.yaml",
+    "evals/judge_rubric.md",
+    "evals/judge_calibration.yaml",
+)
+
+
+def code_fingerprint(root: Path | None = None) -> str | None:
+    """Cache key part: git's content hashes of CACHE_INPUTS at HEAD, combined.
+
+    Unlike the commit hash, it does not change when only reports are committed (on 2026-11-06
+    a reports-only commit made the cache miss and every answer was regenerated). None if any
+    of the inputs has uncommitted changes: then a cached answer could hide a change.
+    """
+    root = root or ROOT
+    try:
+        dirty = subprocess.run(
+            ["git", "status", "--porcelain", "--", *CACHE_INPUTS],
+            cwd=root,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        if dirty:
+            return None
+        hashes = []
+        for path in CACHE_INPUTS:
+            out = subprocess.run(
+                ["git", "rev-parse", f"HEAD:{path}"], cwd=root, capture_output=True, text=True
+            )
+            hashes.append(f"{path}={out.stdout.strip() or 'missing'}")
+    except OSError:
+        return None
+    return hashlib.sha256("\n".join(hashes).encode()).hexdigest()[:16]
+
+
 def _git_commit() -> str:
     try:
         out = subprocess.run(
@@ -286,7 +362,7 @@ def _git_commit() -> str:
         )
         commit = out.stdout.strip() or "unknown"
         dirty = subprocess.run(
-            ["git", "status", "--porcelain", "--", "src", "sources", "evals/golden.yaml"],
+            ["git", "status", "--porcelain", "--", *CACHE_INPUTS],
             cwd=ROOT,
             capture_output=True,
             text=True,
@@ -446,6 +522,9 @@ def main(argv: list[str] | None = None) -> int:
         "--real", action="store_true", help="real model + LLM judge (make eval-real)"
     )
     parser.add_argument("--judge-calibrate", action="store_true", help="judge vs hand labels")
+    parser.add_argument(
+        "--regrade", type=Path, help="re-score a saved report with the current checker"
+    )
     args = parser.parse_args(argv)
 
     index = Index.from_snapshots(snapshots.load_all(), load_tags())
@@ -464,6 +543,13 @@ def main(argv: list[str] | None = None) -> int:
                 )
         return 0
 
+    if args.regrade:
+        report = json.loads(args.regrade.read_text(encoding="utf-8"))
+        result = regrade(report, load_golden(SETS[report["meta"]["set"]]))
+        print(f"{report['meta']['set']}: passed before {result['before']}, after {result['after']}")
+        for c in result["changed"]:
+            print(f"  {c['id']}: {c['before']} -> {c['after']}")
+        return 0
     if args.judge_calibrate:
         return judge_calibrate_main(args)
     if args.real:
@@ -515,6 +601,8 @@ def evaluate_sets(args, index, llm, glossary, provider, judge=None, budget=None)
             run(cases, index, llm, args.min_score, args.min_coverage, glossary, judge, results)
         except BudgetExceeded as exc:
             aborted = str(exc)
+        except ProviderError as exc:  # the answering model is unavailable: stop, keep results
+            aborted = f"answering model unavailable: {exc}"[:300]
         meta = _meta(args, name, len(cases), provider, model, glossary, run_at)
         if judge is not None:
             meta["judge"] = getattr(getattr(judge, "llm", None), "model", type(judge).__name__)
@@ -533,6 +621,19 @@ def evaluate_sets(args, index, llm, glossary, provider, judge=None, budget=None)
     return summaries
 
 
+# The judge writes a JSON verdict with a reason per check; thinking models (gemini-3.6-flash
+# used 276 thinking tokens for a five-word reply on 2026-11-05) can spend much of an 800-token
+# cap before writing it, cutting the JSON off. Answers keep their own, smaller cap.
+JUDGE_MAX_TOKENS = 2000
+
+
+def judge_model_from_env(env: dict | None = None):
+    llm = get_llm(env, prefix="JUDGE")
+    if hasattr(llm, "max_tokens"):
+        llm.max_tokens = max(llm.max_tokens, JUDGE_MAX_TOKENS)
+    return llm
+
+
 def is_self_judged(answer_llm, judge) -> bool:
     """True if the judge runs on the same provider and model as the answering model."""
     judge_llm = getattr(judge, "llm", None)
@@ -543,6 +644,33 @@ def is_self_judged(answer_llm, judge) -> bool:
         return (getattr(m, "provider", None), getattr(m, "model", None))
 
     return ident(answer_llm) == ident(judge_llm) and ident(answer_llm) != (None, None)
+
+
+def regrade(report: dict, cases: list[Case]) -> dict:
+    """Re-score a saved report's answers with the CURRENT fact checker (no model calls).
+
+    Used to show the effect of a checker change on results already seen: only
+    facts_in_answer (and so `passed`) can change; answers, citations and refusals are as saved.
+    """
+    by_id = {c.id: c for c in cases}
+    before = after = 0
+    changed = []
+    for r in report["results"]:
+        case = by_id[r["id"]]
+        if case.must_refuse:
+            ok = bool(r["refusal_ok"])
+            before += r["passed"]
+            after += ok
+            continue
+        text = "" if r["refused"] else r["answer"]
+        facts_ok = all(fact_present(f, text) for f in case.key_facts)
+        ok = bool(r["refusal_ok"] and r["source_cited"] and facts_ok)
+        before += r["passed"]
+        after += ok
+        if ok != r["passed"]:
+            changed.append({"id": r["id"], "before": r["passed"], "after": ok})
+    n = len(report["results"])
+    return {"before": f"{before}/{n}", "after": f"{after}/{n}", "changed": changed}
 
 
 def print_summaries(summaries: dict) -> None:
@@ -557,7 +685,7 @@ def print_summaries(summaries: dict) -> None:
 
 
 def _guard(llm, budget: Budget, cache: ResponseCache, role: str) -> GuardedLLM:
-    return GuardedLLM(llm, budget, cache, _git_commit(), role=role)
+    return GuardedLLM(llm, budget, cache, code_fingerprint() or "uncommitted", role=role)
 
 
 def real_main(args, index, glossary) -> int:
@@ -570,13 +698,12 @@ def real_main(args, index, glossary) -> int:
         )
         return 2
     try:
-        answer_llm, judge_llm = get_llm(), get_llm(prefix="JUDGE")
+        answer_llm, judge_llm = get_llm(), judge_model_from_env()
     except (RuntimeError, ValueError) as exc:
         print(f"not configured: {exc}")
         return 2
-    commit = _git_commit()
     budget = Budget(max_calls_from_env())
-    cache = ResponseCache(enabled=not commit.endswith("+dirty"))
+    cache = ResponseCache(enabled=code_fingerprint() is not None)
     if not cache.enabled:
         print("note: uncommitted changes, so the response cache is off for this run")
     answer, judge_model = (
@@ -605,7 +732,7 @@ def run_real(args, index, glossary, answer_llm, judge, budget: Budget) -> int:
         )
     try:
         summaries = evaluate_sets(args, index, answer_llm, glossary, provider, judge, budget)
-    except BudgetExceeded as exc:
+    except (BudgetExceeded, ProviderError) as exc:
         print(f"\nABORTED: {exc}")
         print(
             f"calls: {budget.calls}, cache hits: {budget.cache_hits}, "
@@ -624,13 +751,12 @@ def run_real(args, index, glossary, answer_llm, judge, budget: Budget) -> int:
 def judge_calibrate_main(args) -> int:
     """make judge-calibrate: does the judge agree with the hand labels?"""
     try:
-        judge_llm = get_llm(prefix="JUDGE")
+        judge_llm = judge_model_from_env()
     except (RuntimeError, ValueError) as exc:
         print(f"not configured: {exc}")
         return 2
-    commit = _git_commit()
     budget = Budget(max_calls_from_env())
-    cache = ResponseCache(enabled=not commit.endswith("+dirty"))
+    cache = ResponseCache(enabled=code_fingerprint() is not None)
     judge = LLMJudge(_guard(judge_llm, budget, cache, "judge"))
     return run_calibration(args, judge, budget)
 
