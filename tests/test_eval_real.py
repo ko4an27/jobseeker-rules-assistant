@@ -224,7 +224,11 @@ def test_judge_gets_a_larger_output_cap_than_answers():
 
 
 def test_code_fingerprint_ignores_report_commits_but_not_code_changes(tmp_path):
+    import shutil
     import subprocess
+
+    if shutil.which("git") is None:  # the slim Docker test image has no git
+        pytest.skip("git not installed")
 
     from jobseeker_assistant.evals import code_fingerprint
 
@@ -251,3 +255,15 @@ def test_code_fingerprint_ignores_report_commits_but_not_code_changes(tmp_path):
     assert code_fingerprint(tmp_path) is None  # uncommitted code change: cache off
     git("commit", "-qam", "code change")
     assert code_fingerprint(tmp_path) not in (None, first)
+
+
+def test_code_fingerprint_without_git_turns_the_cache_off(tmp_path, monkeypatch):
+    import subprocess
+
+    from jobseeker_assistant.evals import code_fingerprint
+
+    def no_git(*args, **kwargs):
+        raise FileNotFoundError("git")
+
+    monkeypatch.setattr(subprocess, "run", no_git)
+    assert code_fingerprint(tmp_path) is None
