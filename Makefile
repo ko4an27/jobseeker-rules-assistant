@@ -1,7 +1,7 @@
 PY ?= python3
 IMAGE ?= jobseeker-rules-assistant
 
-.PHONY: install test lint format ingest refresh ask eval eval-real judge-calibrate sweep api demo \
+.PHONY: install test lint format ingest refresh ask eval eval-real eval-variance judge-calibrate sweep api demo \
 	docker-build docker-run docker-test
 
 install:            ## install runtime + dev dependencies
@@ -29,6 +29,9 @@ eval:               ## run golden + held-out sets, save dated reports (fake LLM 
 
 eval-real:          ## golden + held-out with the REAL model + LLM judge (needs LLM_PROVIDER, LLM_API_KEY)
 	PYTHONPATH=src $(PY) -m jobseeker_assistant.evals --real
+
+eval-variance:      ## eval-real N times without cache (default 3); min/median/max per metric
+	PYTHONPATH=src $(PY) -m jobseeker_assistant.evals --real --repeat $${N:-3}
 
 judge-calibrate:    ## does the judge agree with the hand labels in evals/judge_calibration.yaml?
 	PYTHONPATH=src $(PY) -m jobseeker_assistant.evals --judge-calibrate
