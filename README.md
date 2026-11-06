@@ -163,6 +163,13 @@ missing snapshots, never overwrites), `make refresh` (explicitly re-fetch all), 
    Golden (38) and held-out (15) questions, answered by the real model and scored by the judge
    against `evals/judge_rubric.md`. A dated report per set goes to `evals/reports/`: the exact
    checks as before, plus pass rates per judge criterion and the judge's reason for every failure.
+5. **Measure the spread, not one number:**
+
+   ```bash
+   make eval-variance        # 3 independent runs, cache off; N=5 make eval-variance for more
+   ```
+
+   Saves each run's reports plus a `*_variance_*` report with min / median / max per metric.
 
 **Limits and cost.** Before starting it prints the plan: cases, the maximum number of model
 calls (≤ 3 per question: answer, one grounding retry, judge) and the estimated maximum cost
@@ -197,7 +204,43 @@ Day 5b adds 3 golden cases (35 → 38). Legal-advice questions are refused **by 
 since Day 3 (5/5 across both sets), not just by low word overlap. Held-out "real answered" never
 moved: the one miss ("certificate of partial work ability", coverage 0.47) was not tuned for.
 
-### First run with a real model (2026-11-05)
+### Real model: 3 independent runs (current numbers, 2026-11-06)
+
+A single run is not a stable number: re-running the same code at temperature 0 gives different
+answers. So the current results are **min / median / max over 3 independent runs**
+(`make eval-variance`, cache off), `gemini-3.5-flash-lite` answering and judging (self-judged),
+286 model calls in total, $0. Reports: `evals/reports/2026-11-06T122202Z_variance_*.md`.
+
+| Metric | Golden (38): min / median / max | Held-out (15): min / median / max |
+|---|---|---|
+| **Judge overall** (every applicable check passes) | **37 / 37 / 37** | **14 / 14 / 14** |
+| Exact checks passed | 36 / 36 / 37 | 12 / 13 / 13 |
+| Off-topic refused | 8 / 8 / 8 (of 8) | 5 / 5 / 5 (of 5) |
+| Real questions answered | 30 / 30 / 30 (of 30) | 9 / 9 / 9 (of 10) |
+| Key facts in the answer | 28 / 28 / 29 (of 30) | 7 / 8 / 8 (of 10) |
+| Key facts in the retrieved text | 29 / 29 / 29 (of 30) | 10 / 10 / 10 (of 10) |
+| Sent back by the grounding check | 1 / 2 / 6 | 0 / 0 / 1 |
+| Refused as not grounded | 0 / 0 / 0 | 0 / 0 / 0 |
+| Judge: correct | 29 / 29 / 29 (of 30) | 9 / 9 / 9 (of 9) |
+| Judge: grounded · right source · meaning preserved | all 30/30 every run | all 9/9 every run |
+| Judge: plain language · replaced note | 38/38 · 8/8 every run | 15/15 · 1/1 every run |
+
+*Judge: safe refusal* is not in the table: its count of applicable answers changed between runs
+(33, 32, 32 on golden), so a min/median/max of it would mislead. It never failed on golden.
+
+**What moves between runs:** `gssb-start-date`, `side-other-income` (golden) and `h-lmt-travel`
+(held-out) each failed the exact check in one of the three runs, because the key fact was
+missing from that run's answer. The grounding-check retries vary most (1 to 6 on golden).
+
+**What fails every time:** `lmt-apply` (the fact is ranked below the top 8: retrieval),
+`h-partial-work-ability` (refused by the coverage gate, 0.47 < 0.50), and `h-under-25-study`.
+The last one is a grading limit: every answer says "at least two **education** programmes",
+the expected fact says "**study** programmes"; the judge passes it. The exact checks match
+words, not synonyms. The held-out label is not changed.
+
+The two sections below are **single runs**, kept for the history of what changed.
+
+### First run with a real model (single run, 2026-11-05)
 
 `gemini-3.5-flash-lite` (free tier, Flash was overloaded that day) answered; the same model
 judged (self-judged, so judge scores may be lenient). 98 model calls, $0. Reports:
@@ -218,7 +261,7 @@ With the fake model the same sets scored 17/38 and 6/15 on the exact checks: the
 repeats one sentence. Of the 5 real failures, 3 are our own checks or labels being too strict
 (see PROGRESS.md), not wrong answers.
 
-### Second run: fixes, and self-judge vs separate judge (2026-11-06)
+### Second run (single run): fixes, and self-judge vs separate judge (2026-11-06)
 
 After fixing the first run's findings (the prompt no longer asks the model to comment on
 historical sources; number words count as digits; the Kela FAQ is an accepted source for one

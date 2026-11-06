@@ -1,0 +1,2042 @@
+{
+  "meta": {
+    "run_at": "2026-11-06T11:59:23+0000",
+    "set": "golden",
+    "llm_provider": "gemini",
+    "llm": "gemini-3.5-flash-lite",
+    "min_score": 1.0,
+    "min_coverage": 0.5,
+    "commit": "8cd29e4",
+    "glossary_terms": 21,
+    "cases": 38,
+    "label": "golden_flash-lite-variance_run1of3",
+    "judge": "gemini-3.5-flash-lite",
+    "self_judged": true,
+    "budget": {
+      "max_calls": 200,
+      "calls": 69,
+      "cache_hits": 0,
+      "calls_by_role": {
+        "answer": 31,
+        "judge": 38
+      },
+      "input_tokens": 150245,
+      "output_tokens": 9737,
+      "cost_usd": 0.0
+    },
+    "cost_text": "$0.0000"
+  },
+  "summary": {
+    "passed": "36/38",
+    "by_category": {
+      "abolished": "8/8",
+      "current": "15/17",
+      "out_of_scope": "8/8",
+      "tricky": "5/5"
+    },
+    "out_of_scope_refused": "8/8",
+    "in_scope_answered": "30/30",
+    "source_cited": "30/30",
+    "source_retrieved": "30/30",
+    "facts_in_answer": "28/30",
+    "facts_in_sources": "29/30",
+    "retried": "1/38",
+    "refused_not_grounded": "0/38",
+    "judge_overall": "37/38",
+    "judge_correct": "29/30",
+    "judge_grounded": "30/30",
+    "judge_right_source": "30/30",
+    "judge_meaning_preserved": "30/30",
+    "judge_plain_language": "38/38",
+    "judge_safe_refusal": "33/33",
+    "judge_replaced_note": "8/8",
+    "judge_errors": "0/38"
+  },
+  "results": [
+    {
+      "id": "gssb-amount",
+      "category": "current",
+      "question": "How much is the general social security benefit per day?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 15.876,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/changes-to-kela-benefits-in-2026",
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026"
+      ],
+      "answer": "The basic amount of the general social security benefit is EUR 37.21 per day in 2026 [S1][S6].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states the key fact of EUR 37.21 per day.",
+          "grounded": "The information is directly supported by passages S1 and S6.",
+          "right_source": "Citations [S1] and [S6] both contain the stated fact.",
+          "meaning_preserved": "The meaning, numbers, and qualifiers from the source text are accurately preserved.",
+          "plain_language": "The answer is brief, clear, and avoids legal promises or requests for personal data.",
+          "safe_refusal": "The question is in scope and correctly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "gssb-who",
+      "category": "current",
+      "question": "Who can get the general social security benefit when they are unemployed?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 15.689,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "You may get the general social security benefit if you are unemployed, aged 18–64, live permanently in Finland, and are registered as an unemployed jobseeker with the employment services [S7][S8]. Additionally, you must either not qualify for earnings-related unemployment allowance or have already received it for the maximum number of days [S7][S8].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly lists the criteria for getting the general social security benefit based on the passages.",
+          "grounded": "Every sentence is supported by the provided text.",
+          "right_source": "The citations point to the correct passages containing the criteria.",
+          "meaning_preserved": "The meaning of the sources regarding the benefit criteria is fully preserved without altering qualifiers or negations.",
+          "plain_language": "The answer is concise, uses everyday language, makes no legal promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and correctly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "gssb-means-test",
+      "category": "current",
+      "question": "Is the general social security benefit means-tested?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 17.433,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/debunking-myths-about-unemployment-benefits",
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "Yes, the general social security benefit is a means-tested benefit [S1][S2][S4][S5][S6]. This means you must be in financial need to qualify, and other income such as capital income can reduce the amount you receive [S1][S2].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that the general social security benefit is means-tested.",
+          "grounded": "All facts stated are supported by the provided passages.",
+          "right_source": "The citations point to passages that state the referenced information.",
+          "meaning_preserved": "The meaning of the sources is accurately preserved without altering qualifiers or numbers.",
+          "plain_language": "The answer is short, uses plain language, makes no promises, and asks for no personal data.",
+          "safe_refusal": "The question is answered appropriately since it is in scope and supported by the texts.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "gssb-waiting-period",
+      "category": "current",
+      "question": "Is there a waiting period before I can get the general social security benefit?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 20.151,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/if-you-become-unemployed",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "Yes, you generally must complete a 7-working-day waiting period before receiving the general social security benefit [S2]. \n\nYou cannot get the benefit during this waiting period [S2]. The period is met once you have been registered as an unemployed jobseeker with employment services for at least 7 working days [S2]. If you work part-time, your waiting period is calculated by deducting your worked hours from the maximum collective agreement hours until they amount to 7 full working days [S2]. \n\nYou do not need to complete a new waiting period if you transition directly from earnings-related unemployment allowance to the general social security benefit [S2][S5]. Holiday compensation periodisation may postpone when your waiting period begins [S8].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "n/a",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states the 7 working days waiting period requirement.",
+          "grounded": "All facts in the answer are directly supported by the provided source passages.",
+          "right_source": "The citations correctly point to the passages containing the respective information.",
+          "meaning_preserved": "The meaning of the source text regarding the waiting period, conditions, and exemptions is preserved.",
+          "plain_language": "The answer is concise, clear, uses everyday language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "gssb-qualifying-period",
+      "category": "current",
+      "question": "I have no vocational qualification. Do I have to wait longer before I get the general social security benefit?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 22.674,
+      "top_coverage": 0.65,
+      "cited_urls": [
+        "https://www.kela.fi/if-you-become-unemployed",
+        "https://www.kela.fi/news/debunking-myths-about-unemployment-benefits",
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "If you do not have a vocational qualification or a higher education degree, you must complete a qualifying period (odotusaika) before you can receive the general social security benefit [S1]. The maximum length of this qualifying period is 21 weeks [S3]. Upper secondary school education (lukio) and the matriculation examination do not count as a vocational qualification [S1][S4]. This qualifying period applies to jobseekers of all ages [S1]. Additionally, if you are under 25, you must apply for admission to at least two education programmes to qualify for the benefit [S8].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that a qualifying period of up to 21 weeks is required if you lack a vocational qualification.",
+          "grounded": "All facts stated are directly supported by the provided source passages.",
+          "right_source": "Citations accurately point to the passages containing the respective information.",
+          "meaning_preserved": "The meaning of the sources regarding the qualifying period, upper secondary school, and educational application requirements is fully preserved.",
+          "plain_language": "The answer is concise, uses simple language, makes no legal promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and correctly answered based on the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "gssb-start-date",
+      "category": "current",
+      "question": "When did Kela start paying the general social security benefit?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "1 May 2026"
+      ],
+      "top_score": 21.849,
+      "top_coverage": 0.806,
+      "cited_urls": [
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit"
+      ],
+      "answer": "Kela started paying the general social security benefit on May 1, 2026 [S6].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that Kela started paying the general social security benefit on May 1, 2026.",
+          "grounded": "The statement is fully supported by the text in the passages.",
+          "right_source": "The citation [S6] correctly points to the passage stating when Kela began paying the benefit.",
+          "meaning_preserved": "The date and meaning from the source are preserved without alteration.",
+          "plain_language": "The answer is short, plain, and makes no legal promises or requests for data.",
+          "safe_refusal": "The question is in scope and answered correctly.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": false
+    },
+    {
+      "id": "side-part-time",
+      "category": "current",
+      "question": "How does part-time work affect my general social security benefit?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 18.8,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/did-you-find-a-job",
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "Part-time work will reduce the amount of general social security benefit you receive, as Kela pays you an adjusted benefit [S5]. \n\nThe basic rule is that your benefit is reduced by 50 cents for every euro you earn in wages or salary [S8]. Your income affects the benefit during the specific payment period in which the wages are actually paid to you, regardless of when you earned them [S1][S8]. \n\nTo qualify for the adjusted benefit, your working hours must be up to 80% of full-time hours in your industry, there must be no full-time work available, and you must stay registered as a jobseeker while looking for full-time work [S4]. You cannot get the adjusted benefit if you work fewer hours on your own initiative [S4].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer includes the expected key fact about 50 cents and explains how part-time work affects the benefit without contradicting the sources.",
+          "grounded": "Every sentence in the answer is supported by the provided text.",
+          "right_source": "The citations correctly point to the passages containing the respective information.",
+          "meaning_preserved": "The meaning, numbers, and qualifiers from the source texts are accurately preserved.",
+          "plain_language": "The answer is concise, uses clear everyday language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is answered appropriately as it is in scope and the passages contain the answer.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "side-short-full-time-job",
+      "category": "current",
+      "question": "I found a full-time job that lasts one week. Can I still get the general social security benefit?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 27.861,
+      "top_coverage": 0.72,
+      "cited_urls": [
+        "https://www.kela.fi/did-you-find-a-job",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "Yes, you can still get the general social security benefit if you find a full-time job that lasts for a maximum of 2 weeks [S1][S2]. In this situation, Kela will adjust your benefit to be smaller based on your earned income [S1]. To qualify, you must stay registered as a jobseeker with the employment services at all times [S2].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that you can get the benefit for a full-time job lasting up to 2 weeks, covering the expected key fact.",
+          "grounded": "Every sentence is directly supported by the provided passages.",
+          "right_source": "The citations point to the correct passages.",
+          "meaning_preserved": "The meaning of the sources regarding short full-time work and benefit adjustment is accurately preserved.",
+          "plain_language": "The answer is concise, uses simple language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and is correctly answered using the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "side-other-income",
+      "category": "current",
+      "question": "Can income other than wages reduce my general social security benefit?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 26.931,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "Yes, other income besides wages or salary can reduce your general social security benefit because the benefit is means-tested [S1][S3]. \n\nTypes of income that can reduce your benefit include capital income, informal care allowances, partial early old-age pensions, compensations for family caregivers, and copyright royalties [S3]. Kela takes these incomes into account at their gross amount [S2]. \n\nYou can receive up to EUR 311 per month in capital income or other non-wage income without it affecting your benefit [S4]. If this income exceeds EUR 311 per month, 50% of the amount exceeding the limit will be deducted from your general social security benefit [S4].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that other income can reduce the benefit and covers the key details.",
+          "grounded": "All facts stated are directly supported by the provided source passages.",
+          "right_source": "The citations accurately point to the passages containing the information.",
+          "meaning_preserved": "The meaning, limits, and percentages from the sources are fully preserved without distortion.",
+          "plain_language": "The response is concise, uses clear everyday language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and is correctly answered based on the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "wto-duration",
+      "category": "current",
+      "question": "How long can a work try-out last?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 14.197,
+      "top_coverage": 0.708,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out"
+      ],
+      "answer": "The maximum duration of a work try-out is six months [S1].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that the maximum duration is six months.",
+          "grounded": "The fact is fully supported by the source text.",
+          "right_source": "The citation [S1] correctly points to the source containing the information.",
+          "meaning_preserved": "The meaning and limits of the source are preserved accurately.",
+          "plain_language": "The answer is short, simple, and makes no legal promises or demands.",
+          "safe_refusal": "The question is in scope and is correctly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "wto-benefit",
+      "category": "current",
+      "question": "Do I get unemployment benefit during a work try-out?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 17.283,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out",
+        "https://www.kela.fi/if-you-become-unemployed"
+      ],
+      "answer": "During a work try-out, you will receive the same unemployment security as if you were unemployed [S1]. You can also get unemployment benefits for periods of participation in employment-promoting services even if you might not get them during regular unemployment [S7].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that you receive the same unemployment security during a work try-out as when unemployed.",
+          "grounded": "All facts stated in the answer are supported by the provided text.",
+          "right_source": "The citations correctly point to the passages where the information is found.",
+          "meaning_preserved": "The meaning from the sources is accurately preserved without altering key qualifications or negations.",
+          "plain_language": "The answer is brief, uses clear language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and correctly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "ps-amount",
+      "category": "current",
+      "question": "How much of my salary can the pay subsidy cover?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 12.158,
+      "top_coverage": 0.742,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy"
+      ],
+      "answer": "In most cases, the pay subsidy covers 50% of the salary costs incurred by the person hired [S5]. For hiring a person with reduced work ability, the support is 70% of the pay [S5]. For an association, foundation, or registered religious community, the support may cover 100% of the pay [S5]. The granted subsidy is between 1,260 and 2,020 euros per month, depending on the grounds for granting [S5].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "n/a",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly identifies that the pay subsidy covers 50% in most cases, matching the expected key fact.",
+          "grounded": "Every statement is directly supported by passage S5.",
+          "right_source": "All facts correctly cite passage S5.",
+          "meaning_preserved": "The qualifiers like 'in most cases' and percentages are accurately preserved from S5.",
+          "plain_language": "The answer is concise, uses clear everyday language, and makes no legal promises.",
+          "safe_refusal": "The question is in scope and answered by the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "ps-timing",
+      "category": "current",
+      "question": "Can an employer get pay subsidy for me after I have already started the job?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 12.607,
+      "top_coverage": 0.646,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy",
+        "https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/search-for-work/services-to-support-job-seeking"
+      ],
+      "answer": "No, a pay subsidy cannot be granted for an employment relationship that started before the decision to grant the subsidy was made [S1][S3]. However, an exception is made for granting a new pay subsidy period when it begins immediately after the previous one ends [S1].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "n/a",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that a pay subsidy cannot be granted for a job that already started before the decision, with the correct exception noted.",
+          "grounded": "Every sentence is directly supported by the provided text.",
+          "right_source": "Citations [S1] and [S3] correctly point to the passages containing the information.",
+          "meaning_preserved": "The meaning of the sources, including the exception and negation, is faithfully preserved.",
+          "plain_language": "The answer is concise, uses clear language, makes no promises, and asks for no personal data.",
+          "safe_refusal": "The question is in-scope and answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "lmt-cost",
+      "category": "current",
+      "question": "Do I have to pay for labour market training?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 11.872,
+      "top_coverage": 0.871,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training"
+      ],
+      "answer": "Labour market training is free of charge, meaning you do not need to pay participation or examination fees [S1]. However, card and licence training may be subject to a fee [S1].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer states that the training is free of charge, which is the expected key fact.",
+          "grounded": "All facts in the answer are directly supported by passage S1.",
+          "right_source": "The citations correctly point to S1 where the information is located.",
+          "meaning_preserved": "The meaning, qualifiers (such as card and licence training possibly having a fee), and details are accurately preserved from the source.",
+          "plain_language": "The answer is concise, uses everyday language, makes no legal promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and is correctly answered using the provided passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "lmt-apply",
+      "category": "current",
+      "question": "How do I apply for labour market training?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": false,
+      "missing_facts": [
+        "e-service"
+      ],
+      "top_score": 11.771,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training"
+      ],
+      "answer": "You can find currently available labour market training in the Trainings and services online service [S7].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "fail",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer misses the expected key fact that training is applied for via the e-service (or how to apply based on the available information regarding finding and applying).",
+          "grounded": "The statement about finding available labour market training in the Trainings and services online service is fully supported by S7.",
+          "right_source": "Citation [S7] correctly points to the passage containing the information about the Trainings and services online service.",
+          "meaning_preserved": "The meaning from the source regarding where to find available training is preserved without distortion.",
+          "plain_language": "The answer is short, clear, uses everyday words, and makes no legal promises or requests for personal data.",
+          "safe_refusal": "The question is in scope and answered using the available text, though it missed a key fact.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": false
+    },
+    {
+      "id": "reform-municipalities",
+      "category": "current",
+      "question": "When did employment services move from the state to municipalities?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 8.577,
+      "top_coverage": 0.582,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/news/te-palvelut-siirtyvat-kunnille",
+        "https://tyomarkkinatori.fi/en/uudistukset24/etusivu"
+      ],
+      "answer": "Employment services were transferred from central government to employment areas formed by municipalities on 1 January 2025 [S4][S5].\n\nNote: Reform page written before TE Services moved to municipal employment areas on 1 January 2025. [S4]\nNote: 2024 news item written before TE Services moved to municipal employment areas on 1 January 2025. [S5]",
+      "glossary_used": [
+        "move"
+      ],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that employment services were transferred to municipalities on 1 January 2025.",
+          "grounded": "Every fact stated in the answer is supported by the provided passages.",
+          "right_source": "The citations [S4] and [S5] correctly point to passages mentioning the transfer date.",
+          "meaning_preserved": "The meaning of the sources regarding the transfer and date is fully preserved without alterations.",
+          "plain_language": "The answer is brief, uses clear language, and makes no legal promises or requests for personal data.",
+          "safe_refusal": "The question is in scope and correctly answered based on the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "reform-initial-interview",
+      "category": "current",
+      "question": "How soon after I start looking for work is my initial interview with the employment authority?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 20.405,
+      "top_coverage": 0.637,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/news/tyonhakijan-palveluprosessiin-ja-tyonvalityspalveluihin-tulee-muutoksia-vuodenvaihteessa"
+      ],
+      "answer": "Currently, the employment authority arranges an initial interview within five working days of starting your job search [S2]. \n\nFrom the beginning of 2026, the initial interview will be held within ten working days of the start of the job search [S2].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states the key fact about the timeframe for the initial interview (ten working days from 2026, and currently five working days).",
+          "grounded": "Every sentence in the answer is directly supported by passage [S2].",
+          "right_source": "All facts are correctly cited to source [S2].",
+          "meaning_preserved": "The answer preserves the exact meaning and qualifiers from the source text regarding current and future timeframes.",
+          "plain_language": "The answer is brief, uses clear everyday language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and is correctly answered based on the provided passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "abolished-lms",
+      "category": "abolished",
+      "question": "Can I still apply for labour market subsidy?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 12.239,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026"
+      ],
+      "answer": "Labour market subsidy will be replaced by the new general social security benefit on 1 May 2026 [S2]. If Kela currently pays you labour market subsidy, you do not need to apply separately for the new general social security benefit; Kela will transfer you to it automatically as long as you continue to submit your 4-week unemployment status reports in OmaKela and stay registered as an active jobseeker [S1][S5].\n\nNote: The labour market subsidy was abolished when Kela began paying the general social security benefit on 1 May 2026. [S9]",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "n/a",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer addresses the question by explaining the transition to the general social security benefit on 1 May 2026.",
+          "grounded": "Every sentence is fully supported by the provided source passages.",
+          "right_source": "Citations accurately point to the passages containing the respective information.",
+          "meaning_preserved": "The meaning of the sources regarding automatic transfer and dates is carefully preserved.",
+          "plain_language": "The answer is concise, uses clear language, and makes no legal promises or requests for personal data.",
+          "safe_refusal": "The question is in scope and answered by the passages.",
+          "replaced_note": "The answer correctly notes that the labour market subsidy is replaced by the general social security benefit on 1 May 2026."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "abolished-bua",
+      "category": "abolished",
+      "question": "How much is the basic unemployment allowance now?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 9.843,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit"
+      ],
+      "answer": "Note: The basic unemployment allowance was abolished when Kela began paying the general social security benefit on 1 May 2026. [S9]",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "note_only"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "n/a",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer correctly notes that the basic unemployment allowance was abolished on 1 May 2026, pointing out the relevant replacement (general social security benefit) context without needing to state the old euro amount since the question asks about 'now' and the benefit no longer exists.",
+          "grounded": "Every sentence is supported by the provided text.",
+          "right_source": "The citation [S9] correctly points to the source stating that the basic unemployment allowance was abolished on 1 May 2026.",
+          "meaning_preserved": "The meaning from the source is accurately preserved.",
+          "plain_language": "The answer is brief, clear, and uses plain language.",
+          "safe_refusal": "The question is in scope and answered.",
+          "replaced_note": "The answer correctly states that the basic unemployment allowance was abolished and replaced on 1 May 2026."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "abolished-peruspaivaraha",
+      "category": "abolished",
+      "question": "What happened to peruspäiväraha?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 11.406,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/debunking-myths-about-unemployment-benefits",
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026"
+      ],
+      "answer": "The basic unemployment allowance (*peruspäiväraha*) and labour market subsidy have been replaced by a new general social security benefit (*yleistuki*) as of May 2026, and have been abolished [S1][S8].\n\nNote: The basic unemployment allowance was abolished when Kela began paying the general social security benefit on 1 May 2026. [S9]",
+      "glossary_used": [
+        "peruspäiväraha"
+      ],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that peruspäiväraha was replaced by the general social security benefit.",
+          "grounded": "Every sentence is supported by the provided text.",
+          "right_source": "The citations point to the correct passages.",
+          "meaning_preserved": "The meaning from the sources regarding the replacement and abolition in May 2026 is fully preserved.",
+          "plain_language": "The answer is concise, clear, and uses everyday language.",
+          "safe_refusal": "The question is in scope and is correctly answered.",
+          "replaced_note": "The answer clearly states that peruspäiväraha was abolished and replaced by the general social security benefit on 1 May 2026."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "abolished-tyomarkkinatuki",
+      "category": "abolished",
+      "question": "Is työmarkkinatuki still paid?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 12.003,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/debunking-myths-about-unemployment-benefits",
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026"
+      ],
+      "answer": "No, the labour market subsidy (*työmarkkinatuki*) is no longer paid because it was replaced by the general social security benefit (*yleistuki*) in May 2026 [S1][S5].\n\nNote: The labour market subsidy was abolished when Kela began paying the general social security benefit on 1 May 2026. [S9]",
+      "glossary_used": [
+        "työmarkkinatuki"
+      ],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer accurately states that työmarkkinatuki is no longer paid because it was replaced by the general social security benefit in May 2026.",
+          "grounded": "Every factual statement is directly supported by passages S1, S5, and S9.",
+          "right_source": "The citations point to the correct passages supporting the information.",
+          "meaning_preserved": "The meaning regarding the abolition and replacement of the benefit in May 2026 is fully preserved.",
+          "plain_language": "The answer is brief, uses clear everyday language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and correctly answered based on the passages.",
+          "replaced_note": "The answer correctly states that the labour market subsidy was abolished and replaced in May 2026."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "abolished-te-office",
+      "category": "abolished",
+      "question": "Can I still visit my local TE Office?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 7.066,
+      "top_coverage": 0.696,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/uudistukset24/etusivu"
+      ],
+      "answer": "Note: TE Offices closed down and their services were transferred to employment areas formed by municipalities on 1 January 2025. [S9]",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "note_only"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that TE Offices closed down and services were transferred to employment areas formed by municipalities.",
+          "grounded": "Every fact stated in the answer is supported by the provided text [S9].",
+          "right_source": "The citation [S9] correctly points to the passage containing the information.",
+          "meaning_preserved": "The meaning of the source text regarding the closure of TE Offices and the date (1 January 2025) is fully preserved.",
+          "plain_language": "The answer is short, clear, uses simple language, and makes no legal promises or requests for personal data.",
+          "safe_refusal": "The question is in scope and properly answered using the passages.",
+          "replaced_note": "The answer correctly notes that the TE Office was closed down and replaced on 1 January 2025."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "abolished-lms-current-pages",
+      "category": "abolished",
+      "question": "I get työmarkkinatuki. Do I need to do anything now?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 13.747,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026"
+      ],
+      "answer": "If Kela currently pays you labour market subsidy, you should continue to submit your unemployment status report in the OmaKela e-service every 4 weeks as before [S1][S7]. You also need to stay registered as an active jobseeker with the employment services [S4][S7]. If you are already receiving labour market subsidy when the general social security benefit begins in May, Kela will automatically transfer you to the new benefit without requiring you to contact them [S1][S3][S7].\n\nNote: The labour market subsidy was abolished when Kela began paying the general social security benefit on 1 May 2026. [S9]",
+      "glossary_used": [
+        "työmarkkinatuki"
+      ],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer includes all necessary facts about continuing to submit reports, staying registered, and automatic transfer.",
+          "grounded": "Every sentence is supported by the provided source texts.",
+          "right_source": "The citations point to the correct passages supporting each statement.",
+          "meaning_preserved": "The meaning of the sources regarding reporting, registration, and automatic transfer is accurately preserved.",
+          "plain_language": "The answer is concise, uses everyday language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and correctly answered.",
+          "replaced_note": "The answer correctly notes that the labour market subsidy was abolished on 1 May 2026 when the general social security benefit started."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "abolished-bua-per-day",
+      "category": "abolished",
+      "question": "How much is the basic unemployment allowance per day?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 12.703,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/news/changes-to-kela-benefits-in-2026",
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026"
+      ],
+      "answer": "The basic unemployment allowance is EUR 37.21 per day [S1][S6].\n\nNote: The basic unemployment allowance was abolished when Kela began paying the general social security benefit on 1 May 2026. [S9]",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer gives the correct daily amount and notes it was abolished on 1 May 2026.",
+          "grounded": "Every sentence is supported by the provided text.",
+          "right_source": "The citations point to the correct passages.",
+          "meaning_preserved": "The meaning of the source texts is preserved without altering facts or qualifiers.",
+          "plain_language": "The answer is concise, uses everyday language, and makes no legal promises or requests for data.",
+          "safe_refusal": "The question is answered directly using the passages.",
+          "replaced_note": "The answer correctly states that the basic unemployment allowance was abolished on 1 May 2026."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "abolished-te-office-nearest",
+      "category": "abolished",
+      "question": "Where is my nearest TE office?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 5.399,
+      "top_coverage": 0.589,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/uudistukset24/etusivu"
+      ],
+      "answer": "Note: TE Offices closed down and their services were transferred to employment areas formed by municipalities on 1 January 2025. [S8]",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "note_only"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that TE offices were closed and services transferred to employment areas on 1 January 2025, covering the expected key facts.",
+          "grounded": "Every fact stated is directly supported by source S8.",
+          "right_source": "The citation [S8] correctly points to the passage containing the information.",
+          "meaning_preserved": "The meaning from the source regarding the closure date and transfer to employment areas is fully preserved without distortion.",
+          "plain_language": "The answer is short, clear, uses everyday words, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and adequately addressed using the provided passages.",
+          "replaced_note": "The answer correctly notes that the TE Office was replaced on 1 January 2025 by employment areas formed by municipalities."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "tricky-side-gig",
+      "category": "tricky",
+      "question": "i got a small side gig, do i lose all my kela money??",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 28.993,
+      "top_coverage": 0.828,
+      "cited_urls": [
+        "https://www.kela.fi/did-you-find-a-job",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "You can get general social security benefit even if you work part-time [S1]. \nAny wages or salary you earn will reduce the amount of general social security benefit you can get [S2]. \nIn that case, you can get adjusted general social security benefit [S2]. \nThe basic rule is that each euro you earn in wages or salary reduces the general social security benefit by 50 cents [S4].",
+      "glossary_used": [
+        "side gig",
+        "dole"
+      ],
+      "attempts": 2,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "generate_strict",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer states the expected key fact that earnings reduce the benefit by 50 cents.",
+          "grounded": "Every sentence is directly supported by the provided text.",
+          "right_source": "Citations accurately point to the passages containing the information.",
+          "meaning_preserved": "The meaning of the source texts regarding adjusted benefits and the 50 cents rule is fully preserved.",
+          "plain_language": "The answer is concise, uses everyday language, makes no promises, and asks for no personal data.",
+          "safe_refusal": "The question is in scope and is correctly answered based on the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "tricky-one-euro",
+      "category": "tricky",
+      "question": "Is it true that I can't get any benefit at all if I earn even one euro?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 15.751,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/did-you-find-a-job",
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "No, that is not true. Any wages or salary you earn from part-time work will reduce the amount of your general social security benefit, but you can still receive an adjusted benefit [S1][S3]. The basic rule is that your benefit is reduced by 50 cents for every euro you earn [S1][S2].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly addresses the question, states that earnings reduce the benefit rather than eliminating it entirely, and includes the expected 50 cents detail.",
+          "grounded": "Every sentence in the answer is directly supported by the provided text.",
+          "right_source": "The citations correctly point to the passages containing the information.",
+          "meaning_preserved": "The meaning regarding adjusted benefits and the 50-cent reduction rule is fully preserved.",
+          "plain_language": "The answer is brief, uses clear everyday language, and makes no legal promises or requests for personal data.",
+          "safe_refusal": "The question is in scope and correctly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "tricky-palkkatuki",
+      "category": "tricky",
+      "question": "palkkatuki - how much does it cover?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 12.158,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy"
+      ],
+      "answer": "A pay subsidy covers a portion of an unemployed jobseeker's salary costs paid by the employer [S1][S2]. In most cases, the subsidy amount is 50% of the salary costs [S6]. For hiring a person with reduced work ability, the support is 70% of the pay [S6]. For an association, foundation, or registered religious community, the subsidy may cover 100% of the pay [S6]. The granted subsidy amount is between 1,260 and 2,020 euros per month, depending on the grounds for granting [S6].",
+      "glossary_used": [
+        "palkkatuki"
+      ],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer includes the expected 50% key fact along with other relevant subsidy amounts from the text.",
+          "grounded": "All facts stated in the answer are supported by the provided source passages.",
+          "right_source": "The citations correctly point to the passages containing the referenced information.",
+          "meaning_preserved": "The answer maintains the qualifiers and numbers from the sources accurately.",
+          "plain_language": "The answer is concise, uses everyday language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and is correctly answered using the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "tricky-tyokokeilu",
+      "category": "tricky",
+      "question": "How long can työkokeilu last?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 14.197,
+      "top_coverage": 0.708,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out"
+      ],
+      "answer": "A work try-out can last for a maximum of six months [S1].",
+      "glossary_used": [
+        "työkokeilu"
+      ],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states the maximum duration is six months.",
+          "grounded": "The statement is fully supported by the provided text.",
+          "right_source": "The correct source [S1] containing the duration information is cited.",
+          "meaning_preserved": "The meaning regarding the maximum duration of six months is preserved accurately.",
+          "plain_language": "The answer is short, simple, and makes no legal promises or requests for data.",
+          "safe_refusal": "The question is answered appropriately as it is in scope and covered by the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "tricky-typo",
+      "category": "tricky",
+      "question": "how long is a work tryout",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 14.197,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/work-try-out"
+      ],
+      "answer": "The maximum duration of a work try-out is six months [S1]. The exact duration and working hours are agreed upon together with the employer and the employment authority in your area [S1].",
+      "glossary_used": [
+        "tryout"
+      ],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states the maximum duration is six months.",
+          "grounded": "All facts are directly supported by passage S1.",
+          "right_source": "The correct source [S1] is cited for the information.",
+          "meaning_preserved": "The meaning regarding the maximum duration and agreement process is fully preserved.",
+          "plain_language": "The answer is brief, clear, and uses simple language.",
+          "safe_refusal": "The question is in scope and properly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "oos-pizza",
+      "category": "out_of_scope",
+      "question": "What is the best pizza in Helsinki?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 5.034,
+      "top_coverage": 0.229,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, clear, does not make legal promises, and does not ask for personal data.",
+          "safe_refusal": "The question is correctly refused and directs the user to employment services and Kela.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "oos-weather",
+      "category": "out_of_scope",
+      "question": "What will the weather be like in Tampere tomorrow?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 4.457,
+      "top_coverage": 0.188,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, uses plain language, and correctly directs the user.",
+          "safe_refusal": "The question is properly refused since weather information is not in the passages, and it directs the user appropriately.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "oos-tax-return",
+      "category": "out_of_scope",
+      "question": "How do I file my tax return in Finland?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 7.463,
+      "top_coverage": 0.35,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, uses plain language, makes no promises, and asks for no personal data.",
+          "safe_refusal": "The question is correctly refused and points to the appropriate authorities for help.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "oos-tourist-visa",
+      "category": "out_of_scope",
+      "question": "Do I need a visa to visit Finland as a tourist?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 6.408,
+      "top_coverage": 0.371,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, clear, makes no legal promises, and directs the user appropriately.",
+          "safe_refusal": "The question is correctly refused and points to Kela and employment services for guidance.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "oos-residence-permit",
+      "category": "out_of_scope",
+      "question": "How do I renew my residence permit at Migri?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 16.424,
+      "top_coverage": 0.45,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is concise, simple, and provides correct referral information without making promises or asking for personal data.",
+          "safe_refusal": "The question asks about Migri residence permits which is outside the Kela/employment scope, and the answer correctly refuses and directs the user to the right places.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "oos-sue-employer",
+      "category": "out_of_scope",
+      "question": "My employer fired me without a reason. Should I sue them?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "legal_advice:should_i_take_legal_action",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 10.362,
+      "top_coverage": 0.372,
+      "cited_urls": [],
+      "answer": "I can't give personal legal advice or judge how your case will turn out. For your own situation, ask Kela or your employment services, or get advice from a lawyer or a public legal aid office.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is concise, uses everyday language, makes no legal promises, and avoids asking for personal data.",
+          "safe_refusal": "The question is correctly refused and points the user to the appropriate places for personal legal advice.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "oos-eviction",
+      "category": "out_of_scope",
+      "question": "Is my landlord's eviction notice legal?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "legal_advice:is_my_situation_legal",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 6.905,
+      "top_coverage": 0.264,
+      "cited_urls": [],
+      "answer": "I can't give personal legal advice or judge how your case will turn out. For your own situation, ask Kela or your employment services, or get advice from a lawyer or a public legal aid office.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, uses plain language, makes no legal promises, and does not ask for personal data.",
+          "safe_refusal": "The question is correctly refused and points to where to ask for help.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "oos-appeal-my-case",
+      "category": "out_of_scope",
+      "question": "Kela rejected my application. Will I win if I appeal?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "legal_advice:predict_outcome",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 6.282,
+      "top_coverage": 0.169,
+      "cited_urls": [],
+      "answer": "I can't give personal legal advice or judge how your case will turn out. For your own situation, ask Kela or your employment services, or get advice from a lawyer or a public legal aid office.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, clear, avoids legal promises, and uses everyday language.",
+          "safe_refusal": "The question is correctly refused and points the user to where they can ask.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    }
+  ]
+}

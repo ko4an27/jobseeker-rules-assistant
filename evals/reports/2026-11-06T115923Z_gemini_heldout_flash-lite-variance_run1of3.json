@@ -1,0 +1,824 @@
+{
+  "meta": {
+    "run_at": "2026-11-06T11:59:23+0000",
+    "set": "heldout",
+    "llm_provider": "gemini",
+    "llm": "gemini-3.5-flash-lite",
+    "min_score": 1.0,
+    "min_coverage": 0.5,
+    "commit": "8cd29e4",
+    "glossary_terms": 21,
+    "cases": 15,
+    "label": "heldout_flash-lite-variance_run1of3",
+    "judge": "gemini-3.5-flash-lite",
+    "self_judged": true,
+    "budget": {
+      "max_calls": 200,
+      "calls": 94,
+      "cache_hits": 0,
+      "calls_by_role": {
+        "answer": 41,
+        "judge": 53
+      },
+      "input_tokens": 204070,
+      "output_tokens": 13182,
+      "cost_usd": 0.0
+    },
+    "cost_text": "$0.0000"
+  },
+  "summary": {
+    "passed": "12/15",
+    "by_category": {
+      "abolished": "1/1",
+      "current": "5/8",
+      "out_of_scope": "5/5",
+      "tricky": "1/1"
+    },
+    "out_of_scope_refused": "5/5",
+    "in_scope_answered": "9/10",
+    "source_cited": "9/10",
+    "source_retrieved": "10/10",
+    "facts_in_answer": "7/10",
+    "facts_in_sources": "10/10",
+    "retried": "1/15",
+    "refused_not_grounded": "0/15",
+    "judge_overall": "14/15",
+    "judge_correct": "9/9",
+    "judge_grounded": "9/9",
+    "judge_right_source": "9/9",
+    "judge_meaning_preserved": "9/9",
+    "judge_plain_language": "15/15",
+    "judge_safe_refusal": "12/13",
+    "judge_replaced_note": "1/1",
+    "judge_errors": "0/15"
+  },
+  "results": [
+    {
+      "id": "h-gssb-monthly",
+      "category": "current",
+      "question": "Roughly how much is the general social security benefit per month?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 18.448,
+      "top_coverage": 0.621,
+      "cited_urls": [
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026"
+      ],
+      "answer": "The basic amount of the general social security benefit is EUR 37.21 per day, which is about EUR 800 per month [S2].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states the monthly amount is about EUR 800.",
+          "grounded": "All facts in the answer are directly supported by passage [S2].",
+          "right_source": "Passage [S2] is correctly cited for the information provided.",
+          "meaning_preserved": "The meaning, numbers, and units from the source are preserved without distortion.",
+          "plain_language": "The answer is brief, uses clear everyday language, and makes no legal promises.",
+          "safe_refusal": "The question is in scope and correctly answered based on the text.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-status-report",
+      "category": "current",
+      "question": "When do I send my first unemployment status report to Kela?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 22.902,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/during-unemployment",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "In your first application, you report your unemployment dates starting from your first day of unemployment [S1]. To get your first benefit payment, you must submit an unemployment status report covering a 2-week period after submitting your first application [S1][S6]. For example, if you apply on 14 February, your first 2-week period ends on 27 February, meaning the first day you can submit your report is 28 February [S6]. If you cannot use the OmaKela e-service, you can mail a printed form [S2][S5].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that the first report covers a period of 2 weeks [S1, S6].",
+          "grounded": "All facts in the answer are supported by the provided source texts.",
+          "right_source": "The citations correctly point to the passages containing the referenced information.",
+          "meaning_preserved": "The meaning of the sources regarding the timing and procedures of the first report is fully preserved.",
+          "plain_language": "The answer is concise, uses everyday language, and does not make legal promises or ask for personal data.",
+          "safe_refusal": "The question is in scope and is correctly answered without unnecessary refusal.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-under-25-study",
+      "category": "current",
+      "question": "I'm 22 and have no vocational qualification. Do I have to apply for studies to get the benefit?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "2 study programmes | two study places"
+      ],
+      "top_score": 16.368,
+      "top_coverage": 0.609,
+      "cited_urls": [
+        "https://www.kela.fi/if-you-become-unemployed",
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit"
+      ],
+      "answer": "Yes, if you are under 25 and do not have a vocational qualification or higher education degree, you must apply for admission to at least two education programmes that begin in the autumn term [S2][S5][S8]. You must also participate in any entrance exam you are invited to [S2][S8]. You should contact employment services to agree on these education applications in more detail [S2][S8].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that since you are under 25 without a qualification, you must apply for at least two education programmes.",
+          "grounded": "Every fact stated is directly supported by the provided text.",
+          "right_source": "The citations point to the correct passages supporting the statements.",
+          "meaning_preserved": "The meaning of the source texts regarding age, qualifications, and application requirements is preserved without distortion.",
+          "plain_language": "The response is concise, easy to understand, and does not ask for personal details or make legal guarantees.",
+          "safe_refusal": "The question is in scope and is correctly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": false
+    },
+    {
+      "id": "h-ps-reduced-ability",
+      "category": "current",
+      "question": "How much pay subsidy can an employer get for hiring me if I have reduced work ability?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 15.327,
+      "top_coverage": 0.864,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy"
+      ],
+      "answer": "For hiring a person with reduced work ability, the pay subsidy is 70% of their pay [S1]. The granted subsidy amount is between 1,260 and 2,020 euros per month, depending on the grounds for granting it [S1].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states the 70% figure for hiring a person with reduced work ability.",
+          "grounded": "All facts stated are supported by source S1.",
+          "right_source": "Source S1 is correctly cited for the information provided.",
+          "meaning_preserved": "The meaning of the source text regarding the 70% pay subsidy and the euro amount range is fully preserved.",
+          "plain_language": "The answer is concise, plain, contains no legal promises, and asks for no personal data.",
+          "safe_refusal": "The question is in scope and correctly answered based on the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-ps-over-60",
+      "category": "current",
+      "question": "I'm 61 and long-term unemployed. For how long can a pay subsidy be granted?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 16.351,
+      "top_coverage": 0.68,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/pay-subsidy"
+      ],
+      "answer": "As a long-term unemployed person aged 60 or over, a pay subsidy for hiring you can be granted for a maximum of 24 months at a time [S1]. The subsidy is granted for the duration of the employment relationship at most [S1].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states the key fact of 24 months.",
+          "grounded": "Every sentence is directly supported by the provided text.",
+          "right_source": "The citations correctly point to [S1].",
+          "meaning_preserved": "The meaning regarding the 24-month maximum duration and employment relationship limit is fully preserved.",
+          "plain_language": "The answer is concise, uses everyday words, makes no promises, and asks for no personal data.",
+          "safe_refusal": "The question is in scope and is correctly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-apply-for-jobs",
+      "category": "current",
+      "question": "How many jobs do I have to apply for each month as an unemployed jobseeker?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 10.782,
+      "top_coverage": 0.614,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/news/tyonhakijan-palveluprosessiin-ja-tyonvalityspalveluihin-tulee-muutoksia-vuodenvaihteessa"
+      ],
+      "answer": "As a jobseeker, you must apply for four job opportunities over a month, unless your obligation to apply for work has been reduced or you have been exempted from it [S7].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that four job opportunities must be applied for over a month.",
+          "grounded": "Every sentence is directly supported by the provided text.",
+          "right_source": "The citation [S7] correctly points to the passage containing the information.",
+          "meaning_preserved": "Qualifiers and conditions like 'unless' are properly preserved.",
+          "plain_language": "The answer is brief, uses clear everyday language, and makes no legal promises.",
+          "safe_refusal": "The question is in scope and correctly answered based on the passages.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-lmt-travel",
+      "category": "current",
+      "question": "Can I get my travel costs paid when I go to an aptitude test for labour market training?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "travel and accommodation"
+      ],
+      "top_score": 17.574,
+      "top_coverage": 0.752,
+      "cited_urls": [
+        "https://tyomarkkinatori.fi/en/more-information-about-services/labour-market-training",
+        "https://tyomarkkinatori.fi/en/personal-customers/information-about-working-life/search-for-work/services-to-support-job-seeking"
+      ],
+      "answer": "Yes, as an unemployed jobseeker, you can apply for reimbursement of travel expenses when you travel to an aptitude test or admission event for labour market training [S1][S4]. \n\nThe employment authority must consider the reimbursement appropriate for the availability of labour and your employment [S8]. Your trip is calculated starting from your actual place of residence [S8].",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly states that unemployed jobseekers can apply for reimbursement of travel expenses for an aptitude test for labour market training.",
+          "grounded": "All facts stated are directly supported by the provided source passages.",
+          "right_source": "The citations correctly point to the passages containing the information.",
+          "meaning_preserved": "The meaning of the sources regarding travel cost reimbursement conditions is preserved without distortion.",
+          "plain_language": "The answer is concise, plain, and avoids legal promises or asking for personal data.",
+          "safe_refusal": "The question is in-scope and answered appropriately.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": false
+    },
+    {
+      "id": "h-partial-work-ability",
+      "category": "current",
+      "question": "Can I get a certificate that shows I have partial work ability?",
+      "must_refuse": false,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": false,
+      "source_cited": false,
+      "source_retrieved": true,
+      "facts_in_answer": false,
+      "facts_in_sources": true,
+      "missing_facts": [
+        "certificate"
+      ],
+      "top_score": 11.259,
+      "top_coverage": 0.465,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "fail",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, uses everyday words, makes no legal promises, and does not ask for personal data.",
+          "safe_refusal": "The question is in scope and answered in the passages (e.g., S3 mentions needing a medical certificate for services promoting work ability), so it should not have been refused.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": false
+    },
+    {
+      "id": "h-means-test-check",
+      "category": "abolished",
+      "question": "Kela paid me labour market subsidy before May 2026. Will they check my income now?",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 19.46,
+      "top_coverage": 0.866,
+      "cited_urls": [
+        "https://www.kela.fi/news/frequently-asked-questions-about-the-general-social-security-benefit"
+      ],
+      "answer": "If Kela paid you basic unemployment allowance or labour market subsidy without applying a means test before you were transferred to the general social security benefit on 1 May 2026, Kela will check your income by 30 September 2026 [S2]. This is to see how much income must be taken into account in the means test [S2]. Once determined, your income will affect the next payment period of your benefit [S2].\n\nNote: The labour market subsidy was abolished when Kela began paying the general social security benefit on 1 May 2026. [S9]",
+      "glossary_used": [],
+      "attempts": 1,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "n/a",
+          "replaced_note": "pass"
+        },
+        "reasons": {
+          "correct": "The answer states that Kela will check income by 30 September 2026, which matches the expected key fact.",
+          "grounded": "All facts in the answer are directly supported by passages S2 and S9.",
+          "right_source": "The citations [S2] and [S9] accurately point to the passages containing the information.",
+          "meaning_preserved": "The meaning regarding the income check, means test, and abolition of the benefit is accurately preserved from the sources.",
+          "plain_language": "The answer is concise, uses clear language, makes no promises, and requests no personal data.",
+          "safe_refusal": "The question is in scope and answered by the passages.",
+          "replaced_note": "The answer correctly notes that the labour market subsidy was abolished on 1 May 2026 when the general social security benefit started."
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-yleistuki",
+      "category": "tricky",
+      "question": "what is yleistuki",
+      "must_refuse": false,
+      "refused": false,
+      "refusal_reason": "",
+      "refusal_ok": true,
+      "source_cited": true,
+      "source_retrieved": true,
+      "facts_in_answer": true,
+      "facts_in_sources": true,
+      "missing_facts": [],
+      "top_score": 13.843,
+      "top_coverage": 1.0,
+      "cited_urls": [
+        "https://www.kela.fi/if-you-become-unemployed",
+        "https://www.kela.fi/news/general-social-security-benefit-to-replace-kela-paid-unemployment-benefits-in-may-2026",
+        "https://www.kela.fi/unemployment-general-social-security-benefit"
+      ],
+      "answer": "General social security benefit (yleistuki) is an unemployment benefit that Kela may pay you [S5].\nIt is intended for unemployed jobseekers who do not qualify for or have used up their earnings-related unemployment allowance [S2].\nTo get it, you must be 18–64 years old, live permanently in Finland, and be registered as an unemployed jobseeker with the employment services [S5].\nYou can get the general social security benefit only if you are available for work on the labour market [S6].",
+      "glossary_used": [
+        "yleistuki"
+      ],
+      "attempts": 2,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "generate",
+        "check_grounding",
+        "generate_strict",
+        "check_grounding",
+        "finalize"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "pass",
+          "grounded": "pass",
+          "right_source": "pass",
+          "meaning_preserved": "pass",
+          "plain_language": "pass",
+          "safe_refusal": "n/a",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "The answer correctly identifies yleistuki as a general social security/unemployment benefit from the sources.",
+          "grounded": "Every statement in the answer is supported by the provided passages.",
+          "right_source": "The citations [S5], [S2], and [S6] correctly match the information provided in the sentences.",
+          "meaning_preserved": "The source meanings and qualifiers are accurately preserved without distortion.",
+          "plain_language": "The answer is brief, uses clear everyday language, makes no promises, and asks for no personal data.",
+          "safe_refusal": "The question is in scope and correctly answered.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-oos-driving-licence",
+      "category": "out_of_scope",
+      "question": "How do I get a Finnish driving licence?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 4.509,
+      "top_coverage": 0.353,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, clear, uses everyday words, and does not ask for personal data or make legal promises.",
+          "safe_refusal": "The question is correctly refused since driving licences are outside the scope of the passages, and the answer appropriately directs the user to relevant authorities.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-oos-apartment",
+      "category": "out_of_scope",
+      "question": "Can you recommend a cheap apartment in Espoo?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 9.036,
+      "top_coverage": 0.243,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, clear, makes no legal promises, and does not ask for personal data.",
+          "safe_refusal": "The question is correctly refused and points to Kela and employment services for help.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-oos-opening-hours",
+      "category": "out_of_scope",
+      "question": "What are the opening hours of IKEA in Vantaa?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "low_coverage",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 5.826,
+      "top_coverage": 0.423,
+      "cited_urls": [],
+      "answer": "I can't confirm this from official sources. Please ask Kela (kela.fi) about benefits, or your local employment services (tyomarkkinatori.fi) about jobseeking services.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "retrieve",
+        "coverage_gate",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is concise, simple, and directs the user appropriately without asking for personal information or making legal promises.",
+          "safe_refusal": "The question was correctly refused since it asks about IKEA opening hours which are not covered in the passages, and the answer points to Kela and employment services.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-oos-court-overtime",
+      "category": "out_of_scope",
+      "question": "Should I take my former employer to court over unpaid overtime?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "legal_advice:should_i_take_legal_action",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 11.393,
+      "top_coverage": 0.309,
+      "cited_urls": [],
+      "answer": "I can't give personal legal advice or judge how your case will turn out. For your own situation, ask Kela or your employment services, or get advice from a lawyer or a public legal aid office.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is concise, uses everyday language, makes no legal promises, and does not ask for personal data.",
+          "safe_refusal": "The question is correctly refused and points to where to ask for help.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    },
+    {
+      "id": "h-oos-appeal-chances",
+      "category": "out_of_scope",
+      "question": "What are my chances if I appeal the employment office's decision about my benefit?",
+      "must_refuse": true,
+      "refused": true,
+      "refusal_reason": "legal_advice:predict_outcome",
+      "refusal_ok": true,
+      "source_cited": null,
+      "source_retrieved": null,
+      "facts_in_answer": null,
+      "facts_in_sources": null,
+      "missing_facts": [],
+      "top_score": 8.38,
+      "top_coverage": 0.216,
+      "cited_urls": [],
+      "answer": "I can't give personal legal advice or judge how your case will turn out. For your own situation, ask Kela or your employment services, or get advice from a lawyer or a public legal aid office.",
+      "glossary_used": [],
+      "attempts": 0,
+      "path": [
+        "legal_check",
+        "refuse"
+      ],
+      "judge": {
+        "scores": {
+          "correct": "n/a",
+          "grounded": "n/a",
+          "right_source": "n/a",
+          "meaning_preserved": "n/a",
+          "plain_language": "pass",
+          "safe_refusal": "pass",
+          "replaced_note": "n/a"
+        },
+        "reasons": {
+          "correct": "not applicable (decided by code)",
+          "grounded": "not applicable (decided by code)",
+          "right_source": "not applicable (decided by code)",
+          "meaning_preserved": "not applicable (decided by code)",
+          "plain_language": "The answer is short, clear, does not ask for personal data, and makes no legal promises.",
+          "safe_refusal": "The question is correctly refused and points the user to Kela, employment services, or legal aid.",
+          "replaced_note": "not applicable (decided by code)"
+        },
+        "error": ""
+      },
+      "passed": true
+    }
+  ]
+}

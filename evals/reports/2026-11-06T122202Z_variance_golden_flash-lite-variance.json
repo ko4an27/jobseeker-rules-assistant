@@ -1,0 +1,199 @@
+{
+  "meta": {
+    "run_at": "2026-11-06T12:22:02+0000",
+    "runs": 3,
+    "llm": "gemini-3.5-flash-lite",
+    "judge": "gemini-3.5-flash-lite",
+    "commit": "8cd29e4",
+    "set": "golden"
+  },
+  "spread": {
+    "passed": {
+      "min": 36,
+      "median": 36,
+      "max": 37,
+      "of": 38,
+      "runs": [
+        36,
+        36,
+        37
+      ]
+    },
+    "out_of_scope_refused": {
+      "min": 8,
+      "median": 8,
+      "max": 8,
+      "of": 8,
+      "runs": [
+        8,
+        8,
+        8
+      ]
+    },
+    "in_scope_answered": {
+      "min": 30,
+      "median": 30,
+      "max": 30,
+      "of": 30,
+      "runs": [
+        30,
+        30,
+        30
+      ]
+    },
+    "source_cited": {
+      "min": 30,
+      "median": 30,
+      "max": 30,
+      "of": 30,
+      "runs": [
+        30,
+        30,
+        30
+      ]
+    },
+    "source_retrieved": {
+      "min": 30,
+      "median": 30,
+      "max": 30,
+      "of": 30,
+      "runs": [
+        30,
+        30,
+        30
+      ]
+    },
+    "facts_in_answer": {
+      "min": 28,
+      "median": 28,
+      "max": 29,
+      "of": 30,
+      "runs": [
+        28,
+        28,
+        29
+      ]
+    },
+    "facts_in_sources": {
+      "min": 29,
+      "median": 29,
+      "max": 29,
+      "of": 30,
+      "runs": [
+        29,
+        29,
+        29
+      ]
+    },
+    "retried": {
+      "min": 1,
+      "median": 2,
+      "max": 6,
+      "of": 38,
+      "runs": [
+        1,
+        6,
+        2
+      ]
+    },
+    "refused_not_grounded": {
+      "min": 0,
+      "median": 0,
+      "max": 0,
+      "of": 38,
+      "runs": [
+        0,
+        0,
+        0
+      ]
+    },
+    "judge_overall": {
+      "min": 37,
+      "median": 37,
+      "max": 37,
+      "of": 38,
+      "runs": [
+        37,
+        37,
+        37
+      ]
+    },
+    "judge_correct": {
+      "min": 29,
+      "median": 29,
+      "max": 29,
+      "of": 30,
+      "runs": [
+        29,
+        29,
+        29
+      ]
+    },
+    "judge_grounded": {
+      "min": 30,
+      "median": 30,
+      "max": 30,
+      "of": 30,
+      "runs": [
+        30,
+        30,
+        30
+      ]
+    },
+    "judge_right_source": {
+      "min": 30,
+      "median": 30,
+      "max": 30,
+      "of": 30,
+      "runs": [
+        30,
+        30,
+        30
+      ]
+    },
+    "judge_meaning_preserved": {
+      "min": 30,
+      "median": 30,
+      "max": 30,
+      "of": 30,
+      "runs": [
+        30,
+        30,
+        30
+      ]
+    },
+    "judge_plain_language": {
+      "min": 38,
+      "median": 38,
+      "max": 38,
+      "of": 38,
+      "runs": [
+        38,
+        38,
+        38
+      ]
+    },
+    "judge_replaced_note": {
+      "min": 8,
+      "median": 8,
+      "max": 8,
+      "of": 8,
+      "runs": [
+        8,
+        8,
+        8
+      ]
+    },
+    "judge_errors": {
+      "min": 0,
+      "median": 0,
+      "max": 0,
+      "of": 38,
+      "runs": [
+        0,
+        0,
+        0
+      ]
+    }
+  }
+}
