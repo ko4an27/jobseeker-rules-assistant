@@ -221,3 +221,33 @@ def test_judge_gets_a_larger_output_cap_than_answers():
     judge = judge_model_from_env(env)
     assert judge.model == "gemini-3.6-flash" and judge.max_tokens == JUDGE_MAX_TOKENS == 2000
     assert get_llm(env).max_tokens == 800  # answers unchanged
+
+
+def test_code_fingerprint_ignores_report_commits_but_not_code_changes(tmp_path):
+    import subprocess
+
+    from jobseeker_assistant.evals import code_fingerprint
+
+    def git(*args):
+        subprocess.run(["git", *args], cwd=tmp_path, check=True, capture_output=True)
+
+    git("init", "-q")
+    git("config", "user.email", "t@example.test")
+    git("config", "user.name", "t")
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "a.py").write_text("x = 1\n")
+    (tmp_path / "evals" / "reports").mkdir(parents=True)
+    git("add", "-A")
+    git("commit", "-qm", "code")
+    first = code_fingerprint(tmp_path)
+    assert first
+
+    (tmp_path / "evals" / "reports" / "r.json").write_text("{}")
+    git("add", "-A")
+    git("commit", "-qm", "reports only")
+    assert code_fingerprint(tmp_path) == first  # the cache survives a reports-only commit
+
+    (tmp_path / "src" / "a.py").write_text("x = 2\n")
+    assert code_fingerprint(tmp_path) is None  # uncommitted code change: cache off
+    git("commit", "-qam", "code change")
+    assert code_fingerprint(tmp_path) not in (None, first)
