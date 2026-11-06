@@ -267,3 +267,63 @@ def test_code_fingerprint_without_git_turns_the_cache_off(tmp_path, monkeypatch)
 
     monkeypatch.setattr(subprocess, "run", no_git)
     assert code_fingerprint(tmp_path) is None
+
+
+def test_spread_min_median_max():
+    from jobseeker_assistant.evals import spread
+
+    runs = [
+        {"passed": "35/38", "judge_overall": "36/38", "by_category": {"x": "1/2"}, "x": "–"},
+        {"passed": "37/38", "judge_overall": "37/38", "by_category": {}, "x": "–"},
+        {"passed": "36/38", "judge_overall": "37/38", "by_category": {}, "x": "–"},
+    ]
+    table = spread(runs)
+    assert table["passed"] == {"min": 35, "median": 36, "max": 37, "of": 38, "runs": [35, 37, 36]}
+    assert table["judge_overall"]["median"] == 37
+    assert "by_category" not in table and "x" not in table  # only "a/b" metrics
+
+
+def test_spread_skips_metrics_with_different_denominators():
+    from jobseeker_assistant.evals import spread
+
+    assert spread([{"a": "1/2"}, {"a": "1/3"}]) == {}
+
+
+def test_repeated_runs_are_independent_and_saved(real_index, tmp_path, reports_in_tmp, capsys):
+    from jobseeker_assistant.evals import run_repeated
+    from jobseeker_assistant.llm import FakeLLM
+
+    budgets = []
+
+    def fresh_models():
+        budget = Budget(500)
+        budgets.append(budget)
+        off = ResponseCache(tmp_path / "cache", enabled=False)
+        llm = GuardedLLM(FakeLLM(), budget, off, "c", min_interval=0)
+        return llm, FakeJudge(), budget
+
+    assert run_repeated(_args(set="heldout"), real_index, load_glossary(), fresh_models, 3) == 0
+    assert len(budgets) == 3 and all(b.calls > 0 and b.cache_hits == 0 for b in budgets)
+    assert len(list(reports_in_tmp.glob("*_run*of3.json"))) == 3
+    [spread_json] = reports_in_tmp.glob("*_variance_heldout_test.json")
+    data = json.loads(spread_json.read_text())
+    assert data["meta"]["runs"] == 3 and data["spread"]["passed"]["of"] == 15
+    assert "| passed |" in spread_json.with_suffix(".md").read_text()
+    assert "heldout: min / median / max over 3 runs" in capsys.readouterr().out
+
+
+def test_repeated_runs_stop_cleanly_and_keep_completed_runs(real_index, tmp_path, reports_in_tmp):
+    from jobseeker_assistant.evals import run_repeated
+    from jobseeker_assistant.llm import FakeLLM
+
+    calls = {"n": 0}
+
+    def fresh_models():
+        calls["n"] += 1
+        budget = Budget(500 if calls["n"] < 3 else 3)  # third run hits its limit
+        off = ResponseCache(tmp_path / "cache", enabled=False)
+        return GuardedLLM(FakeLLM(), budget, off, "c", min_interval=0), FakeJudge(), budget
+
+    assert run_repeated(_args(set="heldout"), real_index, load_glossary(), fresh_models, 3) == 3
+    data = json.loads(next(reports_in_tmp.glob("*_variance_heldout_test.json")).read_text())
+    assert data["meta"]["runs"] == 2  # the spread uses the two completed runs

@@ -25,6 +25,7 @@ import hashlib
 import json
 import os
 import re
+import statistics
 import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
@@ -525,6 +526,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--regrade", type=Path, help="re-score a saved report with the current checker"
     )
+    parser.add_argument(
+        "--repeat", type=int, default=1, help="with --real: N independent runs (no cache) + spread"
+    )
     args = parser.parse_args(argv)
 
     index = Index.from_snapshots(snapshots.load_all(), load_tags())
@@ -702,6 +706,17 @@ def real_main(args, index, glossary) -> int:
     except (RuntimeError, ValueError) as exc:
         print(f"not configured: {exc}")
         return 2
+    if getattr(args, "repeat", 1) > 1:
+
+        def fresh_models():
+            # Variance needs independent answers: no cache, a fresh call budget per run.
+            budget = Budget(max_calls_from_env())
+            off = ResponseCache(enabled=False)
+            answer = _guard(answer_llm, budget, off, "answer")
+            judge = LLMJudge(_guard(judge_llm, budget, off, "judge"))
+            return answer, judge, budget
+
+        return run_repeated(args, index, glossary, fresh_models, args.repeat)
     budget = Budget(max_calls_from_env())
     cache = ResponseCache(enabled=code_fingerprint() is not None)
     if not cache.enabled:
@@ -711,6 +726,108 @@ def real_main(args, index, glossary) -> int:
         _guard(judge_llm, budget, cache, "judge"),
     )
     return run_real(args, index, glossary, answer, LLMJudge(judge_model), budget)
+
+
+def _ratio(value) -> tuple[int, int] | None:
+    if not isinstance(value, str) or "/" not in value:
+        return None
+    a, _, b = value.partition("/")
+    return (int(a), int(b)) if a.isdigit() and b.isdigit() else None
+
+
+def spread(summaries: list[dict]) -> dict:
+    """min / median / max across runs for every "x/y" metric (same set, same y)."""
+    out = {}
+    for key in summaries[0]:
+        ratios = [_ratio(s.get(key)) for s in summaries]
+        if any(r is None for r in ratios) or len({r[1] for r in ratios}) != 1:
+            continue
+        values = sorted(r[0] for r in ratios)
+        out[key] = {
+            "min": values[0],
+            "median": statistics.median(values),
+            "max": values[-1],
+            "of": ratios[0][1],
+            "runs": [r[0] for r in ratios],
+        }
+    return out
+
+
+def _fmt(n) -> str:
+    return str(int(n)) if float(n).is_integer() else f"{n:.1f}"
+
+
+def render_spread(set_name: str, table: dict, meta: dict) -> str:
+    lines = [
+        f"# Variance {set_name} {meta['run_at']}",
+        "",
+        f"{meta['runs']} independent runs (no cache) · LLM `{meta['llm']}` · judge "
+        f"`{meta['judge']}` · commit `{meta['commit']}`",
+        "",
+        "| Metric | Min | Median | Max | Per run |",
+        "|---|---|---|---|---|",
+    ]
+    for key, v in table.items():
+        per_run = ", ".join(str(x) for x in v["runs"])
+        lines.append(
+            f"| {key} | {v['min']}/{v['of']} | {_fmt(v['median'])}/{v['of']} | "
+            f"{v['max']}/{v['of']} | {per_run} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def run_repeated(args, index, glossary, fresh_models, n: int) -> int:
+    """Run the sets n times independently; save each run's reports and a spread report."""
+    names = list(SETS) if args.set == "both" else [args.set]
+    per_set: dict[str, list[dict]] = {name: [] for name in names}
+    base_label = args.label
+    status = 0
+    answer = judge = None
+    for i in range(1, n + 1):
+        answer, judge, budget = fresh_models()
+        args.label = "_".join(x for x in (base_label, f"run{i}of{n}") if x)
+        print(f"\n=== run {i}/{n} ===")
+        try:
+            provider = getattr(answer, "provider", "unknown")
+            summaries = evaluate_sets(args, index, answer, glossary, provider, judge, budget)
+        except (BudgetExceeded, ProviderError) as exc:
+            print(f"ABORTED run {i}: {exc} — spread uses the {i - 1} completed runs")
+            status = 3
+            break
+        for name in names:
+            per_set[name].append(summaries[name])
+        print(f"run {i}: calls {budget.calls}, cost {format_cost(budget.cost)}")
+    args.label = base_label
+    done = len(per_set[names[0]])
+    if done < 2:
+        print("fewer than 2 completed runs: no spread")
+        return status or 3
+    run_at = _now()
+    meta = {
+        "run_at": run_at,
+        "runs": done,
+        "llm": getattr(answer, "model", "?"),
+        "judge": getattr(getattr(judge, "llm", None), "model", type(judge).__name__),
+        "commit": _git_commit(),
+    }
+    REPORTS.mkdir(parents=True, exist_ok=True)
+    stem = run_at.replace(":", "").replace("+0000", "Z")
+    label = f"_{base_label}" if base_label else ""
+    for name in names:
+        table = spread(per_set[name])
+        print(f"\n{name}: min / median / max over {done} runs")
+        for key, v in table.items():
+            med = _fmt(v["median"])
+            print(f"  {key:22} {v['min']:>3} / {med:>4} / {v['max']:>3}  of {v['of']}")
+        if not args.no_save:
+            base = REPORTS / f"{stem}_variance_{name}{label}"
+            data = {"meta": {**meta, "set": name}, "spread": table}
+            base.with_suffix(".json").write_text(
+                json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+            )
+            base.with_suffix(".md").write_text(render_spread(name, table, meta), encoding="utf-8")
+            print(f"report: {base.with_suffix('.md').relative_to(ROOT)}")
+    return status
 
 
 def run_real(args, index, glossary, answer_llm, judge, budget: Budget) -> int:

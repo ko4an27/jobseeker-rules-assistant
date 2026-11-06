@@ -245,6 +245,10 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
 - Day 6 plan: README "How we know it's correct", demo transcript, polish.
 
 ## Open questions
+- **Prompt line "If sources disagree or may be outdated, say so."** (kept for now, 2026-11-06):
+  like the removed HISTORICAL instruction, it can invite a sentence *about* the sources, which
+  the grounding check rejects (no source states it). Not seen in the real runs yet. Options:
+  drop it, or let the grounding check skip clearly marked caveat sentences.
 - **The judge is unproven** until it has been calibrated against your reviewed labels. A model
   judging its own answers tends to be lenient; use a different `JUDGE_PROVIDER` if possible.
 - **Free-tier terms:** providers may use free-tier traffic to improve their models. Fine for the
