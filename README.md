@@ -233,21 +233,29 @@ golden case), Flash-Lite answered again:
 
 **Self-judge vs separate judge, on the same answers.** The separate judge was meant to be
 `gemini-3.7-flash`, but it timed out all day; `gemini-3.6-flash` judged instead. Its free tier
-allows only **20 requests per day**, so it scored 28 of the 53 answers. Flash-Lite then judged
-the *same* 53 answers (reused from the cache).
+allows only **20 requests per day**, so its verdicts were filled in over three days (cached
+answers, so every verdict is on the same answers); complete on 2026-11-07. Flash-Lite judged
+the *same* 53 answers.
 
-| On the 28 answers both judged | Separate judge (3.6-Flash) | Self-judge (Flash-Lite) |
+| All 53 answers, judged by both | Separate judge (3.6-Flash) | Self-judge (Flash-Lite) |
 |---|---|---|
-| Overall verdict: pass | 28/28 | 27/28 |
-| Overall verdict agreement | 27/28 | |
-| Per-check agreement | 166/172 | |
+| Overall verdict: pass — golden | 38/38 | 37/38 |
+| Overall verdict: pass — held-out | 15/15 | 14/15 |
+| Overall verdict agreement | 51/53 (golden 37/38, held-out 14/15) | |
+| Per-check agreement | 262/271 | |
 
-Five of the six per-check differences are cosmetic ("n/a" vs "pass" on *safe refusal*). The
-one real disagreement went the **opposite** way to the usual worry: on `lmt-apply` the separate
-judge passed *correct*, while the self-judge failed it — and so did our exact check (the
-"e-service" fact is missing). On this sample, self-judging was not more lenient. With 28
-answers and one disagreement, that is a hint, not a result. Self-judge on all 53: golden 37/38,
-held-out 14/15.
+Seven of the nine per-check differences are cosmetic ("n/a" vs "pass" on *safe refusal*). Both
+real disagreements went the **opposite** way to the usual worry — the separate judge passed,
+the self-judge failed:
+
+- `lmt-apply`, *correct*: the self-judge says the "e-service" fact is missing, and our exact
+  check agrees; the separate judge accepted "the online service where training can be found".
+- `h-partial-work-ability`, *safe refusal*: the self-judge says a passage about needing a
+  *medical* certificate answers the question, so refusing was wrong; the separate judge says no
+  passage covers a certificate *of partial work ability*, so refusing was right. Arguable.
+
+On these 53 answers self-judging was **not** more lenient; if anything the separate judge was.
+One model pair, one set of answers: a finding about this setup, not a general rule.
 
 **Same question, different answer.** In a re-run of the identical code and prompts at
 temperature 0, Flash-Lite gave a word-for-word different answer to **32 of 53** questions. To

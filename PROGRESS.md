@@ -236,8 +236,11 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
   - 294 tests pass.
 
 ## Next
-- Finish the separate-judge pass: 25 answers still need a 3.6-Flash (or 3.7-Flash) verdict; the
-  cache keeps the rest, so ~2 more days of free quota, or a judge with a larger free tier.
+- ~~Finish the separate-judge pass~~ — done 2026-11-07: all 53 answers judged by 3.6-Flash
+  (run from commit cb13534, whose cache holds those answers; 20 + 20 + 5 verdicts over 3 days).
+  Same answers as the self-judged run: overall agreement 51/53, per check 262/271. Both real
+  disagreements had the separate judge passing and the self-judge failing (`lmt-apply` correct;
+  `h-partial-work-ability` safe refusal). Reports: `evals/reports/2026-11-07T163849Z_*`.
 - Variance: run each setting 2–3 times and report the spread, not one number.
 - Regression report between two runs (Day 4 plan, second half).
 - Grounding threshold: 6/38 golden answers were sent back, 5 passed on retry. Check whether the
