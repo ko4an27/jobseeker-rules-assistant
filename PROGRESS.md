@@ -235,16 +235,33 @@ Goal: GitHub project for the If Generative AI Specialist application — apply ~
   - Run-to-run variance: an identical re-run gave different answers to 32/53 questions.
   - 294 tests pass.
 
+- 2026-11-06 (variance, separate-judge day 2):
+  - `make eval-variance` / `--repeat N`: N independent runs (cache off, fresh budget each), each
+    run's reports plus a min / median / max report per set; completed runs kept if one aborts.
+  - 3 runs, Flash-Lite answering and self-judging, 286 calls, $0. Judge overall golden 37/37/37,
+    held-out 14/14/14; exact checks golden 36/36/37, held-out 12/13/13; grounding retries 1/2/6.
+    README now leads with this spread instead of single-run numbers.
+  - Flip between runs: `gssb-start-date`, `side-other-income`, `h-lmt-travel` (key fact missing in
+    one run). Fail every time: `lmt-apply` (retrieval), `h-partial-work-ability` (coverage gate),
+    `h-under-25-study` (answer says "education programmes", label "study programmes": a synonym
+    the exact check can't see; label unchanged, judge passes it).
+  - Separate-judge pass day 2 (from commit cb13534, whose cache holds those answers): 20 more
+    verdicts → 48/53 (golden 38/38, held-out 10/15). Last 5 scheduled for 2026-11-07.
+  - 299 tests pass.
+
 ## Next
-- Finish the separate-judge pass: 25 answers still need a 3.6-Flash (or 3.7-Flash) verdict; the
-  cache keeps the rest, so ~2 more days of free quota, or a judge with a larger free tier.
-- Variance: run each setting 2–3 times and report the spread, not one number.
+- Finish the separate-judge pass: 5 held-out verdicts left (scheduled 2026-11-07, from commit
+  cb13534); then update the README comparison to 53/53.
 - Regression report between two runs (Day 4 plan, second half).
 - Grounding threshold: 6/38 golden answers were sent back, 5 passed on retry. Check whether the
   60% key-word threshold or meta-sentences (failure 1) cause most retries before changing it.
 - Day 6 plan: README "How we know it's correct", demo transcript, polish.
 
 ## Open questions
+- **Prompt line "If sources disagree or may be outdated, say so."** (kept for now, 2026-11-06):
+  like the removed HISTORICAL instruction, it can invite a sentence *about* the sources, which
+  the grounding check rejects (no source states it). Not seen in the real runs yet. Options:
+  drop it, or let the grounding check skip clearly marked caveat sentences.
 - **The judge is unproven** until it has been calibrated against your reviewed labels. A model
   judging its own answers tends to be lenient; use a different `JUDGE_PROVIDER` if possible.
 - **Free-tier terms:** providers may use free-tier traffic to improve their models. Fine for the
